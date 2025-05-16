@@ -30,9 +30,9 @@ export default function RegisterPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await axios.post("http://localhost:3000/register", {
-      user,
-    });
+    console.log(user);
+
+    const response = await axios.post("http://localhost:4000/api/user", user);
 
     if (response.status === 200) {
       redirect("/login");
