@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import axios from "axios";
+import { GrFormView, GrHide } from "react-icons/gr";
 
 export default function LoginPage() {
   interface IUser {
@@ -16,6 +17,9 @@ export default function LoginPage() {
     password: "",
   });
 
+  const [isRememberMe, setIsRememberMe] = useState<boolean>(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -25,11 +29,20 @@ export default function LoginPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await axios.post("http://localhost:3000/login", {
-      user,
-    });
+    const response = await axios.post(
+      "http://localhost:4000/api/auth/login",
+      user
+    );
 
     if (response.status === 200) {
+      const access_token = await response.data.access_token;
+
+      if (isRememberMe) {
+        localStorage.setItem("access_token", access_token);
+      } else {
+        sessionStorage.setItem("access_token", access_token);
+      }
+
       redirect("/");
     }
   };
@@ -53,7 +66,7 @@ export default function LoginPage() {
           />
 
           <input
-            type="password"
+            type={isPasswordVisible ? "text" : "password"}
             name="password"
             value={user.password}
             onChange={handleChange}
@@ -61,6 +74,25 @@ export default function LoginPage() {
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <button
+            className=""
+            onClick={(e) => {
+              e.preventDefault();
+              setIsPasswordVisible(!isPasswordVisible);
+            }}
+          >
+            {!isPasswordVisible ? <GrFormView /> : <GrHide />}
+          </button>
+
+          <div className="">
+            <input
+              className=""
+              type="checkbox"
+              checked={isRememberMe}
+              onChange={() => setIsRememberMe(!isRememberMe)}
+            />
+            <label className="">Remember me</label>
+          </div>
 
           <button
             type="submit"

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { redirect } from "next/navigation";
+import { GrFormView, GrHide } from "react-icons/gr";
 
 export default function RegisterPage() {
   interface IUser {
@@ -21,6 +22,8 @@ export default function RegisterPage() {
     phone: "",
     password: "",
   });
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -89,7 +92,7 @@ export default function RegisterPage() {
           />
 
           <input
-            type="password"
+            type={isPasswordVisible ? "text" : "password"}
             name="password"
             placeholder="Password"
             value={user.password}
@@ -98,6 +101,15 @@ export default function RegisterPage() {
             autoComplete="off"
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <button
+            className="show-pass-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              setIsPasswordVisible(!isPasswordVisible);
+            }}
+          >
+            {!isPasswordVisible ? <GrFormView /> : <GrHide />}
+          </button>
 
           <button
             type="submit"

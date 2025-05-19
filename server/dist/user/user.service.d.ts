@@ -13,4 +13,5 @@ export declare class UserService {
             password: string;
         } & User;
     }>;
+    findOne(email: string): Promise<User | null>;
 }
