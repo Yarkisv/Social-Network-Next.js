@@ -1,3 +1,5 @@
+import { ChatMember } from "src/chat-members/entities/chat-member.entity";
+import { Message } from "src/messages/entities/message.entity";
 export declare class User {
     user_id: number;
     fullname: string;
@@ -5,4 +7,6 @@ export declare class User {
     email: string;
     phone: string;
     password: string;
+    chatMemberships: ChatMember[];
+    sentMessages: Message[];
 }

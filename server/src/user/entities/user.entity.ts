@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ChatMember } from "src/chat-members/entities/chat-member.entity";
+import { Message } from "src/messages/entities/message.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity("Users")
 export class User {
   @PrimaryGeneratedColumn()
   user_id: number;
@@ -19,4 +21,10 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => ChatMember, (member) => member.user)
+  chatMemberships: ChatMember[];
+
+  @OneToMany(() => Message, (message) => message.user)
+  sentMessages: Message[]
 }

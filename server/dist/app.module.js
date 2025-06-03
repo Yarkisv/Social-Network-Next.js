@@ -12,6 +12,9 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_module_1 = require("./user/user.module");
 const auth_module_1 = require("./auth/auth.module");
+const chat_module_1 = require("./chat/chat.module");
+const chat_members_module_1 = require("./chat-members/chat-members.module");
+const messages_module_1 = require("./messages/messages.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -29,12 +32,15 @@ exports.AppModule = AppModule = __decorate([
                     password: configServise.get("DB_PASSWORD"),
                     database: configServise.get("DB_NAME"),
                     entities: [__dirname + "/**/*.entity{.js, .ts}"],
-                    synchronize: true,
+                    synchronize: false,
                 }),
                 inject: [config_1.ConfigService],
             }),
             user_module_1.UserModule,
             auth_module_1.AuthModule,
+            chat_module_1.ChatModule,
+            chat_members_module_1.ChatMembersModule,
+            messages_module_1.MessagesModule,
         ],
     })
 ], AppModule);

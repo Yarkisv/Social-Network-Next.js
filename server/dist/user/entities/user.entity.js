@@ -10,6 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const chat_member_entity_1 = require("../../chat-members/entities/chat-member.entity");
+const message_entity_1 = require("../../messages/entities/message.entity");
 const typeorm_1 = require("typeorm");
 let User = class User {
     user_id;
@@ -18,6 +20,8 @@ let User = class User {
     email;
     phone;
     password;
+    chatMemberships;
+    sentMessages;
 };
 exports.User = User;
 __decorate([
@@ -44,7 +48,15 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => chat_member_entity_1.ChatMember, (member) => member.user),
+    __metadata("design:type", Array)
+], User.prototype, "chatMemberships", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => message_entity_1.Message, (message) => message.user),
+    __metadata("design:type", Array)
+], User.prototype, "sentMessages", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)("Users")
 ], User);
 //# sourceMappingURL=user.entity.js.map
