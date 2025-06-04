@@ -14,4 +14,22 @@ export declare class UserService {
         } & User;
     }>;
     findOne(email: string): Promise<User | null>;
+    findAll(): Promise<{
+        user_id: number;
+        fullname: string;
+        username: string;
+        email: string;
+        phone: string;
+        chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
+        sentMessages: import("../messages/entities/message.entity").Message[];
+    }[]>;
+    findByUsername(username: string): Promise<{
+        user_id: number;
+        fullname: string;
+        username: string;
+        email: string;
+        phone: string;
+        chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
+        sentMessages: import("../messages/entities/message.entity").Message[];
+    }>;
 }

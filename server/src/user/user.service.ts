@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
@@ -19,7 +23,7 @@ export class UserService {
     });
 
     if (isUserExist) {
-      throw new BadRequestException("This email already exists");
+      throw new UnauthorizedException("This email already exists");
     }
 
     const user = await this.userRepository.save({
@@ -39,5 +43,37 @@ export class UserService {
         email: email,
       },
     });
+  }
+
+  async findAll() {
+    const users = await this.userRepository.find();
+
+    if (users.length === 0) {
+      throw new NotFoundException("Users not found");
+    }
+
+    const modifiedUsers = users.map((user) => {
+      const { password, ...rest } = user;
+      return rest;
+    });
+
+    return modifiedUsers;
+  }
+
+  async findByUsername(username: string) {
+    const user = await this.userRepository.findBy({
+      username: username,
+    });
+
+    if (user.length === 0) {
+      throw new NotFoundException("User not found 404");
+    }
+
+    const modifiedUser = user.map((user) => {
+      const { password, ...rest } = user;
+      return rest;
+    });
+
+    return modifiedUser[0];
   }
 }

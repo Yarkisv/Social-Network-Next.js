@@ -2,43 +2,47 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import axios from "axios";
 import { redirect } from "next/navigation";
+import axios from "axios";
 import { GrFormView, GrHide } from "react-icons/gr";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   interface IUser {
-    fullname: string;
-    username: string;
     email: string;
-    phone: string;
     password: string;
   }
 
   const [user, setUser] = useState<IUser>({
-    fullname: "",
-    username: "",
     email: "",
-    phone: "",
     password: "",
   });
 
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
+  const [isRememberMe, setIsRememberMe] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+
     setUser({ ...user, [name]: value });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log(user);
-
-    const response = await axios.post("http://localhost:4000/api/user", user);
+    const response = await axios.post(`${API}/auth/login`, user);
 
     if (response.status === 200) {
-      redirect("/login");
+      const access_token = await response.data.access_token;
+
+      if (isRememberMe) {
+        localStorage.setItem("access_token", access_token);
+      } else {
+        sessionStorage.setItem("access_token", access_token);
+      }
+
+      redirect("/");
     }
   };
 
@@ -47,62 +51,31 @@ export default function RegisterPage() {
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
         <form onSubmit={handleSubmit} className="space-y-4">
           <h2 className="text-2xl font-bold text-center text-gray-800">
-            Register
+            Login
           </h2>
-
-          <input
-            name="fullname"
-            placeholder="Full name"
-            value={user.fullname}
-            onChange={handleChange}
-            required
-            autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            name="username"
-            placeholder="Username"
-            value={user.username}
-            onChange={handleChange}
-            required
-            autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
 
           <input
             type="email"
             name="email"
-            placeholder="Email"
             value={user.email}
             onChange={handleChange}
+            placeholder="Email"
             required
-            autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            name="phone"
-            placeholder="Phone number"
-            value={user.phone}
-            onChange={handleChange}
-            required
-            autoComplete="off"
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <input
             type={isPasswordVisible ? "text" : "password"}
             name="password"
-            placeholder="Password"
             value={user.password}
             onChange={handleChange}
+            placeholder="Password"
+            autoComplete="true"
             required
-            autoComplete="off"
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
-            className="show-pass-btn"
+            className=""
             onClick={(e) => {
               e.preventDefault();
               setIsPasswordVisible(!isPasswordVisible);
@@ -111,17 +84,27 @@ export default function RegisterPage() {
             {!isPasswordVisible ? <GrFormView /> : <GrHide />}
           </button>
 
+          <div className="">
+            <input
+              className=""
+              type="checkbox"
+              checked={isRememberMe}
+              onChange={() => setIsRememberMe(!isRememberMe)}
+            />
+            <label className="">Remember me</label>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition duration-300 cursor-pointer"
           >
-            Register
+            Login
           </button>
         </form>
 
         <div className="mt-4 text-center">
-          <Link href="/login" className="text-blue-600 hover:underline">
-            Already have an account?
+          <Link href="/register" className="text-blue-600 hover:underline">
+            Don't have an account?
           </Link>
         </div>
       </div>

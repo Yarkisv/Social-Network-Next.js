@@ -2,48 +2,52 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import axios from "axios";
+import { redirect } from "next/navigation";
 import { GrFormView, GrHide } from "react-icons/gr";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   interface IUser {
+    fullname: string;
+    username: string;
     email: string;
+    phone: string;
     password: string;
   }
 
   const [user, setUser] = useState<IUser>({
+    fullname: "",
+    username: "",
     email: "",
+    phone: "",
     password: "",
   });
 
-  const [isRememberMe, setIsRememberMe] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-
     setUser({ ...user, [name]: value });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await axios.post(
-      "http://localhost:4000/api/auth/login",
-      user
-    );
+    console.log(user);
 
-    if (response.status === 200) {
-      const access_token = await response.data.access_token;
+    const response = await axios.post(`${API}/api/user/register`, user);
 
-      if (isRememberMe) {
-        localStorage.setItem("access_token", access_token);
-      } else {
-        sessionStorage.setItem("access_token", access_token);
-      }
-
-      redirect("/");
+    if (response.status === 201) {
+      setUser({
+        fullname: "",
+        username: "",
+        email: "",
+        phone: "",
+        password: "",
+      });
+      redirect("/login");
     }
   };
 
@@ -52,30 +56,62 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
         <form onSubmit={handleSubmit} className="space-y-4">
           <h2 className="text-2xl font-bold text-center text-gray-800">
-            Login
+            Register
           </h2>
+
+          <input
+            name="fullname"
+            placeholder="Full name"
+            value={user.fullname}
+            onChange={handleChange}
+            required
+            autoComplete="off"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <input
+            name="username"
+            placeholder="Username"
+            value={user.username}
+            onChange={handleChange}
+            required
+            autoComplete="off"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
           <input
             type="email"
             name="email"
+            placeholder="Email"
             value={user.email}
             onChange={handleChange}
-            placeholder="Email"
             required
+            autoComplete="off"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <input
+            name="phone"
+            placeholder="Phone number"
+            value={user.phone}
+            onChange={handleChange}
+            required
+            autoComplete="off"
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <input
             type={isPasswordVisible ? "text" : "password"}
             name="password"
+            placeholder="Password"
             value={user.password}
             onChange={handleChange}
-            placeholder="Password"
             required
+            autoComplete="off"
             className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
-            className=""
+            className="show-pass-btn"
             onClick={(e) => {
               e.preventDefault();
               setIsPasswordVisible(!isPasswordVisible);
@@ -84,27 +120,17 @@ export default function LoginPage() {
             {!isPasswordVisible ? <GrFormView /> : <GrHide />}
           </button>
 
-          <div className="">
-            <input
-              className=""
-              type="checkbox"
-              checked={isRememberMe}
-              onChange={() => setIsRememberMe(!isRememberMe)}
-            />
-            <label className="">Remember me</label>
-          </div>
-
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition duration-300 cursor-pointer"
           >
-            Login
+            Register
           </button>
         </form>
 
         <div className="mt-4 text-center">
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Don't have an account?
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Already have an account?
           </Link>
         </div>
       </div>
