@@ -30,6 +30,9 @@ let UserController = class UserController {
     async findByUsername(username) {
         return this.userService.findByUsername(username);
     }
+    async findByString(string) {
+        return this.userService.findUsersBySymbol(string);
+    }
 };
 exports.UserController = UserController;
 __decorate([
@@ -53,6 +56,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findByUsername", null);
+__decorate([
+    (0, common_1.Get)("usernames/:string"),
+    __param(0, (0, common_1.Param)("string")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findByString", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)("user"),
     __metadata("design:paramtypes", [user_service_1.UserService])

@@ -1,5 +1,10 @@
+"use client";
+
 import "../globals.css";
 import Header from "../components/Header";
+import { store } from "../store/index";
+import { Provider } from "react-redux";
+import SearchUsersPanel from "../components/Panels/SearchUsersPanel";
 
 export default function RootLayout({
   children,
@@ -9,8 +14,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
-        {children}
+        <Provider store={store}>
+          <Header />
+          {children}
+          <SearchUsersPanel />
+        </Provider>
       </body>
     </html>
   );

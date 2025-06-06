@@ -6,7 +6,7 @@ import {
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 import * as argon2 from "argon2";
 
 @Injectable()
@@ -42,6 +42,7 @@ export class UserService {
       where: {
         email: email,
       },
+      select: ["fullname", "username", "email", "phone"],
     });
   }
 
@@ -75,5 +76,33 @@ export class UserService {
     });
 
     return modifiedUser[0];
+  }
+
+  async findUsersBySymbol(string: string) {
+    const users = await this.userRepository.find({
+      where: {
+        username: Like(`${string}%`),
+      },
+    });
+
+    if (users.length === 0) {
+      throw new NotFoundException("Users not found 404");
+    }
+
+    const modifiedUsers = users.map((user) => {
+      const { password, ...rest } = user;
+      return rest;
+    });
+
+    return modifiedUsers;
+  }
+
+  async findById(id: number) {
+    return await this.userRepository.findOne({
+      where: {
+        user_id: id,
+      },
+      select: ["fullname", "username", "email", "phone"],
+    });
   }
 }

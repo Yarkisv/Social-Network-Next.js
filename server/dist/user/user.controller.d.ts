@@ -20,6 +20,7 @@ export declare class UserController {
         phone: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
+        posts: import("../post/entities/post.entity").Post[];
     }[]>;
     findByUsername(username: string): Promise<{
         user_id: number;
@@ -29,5 +30,16 @@ export declare class UserController {
         phone: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
+        posts: import("../post/entities/post.entity").Post[];
     }>;
+    findByString(string: string): Promise<{
+        user_id: number;
+        fullname: string;
+        username: string;
+        email: string;
+        phone: string;
+        chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
+        sentMessages: import("../messages/entities/message.entity").Message[];
+        posts: import("../post/entities/post.entity").Post[];
+    }[]>;
 }

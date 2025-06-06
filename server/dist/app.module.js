@@ -15,6 +15,7 @@ const auth_module_1 = require("./auth/auth.module");
 const chat_module_1 = require("./chat/chat.module");
 const chat_members_module_1 = require("./chat-members/chat-members.module");
 const messages_module_1 = require("./messages/messages.module");
+const post_module_1 = require("./post/post.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -41,6 +42,7 @@ exports.AppModule = AppModule = __decorate([
             chat_module_1.ChatModule,
             chat_members_module_1.ChatMembersModule,
             messages_module_1.MessagesModule,
+            post_module_1.PostModule,
         ],
     })
 ], AppModule);

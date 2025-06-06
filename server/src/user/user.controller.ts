@@ -6,6 +6,7 @@ import {
   ValidationPipe,
   Get,
   Param,
+  Header,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -29,4 +30,11 @@ export class UserController {
   async findByUsername(@Param("username") username: string) {
     return this.userService.findByUsername(username);
   }
+
+  @Get("usernames/:string")
+  async findByString(@Param("string") string: string) {
+    return this.userService.findUsersBySymbol(string);
+  }
+
+  
 }

@@ -46,6 +46,7 @@ let UserService = class UserService {
             where: {
                 email: email,
             },
+            select: ["fullname", "username", "email", "phone"],
         });
     }
     async findAll() {
@@ -71,6 +72,29 @@ let UserService = class UserService {
             return rest;
         });
         return modifiedUser[0];
+    }
+    async findUsersBySymbol(string) {
+        const users = await this.userRepository.find({
+            where: {
+                username: (0, typeorm_2.Like)(`${string}%`),
+            },
+        });
+        if (users.length === 0) {
+            throw new common_1.NotFoundException("Users not found 404");
+        }
+        const modifiedUsers = users.map((user) => {
+            const { password, ...rest } = user;
+            return rest;
+        });
+        return modifiedUsers;
+    }
+    async findById(id) {
+        return await this.userRepository.findOne({
+            where: {
+                user_id: id,
+            },
+            select: ["fullname", "username", "email", "phone"],
+        });
     }
 };
 exports.UserService = UserService;

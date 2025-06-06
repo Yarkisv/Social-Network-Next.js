@@ -22,6 +22,7 @@ export declare class UserService {
         phone: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
+        posts: import("../post/entities/post.entity").Post[];
     }[]>;
     findByUsername(username: string): Promise<{
         user_id: number;
@@ -31,5 +32,17 @@ export declare class UserService {
         phone: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
+        posts: import("../post/entities/post.entity").Post[];
     }>;
+    findUsersBySymbol(string: string): Promise<{
+        user_id: number;
+        fullname: string;
+        username: string;
+        email: string;
+        phone: string;
+        chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
+        sentMessages: import("../messages/entities/message.entity").Message[];
+        posts: import("../post/entities/post.entity").Post[];
+    }[]>;
+    findById(id: number): Promise<User | null>;
 }

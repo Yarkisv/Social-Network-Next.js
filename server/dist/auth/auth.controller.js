@@ -16,13 +16,21 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
+const auth_guard_1 = require("./auth.guard");
+const user_service_1 = require("../user/user.service");
 let AuthController = class AuthController {
     authService;
-    constructor(authService) {
+    userServise;
+    constructor(authService, userServise) {
         this.authService = authService;
+        this.userServise = userServise;
     }
     login(loginDto) {
         return this.authService.login(loginDto.email, loginDto.password);
+    }
+    profile(req) {
+        const id = req.user.id;
+        return this.userServise.findById(id);
     }
 };
 exports.AuthController = AuthController;
@@ -34,8 +42,17 @@ __decorate([
     __metadata("design:paramtypes", [create_auth_dto_1.LoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Get)("profile"),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "profile", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)("auth"),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        user_service_1.UserService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

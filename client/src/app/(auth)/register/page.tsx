@@ -37,7 +37,7 @@ export default function RegisterPage() {
 
     console.log(user);
 
-    const response = await axios.post(`${API}/api/user/register`, user);
+    const response = await axios.post(`${API}/user/register`, user);
 
     if (response.status === 201) {
       setUser({

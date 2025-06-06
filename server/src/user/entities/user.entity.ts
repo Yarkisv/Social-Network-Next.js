@@ -1,5 +1,6 @@
 import { ChatMember } from "src/chat-members/entities/chat-member.entity";
 import { Message } from "src/messages/entities/message.entity";
+import { Post } from "src/post/entities/post.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("Users")
@@ -26,5 +27,8 @@ export class User {
   chatMemberships: ChatMember[];
 
   @OneToMany(() => Message, (message) => message.user)
-  sentMessages: Message[]
+  sentMessages: Message[];
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }
