@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const class_validator_1 = require("class-validator");
 const chat_member_entity_1 = require("../../chat-members/entities/chat-member.entity");
 const message_entity_1 = require("../../messages/entities/message.entity");
 const post_entity_1 = require("../../post/entities/post.entity");
@@ -21,6 +22,9 @@ let User = class User {
     email;
     phone;
     password;
+    subscribers;
+    subscriptions;
+    description;
     chatMemberships;
     sentMessages;
     posts;
@@ -47,9 +51,22 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, typeorm_1.Column)({ length: 255 }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], User.prototype, "subscribers", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], User.prototype, "subscriptions", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: "" }),
+    __metadata("design:type", String)
+], User.prototype, "description", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => chat_member_entity_1.ChatMember, (member) => member.user),
     __metadata("design:type", Array)

@@ -23,13 +23,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post("login")
   login(@Body() loginDto: LoginDto) {
+    console.log(loginDto);
+
     return this.authService.login(loginDto.email, loginDto.password);
   }
 
   @Get("profile")
   @UseGuards(AuthGuard)
   profile(@Request() req) {
-    const id: number = req.user.id;
+    const id: number = req.user.user_id;
+
+    console.log("AGagag");
 
     return this.userServise.findById(id);
   }

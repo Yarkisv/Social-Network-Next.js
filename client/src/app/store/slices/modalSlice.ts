@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../index";
 
-interface modalState {
+interface IModalState {
   isOpen: boolean;
   searchQuery: string;
 }
 
-const initialState: modalState = {
+const initialState: IModalState = {
   isOpen: false,
   searchQuery: "",
 };
@@ -29,7 +29,4 @@ export const modalSlice = createSlice({
 });
 
 export const { openModal, closeModal, setSearchQuery } = modalSlice.actions;
-
-export const selectModalOpen = (state: RootState) => state.modal.isOpen;
-
 export default modalSlice.reducer;

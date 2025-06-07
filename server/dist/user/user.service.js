@@ -46,7 +46,6 @@ let UserService = class UserService {
             where: {
                 email: email,
             },
-            select: ["fullname", "username", "email", "phone"],
         });
     }
     async findAll() {
@@ -89,12 +88,45 @@ let UserService = class UserService {
         return modifiedUsers;
     }
     async findById(id) {
+        console.log(id);
         return await this.userRepository.findOne({
             where: {
                 user_id: id,
             },
-            select: ["fullname", "username", "email", "phone"],
+            select: [
+                "user_id",
+                "fullname",
+                "username",
+                "email",
+                "phone",
+                "subscribers",
+                "subscriptions",
+                "description",
+            ],
         });
+    }
+    async updateUser(id, updateUserDto) {
+        const user = await this.userRepository.findOne({
+            where: {
+                user_id: id,
+            },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException();
+        }
+        if (updateUserDto.fullname !== undefined) {
+            user.fullname = updateUserDto.fullname;
+        }
+        if (updateUserDto.username !== undefined) {
+            user.username = updateUserDto.username;
+        }
+        if (updateUserDto.phone !== undefined) {
+            user.phone = updateUserDto.phone;
+        }
+        if (updateUserDto.email !== undefined) {
+            user.email = updateUserDto.email;
+        }
+        return this.userRepository.save(user);
     }
 };
 exports.UserService = UserService;

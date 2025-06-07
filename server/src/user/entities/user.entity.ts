@@ -1,3 +1,4 @@
+import { IsNotEmpty } from "class-validator";
 import { ChatMember } from "src/chat-members/entities/chat-member.entity";
 import { Message } from "src/messages/entities/message.entity";
 import { Post } from "src/post/entities/post.entity";
@@ -20,8 +21,18 @@ export class User {
   @Column()
   phone: string;
 
-  @Column()
+  @IsNotEmpty()
+  @Column({ length: 255 })
   password: string;
+
+  @Column({ default: 0 })
+  subscribers: number;
+
+  @Column({ default: 0 })
+  subscriptions: number;
+
+  @Column({ default: "" })
+  description: string;
 
   @OneToMany(() => ChatMember, (member) => member.user)
   chatMemberships: ChatMember[];

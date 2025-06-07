@@ -8,6 +8,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { Like, Repository } from "typeorm";
 import * as argon2 from "argon2";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
@@ -42,7 +43,6 @@ export class UserService {
       where: {
         email: email,
       },
-      select: ["fullname", "username", "email", "phone"],
     });
   }
 
@@ -98,11 +98,52 @@ export class UserService {
   }
 
   async findById(id: number) {
+    console.log(id)
+
     return await this.userRepository.findOne({
       where: {
         user_id: id,
       },
-      select: ["fullname", "username", "email", "phone"],
+      select: [
+        "user_id",
+        "fullname",
+        "username",
+        "email",
+        "phone",
+        "subscribers",
+        "subscriptions",
+        "description",
+      ],
     });
+  }
+
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: {
+        user_id: id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    if (updateUserDto.fullname !== undefined) {
+      user.fullname = updateUserDto.fullname;
+    }
+
+    if (updateUserDto.username !== undefined) {
+      user.username = updateUserDto.username;
+    }
+
+    if (updateUserDto.phone !== undefined) {
+      user.phone = updateUserDto.phone;
+    }
+
+    if (updateUserDto.email !== undefined) {
+      user.email = updateUserDto.email;
+    }
+
+    return this.userRepository.save(user);
   }
 }

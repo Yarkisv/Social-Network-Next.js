@@ -6,7 +6,7 @@ import {
   openModal,
   closeModal,
   setSearchQuery,
-} from "../store/modal/modalSlice";
+} from "../store/slices/modalSlice";
 
 export default function Header() {
   const [inputText, setInputText] = useState<string>("");
@@ -19,7 +19,7 @@ export default function Header() {
     if (isOpen) {
       dispatch(closeModal());
     } else {
-      dispatch(openModal()); 
+      dispatch(openModal());
     }
   };
 
