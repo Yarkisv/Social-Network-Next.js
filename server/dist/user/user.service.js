@@ -88,7 +88,6 @@ let UserService = class UserService {
         return modifiedUsers;
     }
     async findById(id) {
-        console.log(id);
         return await this.userRepository.findOne({
             where: {
                 user_id: id,

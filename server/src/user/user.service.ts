@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -98,8 +99,6 @@ export class UserService {
   }
 
   async findById(id: number) {
-    console.log(id)
-
     return await this.userRepository.findOne({
       where: {
         user_id: id,

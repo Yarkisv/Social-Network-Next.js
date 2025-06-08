@@ -21,8 +21,10 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    async login(email, password) {
+    async login(loginDto) {
         try {
+            const email = loginDto.email;
+            const password = loginDto.password;
             const user = await this.userService.findOne(email);
             console.log("User:", user);
             if (!user) {
@@ -32,19 +34,55 @@ let AuthService = class AuthService {
             if (!isPassMatch) {
                 throw new common_1.UnauthorizedException("Invalid password");
             }
-            const payload = {
-                user_id: user.user_id,
-                username: user.username,
-                email: user.email,
-            };
-            return {
-                access_token: await this.jwtService.signAsync(payload),
-            };
+            const tokens = await this.getTokens(user.user_id, user.username, user.email);
+            return tokens;
         }
         catch (err) {
             console.error("Login error:", err);
             throw new common_1.UnauthorizedException("Login failed");
         }
+    }
+    async refreshTokens(refreshToken) {
+        const REFRESH_JWT_SECRET = process.env.REFRESH_JWT_SECRET;
+        try {
+            const payload = await this.jwtService.verifyAsync(refreshToken, {
+                secret: REFRESH_JWT_SECRET,
+            });
+            const user_id = payload.user_id;
+            const username = payload.username;
+            const email = payload.email;
+            const user = await this.userService.findById(user_id);
+            if (!user)
+                throw new common_1.ForbiddenException("Access Denied");
+            const tokens = await this.getTokens(user_id, username, email);
+            return tokens;
+        }
+        catch (err) {
+            throw new common_1.ForbiddenException(`Access Denied: ${err}`);
+        }
+    }
+    async getTokens(user_id, username, email) {
+        const ACCESS_JWT_SECRET = process.env.ACCESS_JWT_SECRET;
+        const REFRESH_JWT_SECRET = process.env.REFRESH_JWT_SECRET;
+        const payload = {
+            user_id,
+            username,
+            email,
+        };
+        const [access_token, refresh_token] = await Promise.all([
+            await this.jwtService.signAsync(payload, {
+                secret: ACCESS_JWT_SECRET,
+                expiresIn: "1h",
+            }),
+            await this.jwtService.signAsync(payload, {
+                secret: REFRESH_JWT_SECRET,
+                expiresIn: "7d",
+            }),
+        ]);
+        return {
+            access_token,
+            refresh_token,
+        };
     }
 };
 exports.AuthService = AuthService;

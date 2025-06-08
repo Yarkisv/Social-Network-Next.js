@@ -7,10 +7,12 @@ import {
   Get,
   Param,
   Patch,
+  UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { AccessTokenGuard } from "src/auth/guards/accessToken.guard";
 
 @Controller("user")
 export class UserController {
@@ -37,6 +39,7 @@ export class UserController {
     return this.userService.findUsersBySymbol(string);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Patch("update/:id")
   async updateUser(
     @Param("id") id: number,

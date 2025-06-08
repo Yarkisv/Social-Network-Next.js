@@ -39,15 +39,10 @@ export default function LoginPage() {
 
     if (response.status === 200) {
       const access_token = await response.data.access_token;
+      const refresh_token = await response.data.refresh_token;
 
-      console.log(access_token);
-
-      if (isRememberMe) {
-        localStorage.setItem("access_token", access_token);
-      } else {
-        sessionStorage.setItem("access_token", access_token);
-      }
-
+      
+      
       redirect("/");
     }
   };

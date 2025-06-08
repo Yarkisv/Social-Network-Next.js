@@ -7,11 +7,14 @@ import {
   Post,
   UseGuards,
   Request,
+  Res,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/create-auth.dto";
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "./guards/auth.guard";
 import { UserService } from "src/user/user.service";
+import { RefreshTokenGuard } from "./guards/refreshToken.guard";
+import { Response } from "express";
 
 @Controller("auth")
 export class AuthController {
@@ -22,10 +25,28 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post("login")
-  login(@Body() loginDto: LoginDto) {
-    console.log(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) response: Response
+  ) {
+    const { access_token, refresh_token } =
+      await this.authService.login(loginDto);
 
-    return this.authService.login(loginDto.email, loginDto.password);
+    response.cookie("access_token", access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    response.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return { message: "Login successful" };
   }
 
   @Get("profile")
@@ -33,8 +54,14 @@ export class AuthController {
   profile(@Request() req) {
     const id: number = req.user.user_id;
 
-    console.log("AGagag");
-
     return this.userServise.findById(id);
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get("refresh")
+  refreshTokens(@Request() req) {
+    const refreshToken = req.user.token;
+
+    return this.authService.refreshTokens(refreshToken);
   }
 }

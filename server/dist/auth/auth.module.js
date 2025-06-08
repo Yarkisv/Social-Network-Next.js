@@ -12,22 +12,16 @@ const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const user_module_1 = require("../user/user.module");
 const jwt_1 = require("@nestjs/jwt");
-const constants_1 = require("./constants");
+const accessToken_strategy_1 = require("./strategies/accessToken.strategy");
+const refreshToken_strategy_1 = require("./strategies/refreshToken.strategy");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService],
-        imports: [
-            user_module_1.UserModule,
-            jwt_1.JwtModule.register({
-                global: true,
-                secret: constants_1.jwtConstants.secret,
-                signOptions: { expiresIn: "24h" },
-            }),
-        ],
+        providers: [auth_service_1.AuthService, accessToken_strategy_1.AccessTokenStrategy, refreshToken_strategy_1.RefreshTokenStrategy],
+        imports: [user_module_1.UserModule, jwt_1.JwtModule.register({})],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map
