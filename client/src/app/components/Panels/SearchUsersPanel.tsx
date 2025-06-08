@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
-import { closeModal } from "@/app/store/modal/modalSlice";
+import { closeModal } from "@/app/store/slices/modalSlice";
 
 type User = {
   fullname: string;

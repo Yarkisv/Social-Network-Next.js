@@ -1,5 +1,6 @@
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
@@ -18,6 +19,9 @@ export declare class UserController {
         username: string;
         email: string;
         phone: string;
+        subscribers: number;
+        subscriptions: number;
+        description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
@@ -28,6 +32,9 @@ export declare class UserController {
         username: string;
         email: string;
         phone: string;
+        subscribers: number;
+        subscriptions: number;
+        description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
@@ -38,8 +45,12 @@ export declare class UserController {
         username: string;
         email: string;
         phone: string;
+        subscribers: number;
+        subscriptions: number;
+        description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
     }[]>;
+    updateUser(id: number, updateUserDto: UpdateUserDto): Promise<import("./entities/user.entity").User>;
 }

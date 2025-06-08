@@ -22,20 +22,28 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async login(email, password) {
-        const user = await this.userService.findOne(email);
-        if (!user) {
-            throw new common_1.UnauthorizedException();
-        }
-        const isPassMatch = await argon2.verify(user.password, password);
-        const payload = {
-            user_id: user.user_id,
-            username: user.username,
-            email: user.email,
-        };
-        if (user && isPassMatch) {
+        try {
+            const user = await this.userService.findOne(email);
+            console.log("User:", user);
+            if (!user) {
+                throw new common_1.UnauthorizedException("User not found");
+            }
+            const isPassMatch = await argon2.verify(user.password, password);
+            if (!isPassMatch) {
+                throw new common_1.UnauthorizedException("Invalid password");
+            }
+            const payload = {
+                user_id: user.user_id,
+                username: user.username,
+                email: user.email,
+            };
             return {
                 access_token: await this.jwtService.signAsync(payload),
             };
+        }
+        catch (err) {
+            console.error("Login error:", err);
+            throw new common_1.UnauthorizedException("Login failed");
         }
     }
 };

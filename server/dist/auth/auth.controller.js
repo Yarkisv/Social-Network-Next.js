@@ -26,10 +26,12 @@ let AuthController = class AuthController {
         this.userServise = userServise;
     }
     login(loginDto) {
+        console.log(loginDto);
         return this.authService.login(loginDto.email, loginDto.password);
     }
     profile(req) {
-        const id = req.user.id;
+        const id = req.user.user_id;
+        console.log("AGagag");
         return this.userServise.findById(id);
     }
 };

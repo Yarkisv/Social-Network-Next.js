@@ -6,10 +6,11 @@ import {
   ValidationPipe,
   Get,
   Param,
-  Header,
+  Patch,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Controller("user")
 export class UserController {
@@ -36,5 +37,11 @@ export class UserController {
     return this.userService.findUsersBySymbol(string);
   }
 
-  
+  @Patch("update/:id")
+  async updateUser(
+    @Param("id") id: number,
+    @Body() updateUserDto: UpdateUserDto
+  ) {
+    return this.userService.updateUser(id, updateUserDto);
+  }
 }

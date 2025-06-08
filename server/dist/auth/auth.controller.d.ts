@@ -7,6 +7,6 @@ export declare class AuthController {
     constructor(authService: AuthService, userServise: UserService);
     login(loginDto: LoginDto): Promise<{
         access_token: string;
-    } | undefined>;
+    }>;
     profile(req: any): Promise<import("../user/entities/user.entity").User | null>;
 }

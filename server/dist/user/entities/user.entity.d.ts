@@ -8,6 +8,9 @@ export declare class User {
     email: string;
     phone: string;
     password: string;
+    subscribers: number;
+    subscriptions: number;
+    description: string;
     chatMemberships: ChatMember[];
     sentMessages: Message[];
     posts: Post[];

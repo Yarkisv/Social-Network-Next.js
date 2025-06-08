@@ -11,24 +11,33 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string) {
-    const user = await this.userService.findOne(email);
+    try {
+      const user = await this.userService.findOne(email);
 
-    if (!user) {
-      throw new UnauthorizedException();
-    }
+      console.log("User:", user);
 
-    const isPassMatch = await argon2.verify(user.password, password);
+      if (!user) {
+        throw new UnauthorizedException("User not found");
+      }
 
-    const payload = {
-      user_id: user.user_id,
-      username: user.username,
-      email: user.email,
-    };
+      const isPassMatch = await argon2.verify(user.password, password);
 
-    if (user && isPassMatch) {
+      if (!isPassMatch) {
+        throw new UnauthorizedException("Invalid password");
+      }
+
+      const payload = {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+      };
+
       return {
         access_token: await this.jwtService.signAsync(payload),
       };
+    } catch (err) {
+      console.error("Login error:", err);
+      throw new UnauthorizedException("Login failed");
     }
   }
 }
