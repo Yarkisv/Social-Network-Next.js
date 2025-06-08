@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import logoAuth from "../../images/logoAuth.svg";
+import Image from "next/image";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { GrFormView, GrHide } from "react-icons/gr";
@@ -52,10 +54,21 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-[#0D0D0D]">
+      <Image
+        src={logoAuth}
+        alt="Auth Logo Background"
+        width={334}
+        height={313}
+        className="absolute z-0  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        priority
+      />
+      <div
+        className="relative z-10 backdrop-blur-[15px] font-light bg-[#15121F]/60 px-[30px] py-[15px] rounded-[2px] w-full max-w-[350px]"
+        style={{ fontFamily: "Inter, sans-serif" }}
+      >
         <form onSubmit={handleSubmit} className="space-y-4">
-          <h2 className="text-2xl font-bold text-center text-gray-800">
+          <h2 className="text-2xl font-light mb-[24px] text-center text-gray-200">
             Register
           </h2>
 
@@ -66,7 +79,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             required
             autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border-none bg-[#0D0D0D]/90 rounded-[2px] focus:outline-none focus:ring-2 focus:ring-white  text-white"
           />
 
           <input
@@ -76,7 +89,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             required
             autoComplete="off"
-            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border-none bg-[#0D0D0D]/90 rounded-[2px] focus:outline-none focus:ring-2 focus:ring-white  text-white"
           />
 
           <input
@@ -87,7 +100,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             required
             autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border-none bg-[#0D0D0D]/90 rounded-[2px] focus:outline-none focus:ring-2 focus:ring-white  text-white"
           />
 
           <input
@@ -97,39 +110,41 @@ export default function RegisterPage() {
             onChange={handleChange}
             required
             autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border-none bg-[#0D0D0D]/90 rounded-[2px] focus:outline-none focus:ring-2 focus:ring-white  text-white"
           />
 
-          <input
-            type={isPasswordVisible ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={user.password}
-            onChange={handleChange}
-            required
-            autoComplete="off"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            className="show-pass-btn"
-            onClick={(e) => {
-              e.preventDefault();
-              setIsPasswordVisible(!isPasswordVisible);
-            }}
-          >
-            {!isPasswordVisible ? <GrFormView /> : <GrHide />}
-          </button>
+          <div className="relative">
+            <input
+              type={isPasswordVisible ? "text" : "password"}
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              placeholder="Password"
+              autoComplete="true"
+              required
+              className="w-full px-4 py-2 border-none rounded-[2px] focus:outline-none focus:ring-2 focus:ring-white bg-[#0D0D0D]/90 text-white"
+            />
+            <button
+              className="absolute right-3 cursor-pointer top-[12px] text-white"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsPasswordVisible(!isPasswordVisible);
+              }}
+            >
+              {!isPasswordVisible ? <GrFormView /> : <GrHide />}
+            </button>
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition duration-300 cursor-pointer"
+            className="w-full cursor-pointer bg-[#3C1D70]/80 text-white py-[5px] rounded-[2px] hover:bg-[#3C1D70] transition duration-300 "
           >
             Register
           </button>
         </form>
 
         <div className="mt-4 text-center">
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="text-white hover:underline">
             Already have an account?
           </Link>
         </div>
