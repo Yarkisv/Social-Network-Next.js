@@ -101,6 +101,7 @@ let UserService = class UserService {
                 "subscribers",
                 "subscriptions",
                 "description",
+                "posts",
             ],
         });
     }

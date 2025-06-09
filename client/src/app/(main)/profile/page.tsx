@@ -28,20 +28,8 @@ export default function page() {
   useEffect(() => {
     const checkToken = async () => {
       try {
-        const access_token =
-          localStorage.getItem("access_token") ||
-          sessionStorage.getItem("access_token");
-
-        console.log(access_token);
-
-        if (!access_token) {
-          router.push("/");
-        }
-
         const res = await axios.get(`${API}/auth/profile`, {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
+          withCredentials: true,
         });
 
         if (res.status === 200) {
@@ -55,18 +43,6 @@ export default function page() {
 
     checkToken();
   }, []);
-
-  const updateUserData = async () => {
-    try {
-      const res = await axios.patch(`${API}/user/update/${user?.user_id}`, {});
-
-      if (res.status === 200) {
-        setUser(res.data);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  };
 
   if (!user) {
     return <div></div>;
@@ -108,12 +84,6 @@ export default function page() {
           <span>Подписки</span>
           <span>{user.subscriptions ?? 0}</span>
         </div>
-      </div>
-
-      <div>
-        <form onSubmit={updateUserData}>
-          <input type="text" placeholder="Change your username" />
-        </form>
       </div>
     </div>
   );

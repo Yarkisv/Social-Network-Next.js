@@ -55,14 +55,14 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0D0D0D]">
-      <Image
+      {/* <Image
         src={logoAuth}
         alt="Auth Logo Background"
         width={334}
         height={313}
         className="absolute z-0  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         priority
-      />
+      /> */}
       <div
         className="relative z-10 backdrop-blur-[15px] font-light bg-[#15121F]/60 px-[30px] py-[15px] rounded-[2px] w-full max-w-[350px]"
         style={{ fontFamily: "Inter, sans-serif" }}

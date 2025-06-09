@@ -112,6 +112,7 @@ export class UserService {
         "subscribers",
         "subscriptions",
         "description",
+        "posts",
       ],
     });
   }

@@ -35,14 +35,14 @@ export default function LoginPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await axios.post(`${API}/auth/login`, user);
+    const response = await axios.post(`${API}/auth/login`, user, {
+      withCredentials: true,
+    });
 
     if (response.status === 200) {
       const access_token = await response.data.access_token;
       const refresh_token = await response.data.refresh_token;
 
-      
-      
       redirect("/");
     }
   };
