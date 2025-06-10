@@ -3,10 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import profileEmpty from "../../images/profileEmpty.png";
+import ProfilePost from "../../images/ProfilePost.png";
+import Image from "next/image";
 import { initialUser } from "@/app/store/slices/userSlice";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppDispatch } from "@/app/hooks";
 
-export default function page() {
+export default function Page() {
   type User = {
     user_id: number;
     fullname: string;
@@ -19,8 +22,8 @@ export default function page() {
   };
 
   const API = process.env.NEXT_PUBLIC_API_URL;
-
   const [user, setUser] = useState<User>();
+  const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -45,44 +48,85 @@ export default function page() {
   }, []);
 
   if (!user) {
-    return <div></div>;
+    return <div className="min-h-screen bg-[#060606]"></div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Профиль пользователя
-        </h1>
+    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 py-8">
+      <div className="w-full max-w-[730px]">
+        {/* Header */}
+        <div className="flex items-start gap-6 mb-10">
+          <Image
+            src={profileEmpty}
+            alt="Google"
+            className="w-28 h-28 rounded-full "
+          />
 
-        <div className="flex justify-between border-b border-gray-300 pb-2 text-gray-700 font-medium">
-          <span>Полное имя</span>
-          <span>{user.fullname}</span>
+          <div className="flex flex-col gap-4 flex-1">
+            <div className="flex items-center gap-[15px]">
+              <div className="text-xl font-semibold">{user.fullname}</div>
+              <div className="text-gray-400">@{user.username}</div>
+            </div>
+
+            <div className="flex gap-8 text-sm text-gray-300">
+              <div>
+                <span className="text-white font-medium">10</span> posts
+              </div>
+              <div>
+                <span className="text-white font-medium">
+                  {user.subscribers ?? 0}
+                </span>{" "}
+                followers
+              </div>
+              <div>
+                <span className="text-white font-medium">
+                  {user.subscriptions ?? 0}
+                </span>{" "}
+                subscriptions
+              </div>
+            </div>
+            <div className="text-gray-300 ">
+              {user.description || "pipipupu gaga"}
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-between border-b border-gray-300 py-2 text-gray-700 font-medium">
-          <span>Имя пользователя</span>
-          <span>{user.username}</span>
+        {/* Tabs */}
+        <div className="flex justify-center gap-12  mb-4">
+          <button
+            onClick={() => setActiveTab("posts")}
+            className={`pb-2 text-sm font-semibold ${
+              activeTab === "posts"
+                ? "border-b-2 border-white text-white"
+                : "text-gray-500"
+            }`}
+          >
+            POSTS
+          </button>
+          <button
+            onClick={() => setActiveTab("saved")}
+            className={`pb-2 text-sm font-semibold ${
+              activeTab === "saved"
+                ? "border-b-2 border-white text-white"
+                : "text-gray-500"
+            }`}
+          >
+            SAVED
+          </button>
         </div>
 
-        <div className="flex justify-between border-b border-gray-300 py-2 text-gray-700 font-medium">
-          <span>Email</span>
-          <span>{user.email}</span>
-        </div>
-
-        <div className="flex justify-between border-b border-gray-300 py-2 text-gray-700 font-medium">
-          <span>Телефон</span>
-          <span>{user.phone}</span>
-        </div>
-
-        <div className="flex justify-between border-b border-gray-300 py-2 text-gray-700 font-medium">
-          <span>Подписчики</span>
-          <span>{user.subscribers ?? 0}</span>
-        </div>
-
-        <div className="flex justify-between pt-2 text-gray-700 font-medium">
-          <span>Подписки</span>
-          <span>{user.subscriptions ?? 0}</span>
+        {/* Content Grid */}
+        <div className="grid grid-cols-3 gap-[5px]">
+          {(activeTab === "posts" ? [...Array(6)] : [...Array(3)]).map(
+            (_, index) => (
+              <Image
+                key={index}
+                src={ProfilePost}
+                alt="Google"
+                className="w-full aspect-square object-cover"
+              />
+            )
+          )}
         </div>
       </div>
     </div>
