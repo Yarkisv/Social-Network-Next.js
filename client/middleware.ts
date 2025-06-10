@@ -1,24 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import axios from "axios";
 
 export async function middleware(request: NextRequest) {
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  const discpath = useAppDispatch();
-
   const access_token = request.cookies.get("access_token")?.value;
-  const refresh_token = request.cookies.get("refresh_token")?.value;
 
   try {
     if (!access_token) {
-      const refresh = await fetch(`${API}/auth/refresh`, {
-        method: "GET",
-        headers: {
-          cookie: request.headers.get("refresh_token") || "",
-        },
+      const res = await axios.get(`${API}/auth/profile`, {
+        withCredentials: true,
       });
 
-      if (refresh.ok) {
+      if (res.status === 200) {
         const response = NextResponse.next();
 
         return response;

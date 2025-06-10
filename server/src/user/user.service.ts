@@ -10,11 +10,13 @@ import { User } from "./entities/user.entity";
 import { Like, Repository } from "typeorm";
 import * as argon2 from "argon2";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { FileService } from "src/services/file.service";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly fileServise: FileService
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -99,7 +101,7 @@ export class UserService {
   }
 
   async findById(id: number) {
-    return await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         user_id: id,
       },
@@ -112,12 +114,31 @@ export class UserService {
         "subscribers",
         "subscriptions",
         "description",
+        "avatarPathTo",
         "posts",
       ],
     });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const avatarBase64: string = await this.fileServise.getFile(
+      user.avatarPathTo
+    );
+
+    const modifiedUser = JSON.parse(JSON.stringify(user));
+
+    modifiedUser.avatarPathTo = avatarBase64;
+
+    return modifiedUser;
   }
 
-  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+  async updateUser(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    file: Express.Multer.File
+  ) {
     const user = await this.userRepository.findOne({
       where: {
         user_id: id,
@@ -142,6 +163,10 @@ export class UserService {
 
     if (updateUserDto.email !== undefined) {
       user.email = updateUserDto.email;
+    }
+
+    if (file) {
+      user.avatarPathTo = "";
     }
 
     return this.userRepository.save(user);

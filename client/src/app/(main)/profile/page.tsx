@@ -19,6 +19,7 @@ export default function page() {
     subscribers: number;
     subscriptions: number;
     description: string;
+    avatarPathTo: string;
   };
 
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -54,12 +55,13 @@ export default function page() {
   return (
     <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 py-8">
       <div className="w-full max-w-[730px]">
-        {/* Header */}
         <div className="flex items-start gap-6 mb-10">
           <Image
-            src={profileEmpty}
-            alt="Google"
             className="w-28 h-28 rounded-full "
+            src={`data:image/png;base64,${user.avatarPathTo}`}
+            alt="Google"
+            width={112}
+            height={112}
           />
 
           <div className="flex flex-col gap-4 flex-1">
@@ -91,7 +93,6 @@ export default function page() {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="flex justify-center gap-12  mb-4">
           <button
             onClick={() => setActiveTab("posts")}
@@ -115,7 +116,6 @@ export default function page() {
           </button>
         </div>
 
-        {/* Content Grid */}
         <div className="grid grid-cols-3 gap-[5px]">
           {(activeTab === "posts" ? [...Array(6)] : [...Array(3)]).map(
             (_, index) => (

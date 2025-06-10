@@ -11,6 +11,7 @@ export declare class User {
     subscribers: number;
     subscriptions: number;
     description: string;
+    avatarPathTo: string;
     chatMemberships: ChatMember[];
     sentMessages: Message[];
     posts: Post[];

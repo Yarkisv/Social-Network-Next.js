@@ -25,6 +25,7 @@ let User = class User {
     subscribers;
     subscriptions;
     description;
+    avatarPathTo;
     chatMemberships;
     sentMessages;
     posts;
@@ -67,6 +68,10 @@ __decorate([
     (0, typeorm_1.Column)({ default: "" }),
     __metadata("design:type", String)
 ], User.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: "/default-avatar.jpg" }),
+    __metadata("design:type", String)
+], User.prototype, "avatarPathTo", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => chat_member_entity_1.ChatMember, (member) => member.user),
     __metadata("design:type", Array)

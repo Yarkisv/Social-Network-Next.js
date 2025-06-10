@@ -9,7 +9,7 @@ export declare class AuthController {
     login(loginDto: LoginDto, response: Response): Promise<{
         message: string;
     }>;
-    profile(req: any): Promise<import("../user/entities/user.entity").User | null>;
+    profile(req: any): Promise<any>;
     refreshTokens(req: any): Promise<{
         access_token: string;
         refresh_token: string;

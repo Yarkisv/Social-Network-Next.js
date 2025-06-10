@@ -18,10 +18,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const typeorm_2 = require("typeorm");
 const argon2 = require("argon2");
+const file_service_1 = require("../services/file.service");
 let UserService = class UserService {
     userRepository;
-    constructor(userRepository) {
+    fileServise;
+    constructor(userRepository, fileServise) {
         this.userRepository = userRepository;
+        this.fileServise = fileServise;
     }
     async create(createUserDto) {
         const isUserExist = await this.userRepository.findOne({
@@ -88,7 +91,7 @@ let UserService = class UserService {
         return modifiedUsers;
     }
     async findById(id) {
-        return await this.userRepository.findOne({
+        const user = await this.userRepository.findOne({
             where: {
                 user_id: id,
             },
@@ -101,11 +104,19 @@ let UserService = class UserService {
                 "subscribers",
                 "subscriptions",
                 "description",
+                "avatarPathTo",
                 "posts",
             ],
         });
+        if (!user) {
+            throw new common_1.NotFoundException("User not found");
+        }
+        const avatarBase64 = await this.fileServise.getFile(user.avatarPathTo);
+        const modifiedUser = JSON.parse(JSON.stringify(user));
+        modifiedUser.avatarPathTo = avatarBase64;
+        return modifiedUser;
     }
-    async updateUser(id, updateUserDto) {
+    async updateUser(id, updateUserDto, file) {
         const user = await this.userRepository.findOne({
             where: {
                 user_id: id,
@@ -126,6 +137,9 @@ let UserService = class UserService {
         if (updateUserDto.email !== undefined) {
             user.email = updateUserDto.email;
         }
+        if (file) {
+            user.avatarPathTo = "";
+        }
         return this.userRepository.save(user);
     }
 };
@@ -133,6 +147,7 @@ exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        file_service_1.FileService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

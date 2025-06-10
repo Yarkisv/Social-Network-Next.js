@@ -34,6 +34,9 @@ export class User {
   @Column({ default: "" })
   description: string;
 
+  @Column({ default: "/default-avatar.jpg" })
+  avatarPathTo: string;
+
   @OneToMany(() => ChatMember, (member) => member.user)
   chatMemberships: ChatMember[];
 

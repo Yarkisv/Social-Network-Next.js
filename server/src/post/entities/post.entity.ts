@@ -7,7 +7,7 @@ export class Post {
   post_id: number;
 
   @Column()
-  content: string;
+  contentPathTo: string;
 
   @ManyToOne(() => User, (user) => user.posts)
   user: User;
