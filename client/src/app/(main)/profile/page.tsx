@@ -7,9 +7,9 @@ import profileEmpty from "../../images/profileEmpty.png";
 import ProfilePost from "../../images/ProfilePost.png";
 import Image from "next/image";
 import { initialUser } from "@/app/store/slices/userSlice";
-import { useAppDispatch } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
-export default function Page() {
+export default function page() {
   type User = {
     user_id: number;
     fullname: string;
