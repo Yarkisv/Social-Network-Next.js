@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import AsideInfo from "../../components/asideInfo";
 import axios from "axios";
 import profileEmpty from "../../images/profileEmpty.png";
 import ProfilePost from "../../images/ProfilePost.png";
@@ -53,24 +54,27 @@ export default function page() {
   }
 
   return (
-    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 py-8">
-      <div className="w-full max-w-[730px]">
+    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 ">
+      <div className="w-[182px] bg-[#15121F] ">
+        <AsideInfo />
+      </div>
+      <div className="w-full max-w-[730px] pt-[35px] pl-[20px]">
         <div className="flex items-start gap-6 mb-10">
           <Image
-            className="w-28 h-28 rounded-full "
+            className="w-28 h-28 rounded-full object-fit "
             src={`data:image/png;base64,${user.avatarPathTo}`}
             alt="Google"
             width={112}
             height={112}
           />
 
-          <div className="flex flex-col gap-4 flex-1">
-            <div className="flex items-center gap-[15px]">
+          <div className="flex flex-col gap-4 flex-1 font-['Source_Code_Pro'] font-light">
+            <div className="flex items-center gap-[15px] ">
               <div className="text-xl font-semibold">{user.fullname}</div>
               <div className="text-gray-400">@{user.username}</div>
             </div>
 
-            <div className="flex gap-8 text-sm text-gray-300">
+            <div className="flex gap-8 text-sm text-gray-300 font-['Space_Grotesk'] font-light">
               <div>
                 <span className="text-white font-medium">10</span> posts
               </div>
@@ -93,7 +97,7 @@ export default function page() {
           </div>
         </div>
 
-        <div className="flex justify-center gap-12  mb-4">
+        <div className="flex justify-center gap-12  mb-4 font-['Source_Code_Pro'] font-light">
           <button
             onClick={() => setActiveTab("posts")}
             className={`pb-2 text-sm font-semibold ${
