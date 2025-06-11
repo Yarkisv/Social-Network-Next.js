@@ -36,8 +36,9 @@ let UserController = class UserController {
     async findByString(string) {
         return this.userService.findUsersBySymbol(string);
     }
-    async updateUser(id, updateUserDto, file) {
-        return this.userService.updateUser(id, updateUserDto, file);
+    async updateUser(id, updateUserDto) {
+        console.log(id);
+        return this.userService.updateUser(id, updateUserDto);
     }
 };
 exports.UserController = UserController;
@@ -76,7 +77,7 @@ __decorate([
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, update_user_dto_1.UpdateUserDto, Object]),
+    __metadata("design:paramtypes", [Number, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
 exports.UserController = UserController = __decorate([

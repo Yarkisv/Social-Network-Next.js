@@ -5,10 +5,13 @@ import {
   HttpCode,
   UseInterceptors,
   UploadedFile,
+  Get,
+  Param,
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { FileService } from "src/services/file.service";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { CreatePostDto } from "./dto/create-post.dto";
 
 @Controller("post")
 export class PostController {
@@ -20,10 +23,19 @@ export class PostController {
   @Post("upload/post")
   @HttpCode(200)
   @UseInterceptors(FileInterceptor("file"))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(
+    @Body() createPostDto: CreatePostDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
     console.log(file);
 
-    return this.fileService.uploadFile(file);
+    const pathTo = await this.fileService.uploadFile(file);
+
+    createPostDto.contentPathTo = pathTo;
+
+    await this.postService.create(createPostDto);
+
+    return { message: "Post uploaded successfuly" };
   }
 
   @Post("upload/posts")
@@ -31,5 +43,10 @@ export class PostController {
   @UseInterceptors(FileInterceptor("file"))
   async uploadFiles(@UploadedFile() files: Express.Multer.File[]) {
     console.log(files);
+  }
+
+  @Get("get/:id")
+  async getPostsById(@Param("id") id: number) {
+    return this.postService.findUserPostsById(id);
   }
 }

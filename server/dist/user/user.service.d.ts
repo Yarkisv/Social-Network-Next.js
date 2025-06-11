@@ -60,5 +60,5 @@ export declare class UserService {
         posts: import("../post/entities/post.entity").Post[];
     }[]>;
     findById(id: number): Promise<any>;
-    updateUser(id: number, updateUserDto: UpdateUserDto, file: Express.Multer.File): Promise<User>;
+    updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User>;
 }

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AsideInfo from "../../components/asideInfo";
 import axios from "axios";
-import profileEmpty from "../../images/profileEmpty.png";
 import ProfilePost from "../../images/ProfilePost.png";
 import Image from "next/image";
 import { initialUser } from "@/app/store/slices/userSlice";
@@ -23,34 +22,65 @@ export default function page() {
     avatarPathTo: string;
   };
 
+  type Post = {
+    contentPathTo: string;
+  };
+
   const API = process.env.NEXT_PUBLIC_API_URL;
   const [user, setUser] = useState<User>();
+  const [posts, setPosts] = useState<Post[]>();
+  const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
+
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
 
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        const res = await axios.get(`${API}/auth/profile`, {
-          withCredentials: true,
-        });
+  const checkToken = async () => {
+    try {
+      const res = await axios.get(`${API}/auth/profile`, {
+        withCredentials: true,
+      });
 
-        if (res.status === 200) {
-          setUser(res.data);
-          dispatch(initialUser(res.data));
-        }
-      } catch (error) {
-        console.log("Error: ", error);
+      if (res.status === 200) {
+        setUser(res.data);
+        dispatch(initialUser(res.data));
       }
-    };
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
 
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.get(`${API}/post/get/${user?.user_id}`);
+
+      if (res.status === 200) {
+        setPosts(res.data);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const uploadNewPost = async (user_id: number, file: File) => {};
+
+  useEffect(() => {
     checkToken();
-  }, []);
+
+    if (user?.user_id && !hasFetchedPosts) {
+      fetchPosts();
+      setHasFetchedPosts(true);
+      console.log(posts);
+    }
+  }, [user, hasFetchedPosts]);
 
   if (!user) {
     return <div className="min-h-screen bg-[#060606]"></div>;
+  }
+
+  if (!posts) {
+    return;
   }
 
   return (
@@ -120,16 +150,32 @@ export default function page() {
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-[5px]">
-          {(activeTab === "posts" ? [...Array(6)] : [...Array(3)]).map(
-            (_, index) => (
+        <div>
+          {activeTab === "posts" ? (
+            posts.length > 0 ? (
+              <div className="grid grid-cols-3 gap-[5px]">
+                {posts.map((post, index) => (
+                  <Image
+                    key={index}
+                    src={`data:image/jpg;base64,${post}`}
+                    alt="post"
+                    width={233}
+                    height={233}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div></div>
+            )
+          ) : (
+            [...Array(3)].map((_, index) => (
               <Image
                 key={index}
                 src={ProfilePost}
                 alt="Google"
                 className="w-full aspect-square object-cover"
               />
-            )
+            ))
           )}
         </div>
       </div>

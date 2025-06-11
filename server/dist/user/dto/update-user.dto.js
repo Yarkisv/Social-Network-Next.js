@@ -18,6 +18,7 @@ class UpdateUserDto extends (0, mapped_types_1.PartialType)(create_user_dto_1.Cr
     username;
     phone;
     email;
+    description;
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
@@ -41,4 +42,9 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "description", void 0);
 //# sourceMappingURL=update-user.dto.js.map

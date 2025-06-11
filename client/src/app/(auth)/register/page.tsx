@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import logoAuth from "../../images/logoAuth.svg";
-import Image from "next/image";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import { GrFormView, GrHide } from "react-icons/gr";

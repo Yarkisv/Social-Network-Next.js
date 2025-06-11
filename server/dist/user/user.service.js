@@ -105,8 +105,8 @@ let UserService = class UserService {
                 "subscriptions",
                 "description",
                 "avatarPathTo",
-                "posts",
             ],
+            relations: ["chatMemberships", "sentMessages", "posts"],
         });
         if (!user) {
             throw new common_1.NotFoundException("User not found");
@@ -116,7 +116,7 @@ let UserService = class UserService {
         modifiedUser.avatarPathTo = avatarBase64;
         return modifiedUser;
     }
-    async updateUser(id, updateUserDto, file) {
+    async updateUser(id, updateUserDto) {
         const user = await this.userRepository.findOne({
             where: {
                 user_id: id,
@@ -136,9 +136,6 @@ let UserService = class UserService {
         }
         if (updateUserDto.email !== undefined) {
             user.email = updateUserDto.email;
-        }
-        if (file) {
-            user.avatarPathTo = "";
         }
         return this.userRepository.save(user);
     }

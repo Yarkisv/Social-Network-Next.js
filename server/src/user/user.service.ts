@@ -115,8 +115,8 @@ export class UserService {
         "subscriptions",
         "description",
         "avatarPathTo",
-        "posts",
       ],
+      relations: ["chatMemberships", "sentMessages", "posts"],
     });
 
     if (!user) {
@@ -137,7 +137,7 @@ export class UserService {
   async updateUser(
     id: number,
     updateUserDto: UpdateUserDto,
-    file: Express.Multer.File
+    // file: Express.Multer.File
   ) {
     const user = await this.userRepository.findOne({
       where: {
@@ -165,9 +165,9 @@ export class UserService {
       user.email = updateUserDto.email;
     }
 
-    if (file) {
-      user.avatarPathTo = "";
-    }
+    // if (file) {
+    //   user.avatarPathTo = "";
+    // }
 
     return this.userRepository.save(user);
   }
