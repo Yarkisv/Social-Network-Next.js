@@ -52,7 +52,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0D0D0D]">
+    <div className="min-h-screen flex items-center justify-center bg-[#060606]">
       {/* <Image
         src={logoAuth}
         alt="Auth Logo Background"

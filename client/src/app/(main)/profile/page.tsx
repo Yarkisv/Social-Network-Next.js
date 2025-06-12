@@ -88,7 +88,7 @@ export default function page() {
       <div className="w-[182px] bg-[#15121F] ">
         <AsideInfo />
       </div>
-      <div className="w-full max-w-[730px] pt-[35px] pl-[20px]">
+      <div className="w-full max-w-[730px] pt-[35px] px-[20px]">
         <div className="flex items-start gap-6 mb-10">
           <Image
             className="w-28 h-28 rounded-full object-fit "
@@ -169,12 +169,15 @@ export default function page() {
             )
           ) : (
             [...Array(3)].map((_, index) => (
-              <Image
-                key={index}
-                src={ProfilePost}
-                alt="Google"
-                className="w-full aspect-square object-cover"
-              />
+              <div className="grid grid-cols-3 gap-[5px]">
+                {" "}
+                <Image
+                  key={index}
+                  src={ProfilePost}
+                  alt="Google"
+                  className="w-full aspect-square object-cover"
+                />
+              </div>
             ))
           )}
         </div>

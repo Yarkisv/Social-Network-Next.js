@@ -3,14 +3,11 @@
 import { useEffect, useState } from "react";
 import profileEmpty from "../images/profileEmpty.png";
 import LogOut from "../images/LogOut.svg";
-
+import SearchIcon from "../images/SearchIcon.svg";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import {
-  openModal,
-  closeModal,
-  setSearchQuery,
-} from "../store/slices/modalSlice";
+import { openModal, setSearchQuery } from "../store/slices/modalSlice";
+import SearchUsersPanel from "../components/Panels/SearchUsersPanel";
 
 export default function Header() {
   const [inputText, setInputText] = useState<string>("");
@@ -19,7 +16,7 @@ export default function Header() {
   const dispatch = useAppDispatch();
 
   const handleInputClick = () => {
-    isOpen ? dispatch(closeModal()) : dispatch(openModal());
+    if (!isOpen) dispatch(openModal());
   };
 
   const handleOnChange = () => {
@@ -34,7 +31,7 @@ export default function Header() {
     <div className="flex justify-center bg-[#060606] sticky top-0 z-50">
       <header className="bg-[#15121F] border-b-[3px] border-[#0D0D0D] pr-[20px] h-[46px] flex items-center justify-between w-full max-w-[910px] rounded-md">
         {/* Левая часть — профиль */}
-        <div className="flex items-center h-full pl-[20px]  w-[182px]   border-r-[3px] border-[#0D0D0D]">
+        <div className="flex items-center h-full pl-[20px] w-[182px] border-r-[3px] border-[#0D0D0D]">
           <Image
             alt="profile"
             src={profileEmpty}
@@ -58,14 +55,20 @@ export default function Header() {
         </h1>
 
         {/* Правая часть — поиск */}
-        <div className="w-[300px]">
-          <input
-            type="text"
-            className="w-full h-[30px] px-4 text-[#828282] bg-[#2E2E2E] border-none rounded-[2px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Search"
-            onChange={(e) => setInputText(e.target.value)}
-            onClick={handleInputClick}
-          />
+        <div className="w-[300px] relative">
+          <div className="w-full h-[30px] bg-[#2E2E2E] rounded-[2px] flex items-center overflow-hidden focus-within:ring-2 focus-within:ring-purple-600">
+            <div className="flex items-center px-2 border-r-[2px] border-black ">
+              <Image alt="search" src={SearchIcon} width={18} height={18} />
+            </div>
+            <input
+              type="text"
+              className="flex-1 h-full px-3 text-[#828282] bg-transparent border-none focus:outline-none"
+              placeholder="search"
+              onChange={(e) => setInputText(e.target.value)}
+              onClick={handleInputClick}
+            />
+          </div>
+          {isOpen && <SearchUsersPanel />}
         </div>
       </header>
     </div>
