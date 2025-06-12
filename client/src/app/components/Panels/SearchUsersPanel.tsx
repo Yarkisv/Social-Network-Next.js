@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
 
@@ -15,16 +15,39 @@ type User = {
 export default function SearchUsersPanel() {
   const isOpen = useAppSelector((state) => state.modal.isOpen);
   const searchQuery = useAppSelector((state) => state.modal.searchQuery);
-
   const [users, setUsers] = useState<User[]>([]);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const API = process.env.NEXT_PUBLIC_API_URL;
-
   const dispatch = useAppDispatch();
 
-  const handleClosePanel = () => {
-    dispatch(closeModal());
-  };
+  // Закрытие при клике вне
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node)
+      ) {
+        dispatch(closeModal());
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dispatch(closeModal());
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, dispatch]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,7 +58,6 @@ export default function SearchUsersPanel() {
 
       try {
         const res = await axios.get(`${API}/user/usernames/${searchQuery}`);
-
         setUsers(await res.data);
       } catch (error) {
         setUsers([]);
@@ -44,34 +66,34 @@ export default function SearchUsersPanel() {
     };
 
     fetchUser();
-  }, [searchQuery]);
+  }, [searchQuery, API]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center z-10 justify-center">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-[400px] relative">
-        <h2 className="text-xl font-semibold mb-4">Результаты поиска</h2>
+    <div className="absolute top-[40px] right-0 z-50 w-[300px]" ref={panelRef}>
+      <div className="bg-[#15121F] text-white border border-[#0D0D0D] rounded-md shadow-md p-4 relative">
+        <h2 className="text-md font-semibold mb-2">Search results</h2>
 
-        <div className="space-y-3 max-h-80 overflow-y-auto">
+        <div className="space-y-2 max-h-80 overflow-y-auto">
           {users.length > 0 ? (
             users.map((user) => (
               <div
                 key={user.username}
-                className="p-3 border rounded hover:bg-gray-50"
+                className="p-2 border border-[#2E2E2E] rounded hover:bg-[#2E2E2E] transition"
               >
                 <p className="font-medium">{user.fullname}</p>
-                <p className="text-gray-500 text-sm">@{user.username}</p>
+                <p className="text-gray-400 text-sm">@{user.username}</p>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">Пользователи не найдены</p>
+            <p className="text-center text-gray-400">Users not found</p>
           )}
         </div>
 
         <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl"
-          onClick={handleClosePanel}
+          className="absolute top-1 right-2 text-gray-400 hover:text-white text-xl"
+          onClick={() => dispatch(closeModal())}
         >
           ×
         </button>

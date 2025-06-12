@@ -48,7 +48,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0D0D0D] relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-[#060606] relative overflow-hidden">
       <Image
         src={logoAuth}
         alt="Auth Logo Background"
