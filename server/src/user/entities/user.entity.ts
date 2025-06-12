@@ -3,6 +3,7 @@ import { ChatMember } from "src/chat-members/entities/chat-member.entity";
 import { Message } from "src/messages/entities/message.entity";
 import { Post } from "src/post/entities/post.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Comment } from "src/comment/entities/comment.entity";
 
 @Entity("Users")
 export class User {
@@ -45,4 +46,7 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }

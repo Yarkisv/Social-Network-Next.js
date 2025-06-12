@@ -15,6 +15,7 @@ const chat_member_entity_1 = require("../../chat-members/entities/chat-member.en
 const message_entity_1 = require("../../messages/entities/message.entity");
 const post_entity_1 = require("../../post/entities/post.entity");
 const typeorm_1 = require("typeorm");
+const comment_entity_1 = require("../../comment/entities/comment.entity");
 let User = class User {
     user_id;
     fullname;
@@ -29,6 +30,7 @@ let User = class User {
     chatMemberships;
     sentMessages;
     posts;
+    comments;
 };
 exports.User = User;
 __decorate([
@@ -84,6 +86,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => post_entity_1.Post, (post) => post.user),
     __metadata("design:type", Array)
 ], User.prototype, "posts", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => comment_entity_1.Comment, (comment) => comment.user),
+    __metadata("design:type", Array)
+], User.prototype, "comments", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)("Users")
 ], User);

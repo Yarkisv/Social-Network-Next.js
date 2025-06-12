@@ -9,6 +9,7 @@ import {
   Patch,
   UseGuards,
   UseInterceptors,
+  UploadedFile,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -41,16 +42,16 @@ export class UserController {
     return this.userService.findUsersBySymbol(string);
   }
 
-  @UseGuards(AccessTokenGuard)
+  // @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor("file"))
   @Patch("update/:id")
   async updateUser(
     @Param("id") id: number,
-    @Body() updateUserDto: UpdateUserDto
-    // file: Express.Multer.File
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file: Express.Multer.File
   ) {
-    console.log(id);
+    console.log(file);
 
-    return this.userService.updateUser(id, updateUserDto);
+    return this.userService.updateUser(id, updateUserDto, file);
   }
 }

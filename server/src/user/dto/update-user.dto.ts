@@ -5,22 +5,22 @@ import { IsEmail, IsOptional, isString, IsString } from "class-validator";
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsString()
   @IsOptional()
-  fullname?: string;
+  fullname?: string | undefined;
 
   @IsString()
   @IsOptional()
-  username: string;
+  username: string | undefined;
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: string | undefined;
 
   @IsString()
   @IsEmail()
   @IsOptional()
-  email?: string;
+  email?: string | undefined;
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | undefined;
 }

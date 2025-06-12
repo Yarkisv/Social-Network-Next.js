@@ -1,6 +1,7 @@
 import { ChatMember } from "src/chat-members/entities/chat-member.entity";
 import { Message } from "src/messages/entities/message.entity";
 import { Post } from "src/post/entities/post.entity";
+import { Comment } from "src/comment/entities/comment.entity";
 export declare class User {
     user_id: number;
     fullname: string;
@@ -15,4 +16,5 @@ export declare class User {
     chatMemberships: ChatMember[];
     sentMessages: Message[];
     posts: Post[];
+    comments: Comment[];
 }

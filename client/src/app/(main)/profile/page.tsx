@@ -24,6 +24,13 @@ export default function page() {
 
   type Post = {
     contentPathTo: string;
+    post_title: string;
+    likes: number;
+  };
+
+  type NewPost = {
+    file: File;
+    post_title: string;
   };
 
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -63,7 +70,27 @@ export default function page() {
     }
   };
 
-  const uploadNewPost = async (user_id: number, file: File) => {};
+  const uploadNewPost = async (
+    user_id: number,
+    file: File,
+    post_title: string
+  ) => {
+    try {
+      const res = await axios.post(
+        `${API}/post/upload/post`,
+        {
+          user_id,
+          file,
+          post_title,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+    } catch (error) {}
+  };
 
   useEffect(() => {
     checkToken();
@@ -71,7 +98,6 @@ export default function page() {
     if (user?.user_id && !hasFetchedPosts) {
       fetchPosts();
       setHasFetchedPosts(true);
-      console.log(posts);
     }
   }, [user, hasFetchedPosts]);
 
@@ -106,7 +132,8 @@ export default function page() {
 
             <div className="flex gap-8 text-sm text-gray-300 font-['Space_Grotesk'] font-light">
               <div>
-                <span className="text-white font-medium">10</span> posts
+                <span className="text-white font-medium">{posts.length}</span>{" "}
+                posts
               </div>
               <div>
                 <span className="text-white font-medium">
@@ -121,9 +148,7 @@ export default function page() {
                 subscriptions
               </div>
             </div>
-            <div className="text-gray-300 ">
-              {user.description || "pipipupu gaga"}
-            </div>
+            <div className="text-gray-300 ">{user.description ?? ""}</div>
           </div>
         </div>
 
@@ -165,7 +190,14 @@ export default function page() {
                 ))}
               </div>
             ) : (
-              <div></div>
+              <div>
+                <p>No posts</p>
+                <p>Do you wan't to upload new post?</p>
+                <input type="file" id="file" hidden />
+                <label htmlFor="file">
+                  <span>File</span>
+                </label>
+              </div>
             )
           ) : (
             [...Array(3)].map((_, index) => (

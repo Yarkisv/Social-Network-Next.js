@@ -30,6 +30,7 @@ export declare class UserService {
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
+        comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
     findByUsername(username: string): Promise<{
         user_id: number;
@@ -44,6 +45,7 @@ export declare class UserService {
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
+        comments: import("../comment/entities/comment.entity").Comment[];
     }>;
     findUsersBySymbol(string: string): Promise<{
         user_id: number;
@@ -58,7 +60,8 @@ export declare class UserService {
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
+        comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
     findById(id: number): Promise<any>;
-    updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User>;
+    updateUser(id: number, updateUserDto: UpdateUserDto, file: Express.Multer.File): Promise<User>;
 }

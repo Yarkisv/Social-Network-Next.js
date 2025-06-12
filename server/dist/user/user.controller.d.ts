@@ -26,6 +26,7 @@ export declare class UserController {
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
+        comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
     findByUsername(username: string): Promise<{
         user_id: number;
@@ -40,6 +41,7 @@ export declare class UserController {
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
+        comments: import("../comment/entities/comment.entity").Comment[];
     }>;
     findByString(string: string): Promise<{
         user_id: number;
@@ -54,6 +56,7 @@ export declare class UserController {
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
+        comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
-    updateUser(id: number, updateUserDto: UpdateUserDto): Promise<import("./entities/user.entity").User>;
+    updateUser(id: number, updateUserDto: UpdateUserDto, file: Express.Multer.File): Promise<import("./entities/user.entity").User>;
 }

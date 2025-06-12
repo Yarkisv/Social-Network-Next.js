@@ -7,29 +7,36 @@ import React, { useEffect, useState } from "react";
 
 export default function page() {
   type User = {
-    user_id: number | null;
-    fullname: string | null;
-    username: string | null;
-    email: string | null;
-    phone: string | null;
-    subscribers: number | null;
-    subscriptions: number | null;
-    description: string | null;
-    avatarPathTo: string | null;
+    user_id: number;
+    fullname: string;
+    username: string;
+    email: string;
+    phone: string;
+    subscribers: number;
+    subscriptions: number;
+    description: string;
+    avatarPathTo: string;
+  };
+
+  type UpdatedUser = {
+    fullname: string | undefined;
+    username: string | undefined;
+    phone: string | undefined;
+    email: string | undefined;
+    description: string | undefined;
+    file: File | undefined;
   };
 
   const API = process.env.NEXT_PUBLIC_API_URL;
   const [user, setUser] = useState<User>();
-  const [changedUser, setChangedUser] = useState<User>({
-    user_id: null,
-    fullname: "",
-    username: "",
-    email: "",
-    phone: "",
-    description: "",
-    avatarPathTo: "",
-    subscribers: null,
-    subscriptions: null,
+
+  const [changedUser, setChangedUser] = useState<UpdatedUser>({
+    fullname: undefined,
+    username: undefined,
+    phone: undefined,
+    email: undefined,
+    description: undefined,
+    file: undefined,
   });
 
   const checkToken = async () => {
@@ -46,20 +53,40 @@ export default function page() {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = event.target;
-    setUser({ ...changedUser, [name]: value });
+    setChangedUser({ ...changedUser, [name]: value });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setChangedUser((prev) => ({ ...prev, file }));
+    }
   };
 
   useEffect(() => {
     checkToken();
   }, []);
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    console.log(changedUser);
+  }, [changedUser]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
     try {
-      const res = await axios.patch(`${API}/user/update/${user?.user_id}`, {
-        withCredentials: true,
-        changedUser,
+      const id = user?.user_id;
+
+      console.log("Submitting update for user:", id, changedUser);
+
+      const res = await axios.patch(`${API}/user/update/${id}`, changedUser, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
     } catch (error) {
       console.log("Error: ", error);
@@ -85,9 +112,11 @@ export default function page() {
             height={70}
           />
           <p className="text-[20px] ml-[20px]">{user?.fullname}</p>
-          <button className="w-[110px] h-[34px] ml-auto mr-[25px] rounded-[2px] bg-[#5020A1]">
-            Edit Photo
-          </button>
+
+          <input type="file" id="file" hidden onChange={handleFileChange} />
+          <label htmlFor="file" className="rounded-5">
+            <span>File</span>
+          </label>
         </div>
 
         <form
@@ -105,6 +134,20 @@ export default function page() {
             maxLength={200}
             placeholder={user?.description || "Description"}
             className="bg-[#1D1D1D] text-white px-[5px] py-[5px] w-full mb-4 rounded-[2px] resize-none h-[66px]"
+            value={changedUser.description ?? ""}
+            onChange={handleChange}
+          />
+
+          <label className="mb-1 text-sm" htmlFor="fullname">
+            Fullname
+          </label>
+          <input
+            id="fullname"
+            type="text"
+            name="fullname"
+            placeholder={user?.fullname || "Fullname"}
+            className="bg-[#1D1D1D] text-white px-[5px] py-2 mb-4 rounded-[2px] h-[35px] w-full"
+            onChange={handleChange}
           />
 
           <label className="mb-1 text-sm" htmlFor="username">
@@ -116,6 +159,7 @@ export default function page() {
             name="username"
             placeholder={user?.username || "Username"}
             className="bg-[#1D1D1D] text-white px-[5px] py-2 mb-4 rounded-[2px] h-[35px] w-full"
+            onChange={handleChange}
           />
 
           <label className="mb-1 text-sm" htmlFor="phone">
@@ -127,6 +171,7 @@ export default function page() {
             name="phone"
             placeholder={user?.phone || "Phone"}
             className="bg-[#1D1D1D] text-white px-[5px] py-2 mb-4 rounded-[2px] h-[35px] w-full"
+            onChange={handleChange}
           />
 
           <label className="mb-1 text-sm" htmlFor="email">
@@ -138,6 +183,7 @@ export default function page() {
             name="email"
             placeholder={user?.email || "Email"}
             className="bg-[#1D1D1D] text-white px-[5px] py-2 mb-4 rounded-[2px] h-[35px] w-full"
+            onChange={handleChange}
           />
 
           <button

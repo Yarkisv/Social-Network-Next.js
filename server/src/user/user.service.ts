@@ -137,13 +137,27 @@ export class UserService {
   async updateUser(
     id: number,
     updateUserDto: UpdateUserDto,
-    // file: Express.Multer.File
+    file: Express.Multer.File
   ) {
     const user = await this.userRepository.findOne({
       where: {
         user_id: id,
       },
+      select: [
+        "user_id",
+        "fullname",
+        "username",
+        "email",
+        "phone",
+        "subscribers",
+        "subscriptions",
+        "description",
+        "avatarPathTo",
+      ],
+      relations: ["chatMemberships", "sentMessages", "posts", "comments"],
     });
+
+    console.log(user);
 
     if (!user) {
       throw new NotFoundException();
@@ -165,10 +179,22 @@ export class UserService {
       user.email = updateUserDto.email;
     }
 
-    // if (file) {
-    //   user.avatarPathTo = "";
-    // }
+    if (updateUserDto.description !== undefined) {
+      user.description = updateUserDto.description;
+    }
 
-    return this.userRepository.save(user);
+    if (file) {
+      const pathTo: string = await this.fileServise.uploadFile(file);
+
+      console.log(pathTo);
+
+      user.avatarPathTo = pathTo;
+    }
+
+    const updatedUser = await this.userRepository.save(user);
+
+    console.log(updatedUser);
+
+    return updatedUser;
   }
 }
