@@ -6,8 +6,6 @@ import AsideInfo from "../../components/asideInfo";
 import axios from "axios";
 import ProfilePost from "../../images/ProfilePost.png";
 import Image from "next/image";
-import { initialUser } from "@/app/store/slices/userSlice";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
 
 export default function page() {
   type User = {
@@ -35,15 +33,15 @@ export default function page() {
 
   const API = process.env.NEXT_PUBLIC_API_URL;
   const [user, setUser] = useState<User>();
+
   const [posts, setPosts] = useState<Post[]>();
   const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
 
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const checkToken = async () => {
+  const fetcUser = async () => {
     try {
       const res = await axios.get(`${API}/auth/profile`, {
         withCredentials: true,
@@ -51,7 +49,6 @@ export default function page() {
 
       if (res.status === 200) {
         setUser(res.data);
-        dispatch(initialUser(res.data));
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -93,20 +90,20 @@ export default function page() {
   };
 
   useEffect(() => {
-    checkToken();
+    fetcUser();
 
     if (user?.user_id && !hasFetchedPosts) {
       fetchPosts();
       setHasFetchedPosts(true);
     }
-  }, [user, hasFetchedPosts]);
+  }, []);
 
   if (!user) {
     return <div className="min-h-screen bg-[#060606]"></div>;
   }
 
   if (!posts) {
-    return;
+    return <div className="min-h-screen bg-[#060606]"></div>;
   }
 
   return (

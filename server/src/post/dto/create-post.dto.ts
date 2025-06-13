@@ -6,5 +6,5 @@ export class CreatePostDto {
   contentPathTo: string;
 
   @Type(() => Number)
-  userId: number;
+  user_id: number;
 }

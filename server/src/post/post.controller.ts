@@ -7,6 +7,7 @@ import {
   UploadedFile,
   Get,
   Param,
+  Query,
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { FileService } from "src/services/file.service";
@@ -25,11 +26,13 @@ export class PostController {
   @UseInterceptors(FileInterceptor("file"))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
+    @Body("folder") folder: string,
     @UploadedFile() file: Express.Multer.File
   ) {
     console.log(file);
+    console.log(folder);
 
-    const pathTo = await this.fileService.uploadFile(file);
+    const pathTo = await this.fileService.uploadFile(file, folder);
 
     createPostDto.contentPathTo = pathTo;
 
@@ -46,7 +49,9 @@ export class PostController {
   }
 
   @Get("get/:id")
-  async getPostsById(@Param("id") id: number) {
+  async getPostsById(
+    @Param("id") id: number
+  ) {
     return this.postService.findUserPostsById(id);
   }
 }

@@ -154,7 +154,7 @@ let UserService = class UserService {
             user.description = updateUserDto.description;
         }
         if (file) {
-            const pathTo = await this.fileServise.uploadFile(file);
+            const pathTo = await this.fileServise.uploadFile(file, user.username.toString());
             console.log(pathTo);
             user.avatarPathTo = pathTo;
         }

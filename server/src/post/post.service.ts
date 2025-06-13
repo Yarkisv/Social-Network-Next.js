@@ -15,13 +15,13 @@ export class PostService {
   ) {}
 
   async create(createPostDto: CreatePostDto) {
-    const userId = createPostDto.userId;
+    const user_id = createPostDto.user_id;
     const pathTo = createPostDto.contentPathTo;
 
-    console.log(`User id from service ${userId}`);
+    console.log(`User id from service ${user_id}`);
     console.log(`File path from service ${pathTo}`);
 
-    const user = await this.userService.findById(userId);
+    const user = await this.userService.findById(user_id);
 
     if (!user) {
       throw new NotFoundException("User not found");
@@ -33,8 +33,8 @@ export class PostService {
     });
   }
 
-  async findUserPostsById(userId: number) {
-    const user = await this.userService.findById(userId);
+  async findUserPostsById(user_id: number) {
+    const user = await this.userService.findById(user_id);
 
     console.log(user);
 

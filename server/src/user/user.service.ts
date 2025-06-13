@@ -123,9 +123,7 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    const avatarBase64: string = await this.fileServise.getFile(
-      user.avatarPathTo
-    );
+    const avatarBase64: string = await this.fileServise.getFile(user.avatarPathTo);
 
     const modifiedUser = JSON.parse(JSON.stringify(user));
 
@@ -184,7 +182,10 @@ export class UserService {
     }
 
     if (file) {
-      const pathTo: string = await this.fileServise.uploadFile(file);
+      const pathTo: string = await this.fileServise.uploadFile(
+        file,
+        user.username.toString()
+      );
 
       console.log(pathTo);
 
