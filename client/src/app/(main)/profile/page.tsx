@@ -111,7 +111,7 @@ export default function page() {
       <div className="w-[182px] bg-[#15121F] ">
         <AsideInfo />
       </div>
-      <div className="w-full max-w-[730px] pt-[35px] px-[20px]">
+      <div className="w-full max-w-[730px] pt-[20px] px-[20px] font-[Manrope]">
         <div className="flex items-start gap-6 mb-10">
           <Image
             className="w-28 h-28 rounded-full object-fit "
@@ -121,13 +121,13 @@ export default function page() {
             height={112}
           />
 
-          <div className="flex flex-col gap-4 flex-1 font-['Source_Code_Pro'] font-light">
+          <div className="flex flex-col gap-4 flex-1  font-light">
             <div className="flex items-center gap-[15px] ">
               <div className="text-xl font-semibold">{user.fullname}</div>
               <div className="text-gray-400">@{user.username}</div>
             </div>
 
-            <div className="flex gap-8 text-sm text-gray-300 font-['Space_Grotesk'] font-light">
+            <div className="flex gap-8 text-sm text-gray-300  font-light">
               <div>
                 <span className="text-white font-medium">{posts.length}</span>{" "}
                 posts
@@ -149,7 +149,7 @@ export default function page() {
           </div>
         </div>
 
-        <div className="flex justify-center gap-12  mb-4 font-['Source_Code_Pro'] font-light">
+        <div className="flex justify-center gap-12  mb-4  font-light">
           <button
             onClick={() => setActiveTab("posts")}
             className={`pb-2 text-sm font-semibold ${

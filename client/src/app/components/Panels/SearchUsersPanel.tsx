@@ -4,6 +4,8 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
+import profileEmpty from "../../images/profileEmpty.png";
+import Image from "next/image";
 
 type User = {
   fullname: string;
@@ -21,7 +23,6 @@ export default function SearchUsersPanel() {
   const API = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useAppDispatch();
 
-  // Закрытие при клике вне
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -80,10 +81,21 @@ export default function SearchUsersPanel() {
             users.map((user) => (
               <div
                 key={user.username}
-                className="p-2 border border-[#2E2E2E] rounded hover:bg-[#2E2E2E] transition"
+                className="flex items-center p-2 gap-3 border border-[#2E2E2E] rounded-md hover:bg-[#2E2E2E] transition cursor-pointer"
               >
-                <p className="font-medium">{user.fullname}</p>
-                <p className="text-gray-400 text-sm">@{user.username}</p>
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-[#333] flex items-center justify-center">
+                  <Image
+                    src={profileEmpty}
+                    alt="Avatar"
+                    width={40}
+                    height={40}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">{user.fullname}</p>
+                  <p className="text-gray-400 text-xs">@{user.username}</p>
+                </div>
               </div>
             ))
           ) : (
