@@ -83,39 +83,56 @@ export default function page() {
 
       console.log("Submitting update for user:", id, changedUser);
 
-      const res = await axios.patch(`${API}/user/update/${id}`, changedUser, {
+      const formData = new FormData();
+      if (changedUser.fullname)
+        formData.append("fullname", changedUser.fullname);
+      if (changedUser.username)
+        formData.append("username", changedUser.username);
+      if (changedUser.email) formData.append("email", changedUser.email);
+      if (changedUser.phone) formData.append("phone", changedUser.phone);
+      if (changedUser.description)
+        formData.append("description", changedUser.description);
+      if (changedUser.file) formData.append("file", changedUser.file);
+
+      const res = await axios.patch(`${API}/user/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      console.log("Response:", res.data);
     } catch (error) {
       console.log("Error: ", error);
     }
   };
 
   if (!user) {
-    return;
+    return null;
   }
 
   return (
-    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 ">
-      <div className="w-[182px] bg-[#15121F] ">
+    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
+      <div className="w-[182px] bg-[#15121F]">
         <AsideInfo />
       </div>
-      <div className="w-full max-w-[730px] pt-[35px] px-[20px]">
-        <div className="flex items-center rounded-[2px] bg-[#292929] w-full h-[104px] py-[17px] pl-[7px] font-[Manrope]">
+
+      <div className="w-full max-w-[730px] pt-[20px] px-[20px]">
+        <div className="flex items-center rounded-[2px] bg-[#292929] w-full h-[104px] py-[17px] px-4 font-[Manrope]">
           <Image
-            className="w-[70px] h-[70px] rounded-full object-fit "
+            className="w-[70px] h-[70px] rounded-full object-cover"
             src={`data:image/png;base64,${user.avatarPathTo}`}
-            alt="Google"
+            alt="Avatar"
             width={70}
             height={70}
           />
           <p className="text-[20px] ml-[20px]">{user?.fullname}</p>
 
           <input type="file" id="file" hidden onChange={handleFileChange} />
-          <label htmlFor="file" className="rounded-5">
-            <span>File</span>
+          <label
+            htmlFor="file"
+            className="ml-auto self-center bg-[#5020A1] text-white px-[26px] py-[6px] rounded-md hover:bg-purple-700 transition cursor-pointer"
+          >
+            Upload
           </label>
         </div>
 
@@ -123,7 +140,7 @@ export default function page() {
           className="bg-[#292929] box-border font-[Manrope] flex flex-col mt-[5px] rounded-[2px] w-full max-w-[690px] py-[10px] pl-[10px] pr-[25px] text-white"
           onSubmit={handleSubmit}
         >
-          <p className="text-[16px]  mb-4">Account details</p>
+          <p className="text-[16px] mb-4">Account details</p>
 
           <label className="mb-2 text-sm" htmlFor="description">
             About myself
@@ -188,7 +205,7 @@ export default function page() {
 
           <button
             type="submit"
-            className="bg-[#5020A1] text-white px-[26px] py-[6px] mt-4   self-end rounded-md hover:bg-purple-700 transition"
+            className="bg-[#5020A1] text-white px-[26px] py-[6px] mt-4 self-end rounded-md hover:bg-purple-700 transition"
           >
             Save
           </button>
