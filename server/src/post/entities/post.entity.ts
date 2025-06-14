@@ -16,6 +16,9 @@ export class Post {
   @Column()
   contentPathTo: string;
 
+  @Column()
+  post_title: string;
+
   @Column({ default: 0 })
   likes: number;
 

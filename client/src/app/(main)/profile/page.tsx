@@ -1,109 +1,91 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import AsideInfo from "../../components/asideInfo";
 import axios from "axios";
 import ProfilePost from "../../images/ProfilePost.png";
 import Image from "next/image";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import {
+  openUploadPostWindow,
+  closePostModalWindow,
+  openPostModalWindow,
+} from "@/app/store/slices/modalSlice";
+import { initialUser } from "@/app/store/slices/userSlice";
+import PostModal from "@/app/components/modals/PostModal";
+import { Post } from "@/app/types/post.type";
+import { User } from "@/app/types/user.type";
 
 export default function page() {
-  type User = {
-    user_id: number;
-    fullname: string;
-    username: string;
-    email: string;
-    phone: string;
-    subscribers: number;
-    subscriptions: number;
-    description: string;
-    avatarPathTo: string;
-  };
-
-  type Post = {
-    contentPathTo: string;
-    post_title: string;
-    likes: number;
-  };
-
-  type NewPost = {
-    file: File;
-    post_title: string;
-  };
-
   const API = process.env.NEXT_PUBLIC_API_URL;
+
   const [user, setUser] = useState<User>();
-
   const [posts, setPosts] = useState<Post[]>();
-  const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
-
+  const [selectedPost, setSelectedPost] = useState<Post | null>();
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
 
-  const router = useRouter();
+  const isPostModalOpen = useAppSelector(
+    (state) => state.modal.isPostModalOpen
+  );
 
-  const fetcUser = async () => {
+  const dispatch = useAppDispatch();
+
+  const fetchData = async () => {
     try {
-      const res = await axios.get(`${API}/auth/profile`, {
+      const userRes = await axios.get(`${API}/auth/profile`, {
         withCredentials: true,
       });
 
-      if (res.status === 200) {
-        setUser(res.data);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  };
+      if (userRes.status === 200) {
+        setUser(userRes.data);
+        dispatch(initialUser(userRes.data));
 
-  const fetchPosts = async () => {
-    try {
-      const res = await axios.get(`${API}/post/get/${user?.user_id}`);
+        const PostsRes = await axios.get(
+          `${API}/post/get/${userRes.data?.user_id}`
+        );
 
-      if (res.status === 200) {
-        setPosts(res.data);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  };
-
-  const uploadNewPost = async (
-    user_id: number,
-    file: File,
-    post_title: string
-  ) => {
-    try {
-      const res = await axios.post(
-        `${API}/post/upload/post`,
-        {
-          user_id,
-          file,
-          post_title,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        if (PostsRes.status === 200) {
+          setPosts(PostsRes.data);
         }
-      );
-    } catch (error) {}
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const handleUploadPostClick = () => {
+    dispatch(openUploadPostWindow());
+  };
+
+  const handlePostModalOpen = (post: Post) => {
+    setSelectedPost(post);
+    console.log(post);
+    dispatch(openPostModalWindow());
+  };
+
+  const handlePostModalClose = () => {
+    dispatch(closePostModalWindow());
+    setSelectedPost(null);
   };
 
   useEffect(() => {
-    fetcUser();
-
-    if (user?.user_id && !hasFetchedPosts) {
-      fetchPosts();
-      setHasFetchedPosts(true);
-    }
+    fetchData();
   }, []);
 
   if (!user) {
-    return <div className="min-h-screen bg-[#060606]"></div>;
+    return (
+      <div className="min-h-screen bg-[#060606]">
+        <p className="text-white">user not found</p>
+      </div>
+    );
   }
 
   if (!posts) {
-    return <div className="min-h-screen bg-[#060606]"></div>;
+    return (
+      <div className="min-h-screen bg-[#060606]">
+        <p className="text-white">posts not found</p>
+      </div>
+    );
   }
 
   return (
@@ -176,13 +158,21 @@ export default function page() {
           {activeTab === "posts" ? (
             posts.length > 0 ? (
               <div className="grid grid-cols-3 gap-[5px]">
+                <div
+                  className="h-[233px] w-[233px] bg-white flex items-center justify-center"
+                  onClick={handleUploadPostClick}
+                >
+                  <p className="text-black text-4xl">+</p>
+                </div>
+
                 {posts.map((post, index) => (
                   <Image
                     key={index}
-                    src={`data:image/jpg;base64,${post}`}
+                    src={`data:image/jpg;base64,${post.imageBase64}`}
                     alt="post"
                     width={233}
                     height={233}
+                    onClick={() => handlePostModalOpen(post)}
                   />
                 ))}
               </div>
@@ -190,10 +180,12 @@ export default function page() {
               <div>
                 <p>No posts</p>
                 <p>Do you wan't to upload new post?</p>
-                <input type="file" id="file" hidden />
-                <label htmlFor="file">
-                  <span>File</span>
-                </label>
+                <div
+                  className="h-[233px] w-[233px] bg-white flex items-center justify-center"
+                  onClick={handleUploadPostClick}
+                >
+                  <p className="text-black text-4xl">+</p>
+                </div>
               </div>
             )
           ) : (
@@ -211,6 +203,11 @@ export default function page() {
           )}
         </div>
       </div>
+      <PostModal
+        post={selectedPost}
+        onClose={handlePostModalClose}
+        isOpen={isPostModalOpen}
+      />
     </div>
   );
 }

@@ -16,6 +16,7 @@ export class PostService {
 
   async create(createPostDto: CreatePostDto) {
     const user_id = createPostDto.user_id;
+    const title = createPostDto.post_title;
     const pathTo = createPostDto.contentPathTo;
 
     console.log(`User id from service ${user_id}`);
@@ -29,6 +30,7 @@ export class PostService {
 
     const post = await this.postRepository.save({
       contentPathTo: pathTo,
+      post_title: title,
       user: user,
     });
   }
@@ -47,10 +49,15 @@ export class PostService {
 
     console.log(posts);
 
-    const postsBase64 = await Promise.all(
-      posts.map((post) => this.fileService.getFile(post.contentPathTo))
+    const modifiedPosts = await Promise.all(
+      posts.map(async (post) => ({
+        ...post,
+        imageBase64: await this.fileService.getFile(post.contentPathTo),
+      }))
     );
 
-    return postsBase64;
+    console.log("Modified posts ", modifiedPosts);
+
+    return modifiedPosts;
   }
 }

@@ -5,6 +5,9 @@ export class CreatePostDto {
   @IsString()
   contentPathTo: string;
 
+  @IsString()
+  post_title: string;
+
   @Type(() => Number)
   user_id: number;
 }

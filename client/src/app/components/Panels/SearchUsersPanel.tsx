@@ -67,7 +67,7 @@ export default function SearchUsersPanel() {
     };
 
     fetchUser();
-  }, [searchQuery, API]);
+  }, [searchQuery]);
 
   if (!isOpen) return null;
 

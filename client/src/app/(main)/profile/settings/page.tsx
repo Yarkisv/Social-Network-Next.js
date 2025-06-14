@@ -82,19 +82,8 @@ export default function page() {
       const id = user?.user_id;
 
       console.log("Submitting update for user:", id, changedUser);
-
-      const formData = new FormData();
-      if (changedUser.fullname)
-        formData.append("fullname", changedUser.fullname);
-      if (changedUser.username)
-        formData.append("username", changedUser.username);
-      if (changedUser.email) formData.append("email", changedUser.email);
-      if (changedUser.phone) formData.append("phone", changedUser.phone);
-      if (changedUser.description)
-        formData.append("description", changedUser.description);
-      if (changedUser.file) formData.append("file", changedUser.file);
-
-      const res = await axios.patch(`${API}/user/update/${id}`, formData, {
+      
+      const res = await axios.patch(`${API}/user/update/${id}`, changedUser, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

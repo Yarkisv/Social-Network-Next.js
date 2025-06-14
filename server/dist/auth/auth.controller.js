@@ -44,6 +44,7 @@ let AuthController = class AuthController {
     }
     profile(req) {
         const id = req.user.user_id;
+        console.log(1);
         return this.userServise.findById(id);
     }
     refreshTokens(req) {
