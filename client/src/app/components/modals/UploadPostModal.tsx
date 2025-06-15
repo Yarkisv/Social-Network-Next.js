@@ -53,6 +53,8 @@ export default function UploadPostModal() {
 
   const uploadNewPost = async () => {
     try {
+      console.log(newPost);
+
       const res = await axios.post(`${API}/post/upload/post`, newPost, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -115,7 +117,6 @@ export default function UploadPostModal() {
               className="w-[200px] h-[200px] object-contain rounded-md mb-4"
             />
 
-            {/* Заглушка профиля и кнопка — в одну строку, по краям */}
             <div className="flex items-center justify-between w-full mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-[28px] h-[28px] rounded-full bg-gray-500" />

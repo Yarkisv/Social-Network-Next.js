@@ -21,7 +21,7 @@ export default function page() {
 
   const [user, setUser] = useState<User>();
   const [posts, setPosts] = useState<Post[]>();
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>();
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
 
   const isPostModalOpen = useAppSelector(
@@ -40,12 +40,12 @@ export default function page() {
         setUser(userRes.data);
         dispatch(initialUser(userRes.data));
 
-        const postsRes = await axios.get(
+        const PostsRes = await axios.get(
           `${API}/post/get/${userRes.data?.user_id}`
         );
 
-        if (postsRes.status === 200) {
-          setPosts(postsRes.data);
+        if (PostsRes.status === 200) {
+          setPosts(PostsRes.data);
         }
       }
     } catch (error) {
@@ -59,6 +59,7 @@ export default function page() {
 
   const handlePostModalOpen = (post: Post) => {
     setSelectedPost(post);
+    console.log(post);
     dispatch(openPostModalWindow());
   };
 
@@ -154,7 +155,6 @@ export default function page() {
         <div>
           {activeTab === "posts" ? (
             <div className="grid grid-cols-3 gap-[5px]">
-              {/* Upload Post Button */}
               <div
                 className="h-[233px] bg-[#1E1C29] flex items-center justify-center border border-[#2F2B3A] rounded-lg cursor-pointer hover:bg-[#2A2735] transition-colors duration-200"
                 onClick={handleUploadPostClick}
@@ -175,7 +175,6 @@ export default function page() {
                 />
               ))}
 
-              {/* Fill up grid to always show 3 items per row */}
               {posts.length % 3 === 1 && (
                 <>
                   <div className="h-[233px] rounded-lg" />
