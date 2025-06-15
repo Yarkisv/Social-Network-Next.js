@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import axios from "axios";
 import { closeUploadPostWindow } from "@/app/store/slices/modalSlice";
 import PostModal from "./PostModal";
+import createPostImg from "../../images/createPostImg.svg";
+import Image from "next/image";
 
 export default function UploadPostModal() {
   const isUploadWindowOpen = useAppSelector(
@@ -37,7 +39,6 @@ export default function UploadPostModal() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (file) {
       setNewPost((prev) => ({ ...prev, file }));
     }
@@ -82,34 +83,63 @@ export default function UploadPostModal() {
   if (!isUploadWindowOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="h-[700px] w-[400px] bg-white rounded-2xl shadow-xl p-6">
-        <h2 className="text-2xl font-semibold mb-4">Upload post</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#111111]/60">
+      <div className="flex font-[Space_Grotesk] flex-col items-center justify-center h-[440px] w-[400px] text-white bg-[#292929] rounded-[2px] pt-[15px] pb-[20px] px-[20px] overflow-hidden">
+        <h2 className="text-[20px] mb-auto">Creating a publication</h2>
 
-        <input type="file" id="file" hidden onChange={handleFileChange} />
-        <label
-          htmlFor="file"
-          className="ml-auto self-center bg-[#5020A1] text-white px-[26px] py-[6px] rounded-md hover:bg-purple-700 transition cursor-pointer"
-        >
-          Upload
-        </label>
+        {!preview && (
+          <>
+            <Image
+              src={createPostImg}
+              alt="Avatar"
+              width={60}
+              height={60}
+              className="object-cover w-[60px] h-[60px] mb-[15px]"
+            />
+            <p className="font-light text-[#BABABA] mb-[89px]">
+              add files to create a post
+            </p>
+            <input type="file" id="file" hidden onChange={handleFileChange} />
+            <label
+              htmlFor="file"
+              className="bg-[#5020A1] text-white w-[132px] h-[34px] mb-[49px] flex items-center justify-center rounded-[2px] hover:bg-purple-700 transition cursor-pointer"
+            >
+              Upload
+            </label>
+          </>
+        )}
 
         {preview && (
-          <div>
+          <div className="flex flex-col items-center w-full">
             <img
               src={preview}
               alt="Preview"
-              className="max-w-full max-h-64 object-contain rounded-md"
+              className="w-[200px] h-[200px] object-contain rounded-md mb-4"
             />
 
-            <label htmlFor="title">Title</label>
+            <div className="flex items-center justify-between w-full mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-[28px] h-[28px] rounded-full bg-gray-500" />
+                <span className="text-white text-sm font-medium">
+                  @username
+                </span>
+              </div>
+              <button
+                onClick={uploadNewPost}
+                className="bg-[#5020A1] hover:bg-purple-700 transition text-white px-4 py-1.5 rounded text-sm"
+              >
+                Upload post
+              </button>
+            </div>
+
             <textarea
               name="post_title"
               id="post_title"
               onChange={handleOnChange}
+              className="w-full h-[80px] bg-[#1e1e1e] text-white p-2 rounded resize-none text-sm outline-none "
+              maxLength={200}
+              placeholder="Write a caption..."
             />
-
-            <button onClick={uploadNewPost}>Upload post</button>
           </div>
         )}
       </div>

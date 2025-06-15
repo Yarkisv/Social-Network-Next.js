@@ -89,27 +89,25 @@ export default function page() {
   }
 
   return (
-    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 ">
-      <div className="w-[182px] bg-[#15121F] ">
+    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
+      <div className="w-[182px] bg-[#15121F]">
         <AsideInfo />
       </div>
       <div className="w-full max-w-[730px] pt-[20px] px-[20px] font-[Manrope]">
         <div className="flex items-start gap-6 mb-10">
           <Image
-            className="w-28 h-28 rounded-full object-fit "
+            className="w-28 h-28 rounded-full object-cover"
             src={`data:image/png;base64,${user.avatarPathTo}`}
-            alt="Google"
+            alt="Avatar"
             width={112}
             height={112}
           />
-
-          <div className="flex flex-col gap-4 flex-1  font-light">
-            <div className="flex items-center gap-[15px] ">
+          <div className="flex flex-col gap-4 flex-1 font-light">
+            <div className="flex items-center gap-[15px]">
               <div className="text-xl font-semibold">{user.fullname}</div>
               <div className="text-gray-400">@{user.username}</div>
             </div>
-
-            <div className="flex gap-8 text-sm text-gray-300  font-light">
+            <div className="flex gap-8 text-sm text-gray-300 font-light">
               <div>
                 <span className="text-white font-medium">{posts.length}</span>{" "}
                 posts
@@ -127,11 +125,11 @@ export default function page() {
                 subscriptions
               </div>
             </div>
-            <div className="text-gray-300 ">{user.description ?? ""}</div>
+            <div className="text-gray-300">{user.description ?? ""}</div>
           </div>
         </div>
 
-        <div className="flex justify-center gap-12  mb-4  font-light">
+        <div className="flex justify-center gap-12 mb-4 font-light">
           <button
             onClick={() => setActiveTab("posts")}
             className={`pb-2 text-sm font-semibold ${
@@ -156,50 +154,48 @@ export default function page() {
 
         <div>
           {activeTab === "posts" ? (
-            posts.length > 0 ? (
-              <div className="grid grid-cols-3 gap-[5px]">
-                <div
-                  className="h-[233px] w-[233px] bg-white flex items-center justify-center"
-                  onClick={handleUploadPostClick}
-                >
-                  <p className="text-black text-4xl">+</p>
-                </div>
+            <div className="grid grid-cols-3 gap-[5px]">
+              <div
+                className="h-[233px] bg-[#1E1C29] flex items-center justify-center border border-[#2F2B3A] rounded-lg cursor-pointer hover:bg-[#2A2735] transition-colors duration-200"
+                onClick={handleUploadPostClick}
+              >
+                <span className="text-white text-5xl font-light">+</span>
+              </div>
 
-                {posts.map((post, index) => (
-                  <Image
-                    key={index}
-                    src={`data:image/jpg;base64,${post.imageBase64}`}
-                    alt="post"
-                    width={233}
-                    height={233}
-                    onClick={() => handlePostModalOpen(post)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div>
-                <p>No posts</p>
-                <p>Do you wan't to upload new post?</p>
-                <div
-                  className="h-[233px] w-[233px] bg-white flex items-center justify-center"
-                  onClick={handleUploadPostClick}
-                >
-                  <p className="text-black text-4xl">+</p>
-                </div>
-              </div>
-            )
+              {/* Posts */}
+              {posts.map((post, index) => (
+                <Image
+                  key={index}
+                  src={`data:image/jpg;base64,${post.imageBase64}`}
+                  alt="post"
+                  width={233}
+                  height={233}
+                  className="w-full h-[233px] object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
+                  onClick={() => handlePostModalOpen(post)}
+                />
+              ))}
+
+              {posts.length % 3 === 1 && (
+                <>
+                  <div className="h-[233px] rounded-lg" />
+                  <div className="h-[233px] rounded-lg" />
+                </>
+              )}
+              {posts.length % 3 === 2 && (
+                <div className="h-[233px] rounded-lg" />
+              )}
+            </div>
           ) : (
-            [...Array(3)].map((_, index) => (
-              <div className="grid grid-cols-3 gap-[5px]">
-                {" "}
+            <div className="grid grid-cols-3 gap-[5px]">
+              {[...Array(3)].map((_, index) => (
                 <Image
                   key={index}
                   src={ProfilePost}
-                  alt="Google"
-                  className="w-full aspect-square object-cover"
+                  alt="Saved post"
+                  className="w-full h-[233px] object-cover rounded-lg"
                 />
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>
