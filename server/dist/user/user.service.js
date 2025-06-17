@@ -113,7 +113,8 @@ let UserService = class UserService {
         }
         const avatarBase64 = await this.fileServise.getFile(user.avatarPathTo);
         const modifiedUser = JSON.parse(JSON.stringify(user));
-        modifiedUser.avatarPathTo = avatarBase64;
+        delete modifiedUser.avatarPathTo;
+        modifiedUser.avatarBase64 = avatarBase64;
         return modifiedUser;
     }
     async updateUser(id, updateUserDto, file) {

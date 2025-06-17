@@ -33,6 +33,7 @@ let UserController = class UserController {
         return this.userService.findByUsername(username);
     }
     async findByString(string) {
+        console.log("username");
         return this.userService.findUsersBySymbol(string);
     }
     async updateUser(id, updateUserDto, file) {

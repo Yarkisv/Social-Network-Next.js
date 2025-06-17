@@ -123,11 +123,15 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    const avatarBase64: string = await this.fileServise.getFile(user.avatarPathTo);
+    const avatarBase64: string = await this.fileServise.getFile(
+      user.avatarPathTo
+    );
 
     const modifiedUser = JSON.parse(JSON.stringify(user));
 
-    modifiedUser.avatarPathTo = avatarBase64;
+    delete modifiedUser.avatarPathTo;
+
+    modifiedUser.avatarBase64 = avatarBase64;
 
     return modifiedUser;
   }

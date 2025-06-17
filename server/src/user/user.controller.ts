@@ -39,6 +39,8 @@ export class UserController {
 
   @Get("usernames/:string")
   async findByString(@Param("string") string: string) {
+    console.log("username");
+
     return this.userService.findUsersBySymbol(string);
   }
 

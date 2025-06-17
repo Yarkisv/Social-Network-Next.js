@@ -53,8 +53,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   profile(@Request() req) {
     const id: number = req.user.user_id;
-  
-    console.log(1);
 
     return this.userServise.findById(id);
   }
