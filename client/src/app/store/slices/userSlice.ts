@@ -1,18 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../index";
+import { User } from "@/app/types/user.type";
 
-interface IUserState {
-  user_id: number;
-  fullname: string;
-  username: string;
-  email: string;
-  phone: string;
-  subscribers: number;
-  subscriptions: number;
-  description: string;
-}
-
-const initialState: IUserState = {
+const initialState: User = {
   user_id: 0,
   fullname: "",
   username: "",
@@ -21,6 +10,7 @@ const initialState: IUserState = {
   subscribers: 0,
   subscriptions: 0,
   description: "",
+  avatarBase64: "",
 };
 
 export const userSlice = createSlice({
@@ -28,7 +18,7 @@ export const userSlice = createSlice({
 
   initialState,
   reducers: {
-    initialUser(state, action: PayloadAction<IUserState>) {
+    initialUser(state, action: PayloadAction<User>) {
       return { ...state, ...action.payload };
     },
   },

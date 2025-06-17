@@ -11,16 +11,29 @@ import {
   closePostModalWindow,
   openPostModalWindow,
 } from "@/app/store/slices/modalSlice";
-import { initialUser } from "@/app/store/slices/userSlice";
 import PostModal from "@/app/components/modals/PostModal";
 import { Post } from "@/app/types/post.type";
 import { User } from "@/app/types/user.type";
+import { useParams } from "next/navigation";
 
 export default function page() {
+  //     {
+  //   params,
+  // }: {
+  //   params: Promise<{ username: string } | string>;
+  // }
   const API = process.env.NEXT_PUBLIC_API_URL;
+
+  const params = useParams();
+
+  const username = params.username;
+
+  console.log(username);
 
   const [user, setUser] = useState<User>();
   const [posts, setPosts] = useState<Post[]>();
+  const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
+
   const [selectedPost, setSelectedPost] = useState<Post | null>();
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
 
@@ -38,7 +51,15 @@ export default function page() {
 
       if (userRes.status === 200) {
         setUser(userRes.data);
-        dispatch(initialUser(userRes.data));
+
+        const userUsername = userRes.data.username;
+
+        console.log("username from server: ", userUsername);
+        console.log("username from params: ", username);
+
+        if (userUsername === username) {
+          setIsUserCurrent(true);
+        }
 
         const PostsRes = await axios.get(
           `${API}/post/get/${userRes.data?.user_id}`
@@ -69,8 +90,10 @@ export default function page() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (username) {
+      fetchData();
+    }
+  }, [username]);
 
   if (!user) {
     return (
@@ -155,12 +178,14 @@ export default function page() {
         <div>
           {activeTab === "posts" ? (
             <div className="grid grid-cols-3 gap-[5px]">
-              <div
-                className="h-[233px] bg-[#1E1C29] flex items-center justify-center border border-[#2F2B3A] rounded-lg cursor-pointer hover:bg-[#2A2735] transition-colors duration-200"
-                onClick={handleUploadPostClick}
-              >
-                <span className="text-white text-5xl font-light">+</span>
-              </div>
+              {isUserCurrent && (
+                <div
+                  className="h-[233px] bg-[#1E1C29] flex items-center justify-center border border-[#2F2B3A] rounded-lg cursor-pointer hover:bg-[#2A2735] transition-colors duration-200"
+                  onClick={handleUploadPostClick}
+                >
+                  <span className="text-white text-5xl font-light">+</span>
+                </div>
+              )}
 
               {/* Posts */}
               {posts.map((post, index) => (
@@ -199,11 +224,14 @@ export default function page() {
           )}
         </div>
       </div>
-      <PostModal
-        post={selectedPost}
-        onClose={handlePostModalClose}
-        isOpen={isPostModalOpen}
-      />
+
+      {isUserCurrent && (
+        <PostModal
+          post={selectedPost}
+          onClose={handlePostModalClose}
+          isOpen={isPostModalOpen}
+        />
+      )}
     </div>
   );
 }

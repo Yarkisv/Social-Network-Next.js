@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [isRememberMe, setIsRememberMe] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -40,9 +41,6 @@ export default function LoginPage() {
     });
 
     if (response.status === 200) {
-      const access_token = await response.data.access_token;
-      const refresh_token = await response.data.refresh_token;
-
       redirect("/");
     }
   };
