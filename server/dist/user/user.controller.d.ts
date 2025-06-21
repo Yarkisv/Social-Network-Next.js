@@ -29,6 +29,7 @@ export declare class UserController {
         comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
     findByUsername(username: string): Promise<{
+        avatarBase64: string;
         user_id: number;
         fullname: string;
         username: string;
@@ -37,13 +38,13 @@ export declare class UserController {
         subscribers: number;
         subscriptions: number;
         description: string;
-        avatarPathTo: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
     }>;
     findByString(string: string): Promise<{
+        avatarBase64: string;
         user_id: number;
         fullname: string;
         username: string;
@@ -52,7 +53,6 @@ export declare class UserController {
         subscribers: number;
         subscriptions: number;
         description: string;
-        avatarPathTo: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];

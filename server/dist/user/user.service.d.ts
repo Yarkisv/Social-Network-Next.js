@@ -33,6 +33,7 @@ export declare class UserService {
         comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
     findByUsername(username: string): Promise<{
+        avatarBase64: string;
         user_id: number;
         fullname: string;
         username: string;
@@ -41,13 +42,13 @@ export declare class UserService {
         subscribers: number;
         subscriptions: number;
         description: string;
-        avatarPathTo: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
     }>;
     findUsersBySymbol(string: string): Promise<{
+        avatarBase64: string;
         user_id: number;
         fullname: string;
         username: string;
@@ -56,7 +57,6 @@ export declare class UserService {
         subscribers: number;
         subscriptions: number;
         description: string;
-        avatarPathTo: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];

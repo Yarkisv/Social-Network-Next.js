@@ -4,15 +4,9 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { closeModal } from "@/app/store/slices/modalSlice";
-import profileEmpty from "../../images/profileEmpty.png";
 import Image from "next/image";
-
-type User = {
-  fullname: string;
-  username: string;
-  email: string;
-  phone: string;
-};
+import { User } from "@/app/types/user.type";
+import { redirect } from "next/navigation";
 
 export default function SearchUsersPanel() {
   const isOpen = useAppSelector((state) => state.modal.isOpen);
@@ -48,7 +42,7 @@ export default function SearchUsersPanel() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, dispatch]);
+  }, [isOpen]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -69,6 +63,10 @@ export default function SearchUsersPanel() {
     fetchUser();
   }, [searchQuery]);
 
+  const handleNavigateToUser = (username: string) => {
+    redirect(`/${username}`);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -81,11 +79,12 @@ export default function SearchUsersPanel() {
             users.map((user) => (
               <div
                 key={user.username}
+                onClick={() => handleNavigateToUser(user.username)}
                 className="flex items-center p-2 gap-3 border border-[#2E2E2E] rounded-md hover:bg-[#2E2E2E] transition cursor-pointer"
-              >
+              >      
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-[#333] flex items-center justify-center">
                   <Image
-                    src={profileEmpty}
+                    src={`data:image/jpg;base64,${user.avatarBase64}`}
                     alt="Avatar"
                     width={40}
                     height={40}

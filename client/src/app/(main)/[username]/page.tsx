@@ -17,20 +17,15 @@ import { User } from "@/app/types/user.type";
 import { useParams } from "next/navigation";
 
 export default function page() {
-  //     {
-  //   params,
-  // }: {
-  //   params: Promise<{ username: string } | string>;
-  // }
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const params = useParams();
 
   const username = params.username;
 
-  console.log(username);
+  const [currentUser, setCurrentUser] = useState<User>();
+  const [viewedUser, setViewedUser] = useState<User>();
 
-  const [user, setUser] = useState<User>();
   const [posts, setPosts] = useState<Post[]>();
   const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
 
@@ -45,29 +40,48 @@ export default function page() {
 
   const fetchData = async () => {
     try {
-      const userRes = await axios.get(`${API}/auth/profile`, {
+      const currentUser = await axios.get(`${API}/auth/profile`, {
         withCredentials: true,
       });
 
-      if (userRes.status === 200) {
-        setUser(userRes.data);
-
-        const userUsername = userRes.data.username;
-
-        console.log("username from server: ", userUsername);
-        console.log("username from params: ", username);
-
-        if (userUsername === username) {
-          setIsUserCurrent(true);
-        }
-
-        const PostsRes = await axios.get(
-          `${API}/post/get/${userRes.data?.user_id}`
+      if (currentUser.status === 200) {
+        const postsRes = await axios.get(
+          `${API}/post/get/${currentUser.data?.user_id}`
         );
 
-        if (PostsRes.status === 200) {
-          setPosts(PostsRes.data);
+        if (postsRes.status === 200) {
+          setPosts(postsRes.data);
         }
+      }
+
+      const current = currentUser.data;
+
+      console.log(currentUser.data);
+
+      setCurrentUser(current);
+
+      console.log(username);
+
+      const usernameRes = await axios.get(`${API}/user/username/${username}`);
+
+      if (usernameRes.status === 200) {
+        const postsRes = await axios.get(
+          `${API}/post/get/${usernameRes.data?.user_id}`
+        );
+
+        if (postsRes.status === 200) {
+          setPosts(postsRes.data);
+        }
+      }
+
+      const viewed = usernameRes.data;
+
+      console.log(usernameRes.data);
+
+      setViewedUser(viewed);
+
+      if (current.username === viewed.username) {
+        setIsUserCurrent(true);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -80,7 +94,6 @@ export default function page() {
 
   const handlePostModalOpen = (post: Post) => {
     setSelectedPost(post);
-    console.log(post);
     dispatch(openPostModalWindow());
   };
 
@@ -95,7 +108,7 @@ export default function page() {
     }
   }, [username]);
 
-  if (!user) {
+  if (!viewedUser || !currentUser) {
     return (
       <div className="min-h-screen bg-[#060606]">
         <p className="text-white">user not found</p>
@@ -120,15 +133,15 @@ export default function page() {
         <div className="flex items-start gap-6 mb-10">
           <Image
             className="w-28 h-28 rounded-full object-cover"
-            src={`data:image/png;base64,${user.avatarBase64}`}
+            src={`data:image/png;base64,${viewedUser.avatarBase64}`}
             alt="Avatar"
             width={112}
             height={112}
           />
           <div className="flex flex-col gap-4 flex-1 font-light">
             <div className="flex items-center gap-[15px]">
-              <div className="text-xl font-semibold">{user.fullname}</div>
-              <div className="text-gray-400">@{user.username}</div>
+              <div className="text-xl font-semibold">{viewedUser.fullname}</div>
+              <div className="text-gray-400">@{viewedUser.username}</div>
             </div>
             <div className="flex gap-8 text-sm text-gray-300 font-light">
               <div>
@@ -137,18 +150,18 @@ export default function page() {
               </div>
               <div>
                 <span className="text-white font-medium">
-                  {user.subscribers ?? 0}
+                  {viewedUser.subscribers ?? 0}
                 </span>{" "}
                 followers
               </div>
               <div>
                 <span className="text-white font-medium">
-                  {user.subscriptions ?? 0}
+                  {viewedUser.subscriptions ?? 0}
                 </span>{" "}
                 subscriptions
               </div>
             </div>
-            <div className="text-gray-300">{user.description ?? ""}</div>
+            <div className="text-gray-300">{viewedUser.description ?? ""}</div>
           </div>
         </div>
 
@@ -187,7 +200,6 @@ export default function page() {
                 </div>
               )}
 
-              {/* Posts */}
               {posts.map((post, index) => (
                 <Image
                   key={index}

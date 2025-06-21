@@ -2,21 +2,22 @@
 
 import axios from "axios";
 import Image from "next/image";
-import AsideInfo from "../../../components/asideInfo";
+import AsideInfo from "../../components/asideInfo";
 import React, { useEffect, useState } from "react";
+import { User } from "@/app/types/user.type";
 
 export default function page() {
-  type User = {
-    user_id: number;
-    fullname: string;
-    username: string;
-    email: string;
-    phone: string;
-    subscribers: number;
-    subscriptions: number;
-    description: string;
-    avatarPathTo: string;
-  };
+  // type User = {
+  //   user_id: number;
+  //   fullname: string;
+  //   username: string;
+  //   email: string;
+  //   phone: string;
+  //   subscribers: number;
+  //   subscriptions: number;
+  //   description: string;
+  //   avatarPathTo: string;
+  // };
 
   type UpdatedUser = {
     fullname: string | undefined;
@@ -82,7 +83,7 @@ export default function page() {
       const id = user?.user_id;
 
       console.log("Submitting update for user:", id, changedUser);
-      
+
       const res = await axios.patch(`${API}/user/update/${id}`, changedUser, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -109,7 +110,7 @@ export default function page() {
         <div className="flex items-center rounded-[2px] bg-[#292929] w-full h-[104px] py-[17px] px-4 font-[Manrope]">
           <Image
             className="w-[70px] h-[70px] rounded-full object-cover"
-            src={`data:image/png;base64,${user.avatarPathTo}`}
+            src={`data:image/png;base64,${user.avatarBase64}`}
             alt="Avatar"
             width={70}
             height={70}

@@ -49,9 +49,7 @@ export class PostController {
   }
 
   @Get("get/:id")
-  async getPostsById(
-    @Param("id") id: number
-  ) {
+  async getPostsById(@Param("id") id: number) {
     return this.postService.findUserPostsById(id);
   }
 }

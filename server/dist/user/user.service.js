@@ -69,10 +69,14 @@ let UserService = class UserService {
         if (user.length === 0) {
             throw new common_1.NotFoundException("User not found 404");
         }
-        const modifiedUser = user.map((user) => {
-            const { password, ...rest } = user;
-            return rest;
-        });
+        const modifiedUser = await Promise.all(user.map(async ({ password, avatarPathTo, ...rest }) => {
+            const avatarBase64 = await this.fileServise.getFile(avatarPathTo);
+            return {
+                ...rest,
+                avatarBase64,
+            };
+        }));
+        console.log("User by username: ", modifiedUser[0]);
         return modifiedUser[0];
     }
     async findUsersBySymbol(string) {
@@ -84,10 +88,14 @@ let UserService = class UserService {
         if (users.length === 0) {
             throw new common_1.NotFoundException("Users not found 404");
         }
-        const modifiedUsers = users.map((user) => {
-            const { password, ...rest } = user;
-            return rest;
-        });
+        const modifiedUsers = await Promise.all(users.map(async ({ password, avatarPathTo, ...rest }) => {
+            const avatarBase64 = await this.fileServise.getFile(avatarPathTo);
+            return {
+                ...rest,
+                avatarBase64,
+            };
+        }));
+        console.log(modifiedUsers);
         return modifiedUsers;
     }
     async findById(id) {
@@ -115,6 +123,7 @@ let UserService = class UserService {
         const modifiedUser = JSON.parse(JSON.stringify(user));
         delete modifiedUser.avatarPathTo;
         modifiedUser.avatarBase64 = avatarBase64;
+        console.log(modifiedUser);
         return modifiedUser;
     }
     async updateUser(id, updateUserDto, file) {

@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 
 export default function AsideInfo() {
   const handleSettingsNavigate = () => {
-    redirect("/profile/settings");
+    redirect("/settings");
   };
 
   return (
