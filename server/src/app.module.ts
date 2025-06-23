@@ -8,6 +8,7 @@ import { ChatMembersModule } from "./chat-members/chat-members.module";
 import { MessagesModule } from "./messages/messages.module";
 import { PostModule } from "./post/post.module";
 import { CommentModule } from "./comment/comment.module";
+import { SubscriptionModule } from "./subscription/subscription.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { CommentModule } from "./comment/comment.module";
     MessagesModule,
     PostModule,
     CommentModule,
+    SubscriptionModule,
   ],
 })
 export class AppModule {}

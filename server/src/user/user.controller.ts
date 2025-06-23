@@ -27,11 +27,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get("all")
-  async findAll() {
-    return await this.userService.findAll();
-  }
-
   @Get("username/:username")
   async findByUsername(@Param("username") username: string) {
     return this.userService.findByUsername(username);
@@ -43,6 +38,8 @@ export class UserController {
 
     return this.userService.findUsersBySymbol(string);
   }
+
+  
 
   // @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor("file"))

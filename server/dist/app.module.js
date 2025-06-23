@@ -17,6 +17,7 @@ const chat_members_module_1 = require("./chat-members/chat-members.module");
 const messages_module_1 = require("./messages/messages.module");
 const post_module_1 = require("./post/post.module");
 const comment_module_1 = require("./comment/comment.module");
+const subscription_module_1 = require("./subscription/subscription.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -45,6 +46,7 @@ exports.AppModule = AppModule = __decorate([
             messages_module_1.MessagesModule,
             post_module_1.PostModule,
             comment_module_1.CommentModule,
+            subscription_module_1.SubscriptionModule,
         ],
     })
 ], AppModule);

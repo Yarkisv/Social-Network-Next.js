@@ -13,21 +13,6 @@ export declare class UserController {
             password: string;
         } & import("./entities/user.entity").User;
     }>;
-    findAll(): Promise<{
-        user_id: number;
-        fullname: string;
-        username: string;
-        email: string;
-        phone: string;
-        subscribers: number;
-        subscriptions: number;
-        description: string;
-        avatarPathTo: string;
-        chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
-        sentMessages: import("../messages/entities/message.entity").Message[];
-        posts: import("../post/entities/post.entity").Post[];
-        comments: import("../comment/entities/comment.entity").Comment[];
-    }[]>;
     findByUsername(username: string): Promise<{
         avatarBase64: string;
         user_id: number;
@@ -35,8 +20,8 @@ export declare class UserController {
         username: string;
         email: string;
         phone: string;
-        subscribers: number;
-        subscriptions: number;
+        subscriptions: import("../subscription/entities/subscription.entity").Subscription[];
+        subscribers: import("../subscription/entities/subscription.entity").Subscription[];
         description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
@@ -50,8 +35,8 @@ export declare class UserController {
         username: string;
         email: string;
         phone: string;
-        subscribers: number;
-        subscriptions: number;
+        subscriptions: import("../subscription/entities/subscription.entity").Subscription[];
+        subscribers: import("../subscription/entities/subscription.entity").Subscription[];
         description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];

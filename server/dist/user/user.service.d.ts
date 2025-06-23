@@ -23,8 +23,8 @@ export declare class UserService {
         username: string;
         email: string;
         phone: string;
-        subscribers: number;
-        subscriptions: number;
+        subscriptions: import("../subscription/entities/subscription.entity").Subscription[];
+        subscribers: import("../subscription/entities/subscription.entity").Subscription[];
         description: string;
         avatarPathTo: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
@@ -39,8 +39,8 @@ export declare class UserService {
         username: string;
         email: string;
         phone: string;
-        subscribers: number;
-        subscriptions: number;
+        subscriptions: import("../subscription/entities/subscription.entity").Subscription[];
+        subscribers: import("../subscription/entities/subscription.entity").Subscription[];
         description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];
@@ -54,8 +54,8 @@ export declare class UserService {
         username: string;
         email: string;
         phone: string;
-        subscribers: number;
-        subscriptions: number;
+        subscriptions: import("../subscription/entities/subscription.entity").Subscription[];
+        subscribers: import("../subscription/entities/subscription.entity").Subscription[];
         description: string;
         chatMemberships: import("../chat-members/entities/chat-member.entity").ChatMember[];
         sentMessages: import("../messages/entities/message.entity").Message[];

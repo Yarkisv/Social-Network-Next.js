@@ -4,6 +4,7 @@ import { Message } from "src/messages/entities/message.entity";
 import { Post } from "src/post/entities/post.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comment } from "src/comment/entities/comment.entity";
+import { Subscription } from "src/subscription/entities/subscription.entity";
 
 @Entity("Users")
 export class User {
@@ -26,11 +27,13 @@ export class User {
   @Column({ length: 255 })
   password: string;
 
-  @Column({ default: 0 })
-  subscribers: number;
+  // Подписчик - один ко многим
+  @OneToMany(() => Subscription, (subscription) => subscription.subscriber)
+  subscriptions: Subscription[];
 
-  @Column({ default: 0 })
-  subscriptions: number;
+  // Подписки - один ко многим
+  @OneToMany(() => Subscription, (subscription) => subscription.subscribedTo)
+  subscribers: Subscription[];
 
   @Column({ default: "" })
   description: string;

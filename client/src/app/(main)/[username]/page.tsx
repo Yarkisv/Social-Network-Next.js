@@ -23,8 +23,8 @@ export default function page() {
 
   const username = params.username;
 
-  const [currentUser, setCurrentUser] = useState<User>();
-  const [viewedUser, setViewedUser] = useState<User>();
+  const [currentUser, setCurrentUser] = useState<User | null>();
+  const [viewedUser, setViewedUser] = useState<User | null>();
 
   const [posts, setPosts] = useState<Post[]>();
   const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
@@ -102,6 +102,27 @@ export default function page() {
     setSelectedPost(null);
   };
 
+  const handleSubscribe = async () => {
+    try {
+      const res = await axios.post(
+        `${API}/subscription`,
+        {
+          subscribeToId: viewedUser?.user_id,
+          currentDate: new Date(),
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (res.status === 201) {
+        
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
   useEffect(() => {
     if (username) {
       fetchData();
@@ -160,6 +181,16 @@ export default function page() {
                 </span>{" "}
                 subscriptions
               </div>
+              {!isUserCurrent && (
+                <div>
+                  <button
+                    onClick={handleSubscribe}
+                    className="border-5 bg-white text-black"
+                  >
+                    Subscribe
+                  </button>
+                </div>
+              )}
             </div>
             <div className="text-gray-300">{viewedUser.description ?? ""}</div>
           </div>

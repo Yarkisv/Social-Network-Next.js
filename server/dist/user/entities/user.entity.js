@@ -16,6 +16,7 @@ const message_entity_1 = require("../../messages/entities/message.entity");
 const post_entity_1 = require("../../post/entities/post.entity");
 const typeorm_1 = require("typeorm");
 const comment_entity_1 = require("../../comment/entities/comment.entity");
+const subscription_entity_1 = require("../../subscription/entities/subscription.entity");
 let User = class User {
     user_id;
     fullname;
@@ -23,8 +24,8 @@ let User = class User {
     email;
     phone;
     password;
-    subscribers;
     subscriptions;
+    subscribers;
     description;
     avatarPathTo;
     chatMemberships;
@@ -59,13 +60,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
-    __metadata("design:type", Number)
-], User.prototype, "subscribers", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.OneToMany)(() => subscription_entity_1.Subscription, (subscription) => subscription.subscriber),
+    __metadata("design:type", Array)
 ], User.prototype, "subscriptions", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => subscription_entity_1.Subscription, (subscription) => subscription.subscribedTo),
+    __metadata("design:type", Array)
+], User.prototype, "subscribers", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: "" }),
     __metadata("design:type", String)

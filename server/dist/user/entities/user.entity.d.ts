@@ -2,6 +2,7 @@ import { ChatMember } from "src/chat-members/entities/chat-member.entity";
 import { Message } from "src/messages/entities/message.entity";
 import { Post } from "src/post/entities/post.entity";
 import { Comment } from "src/comment/entities/comment.entity";
+import { Subscription } from "src/subscription/entities/subscription.entity";
 export declare class User {
     user_id: number;
     fullname: string;
@@ -9,8 +10,8 @@ export declare class User {
     email: string;
     phone: string;
     password: string;
-    subscribers: number;
-    subscriptions: number;
+    subscriptions: Subscription[];
+    subscribers: Subscription[];
     description: string;
     avatarPathTo: string;
     chatMemberships: ChatMember[];
