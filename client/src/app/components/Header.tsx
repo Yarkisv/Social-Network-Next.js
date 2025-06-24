@@ -29,8 +29,8 @@ export default function Header() {
 
   return (
     <div className="flex justify-center bg-[#060606] sticky top-0 z-50">
-      <header className="bg-[#15121F] border-b-[3px] border-[#0D0D0D] pr-[20px] h-[46px] flex items-center justify-between w-full max-w-[910px] rounded-md">
-        <div className="flex items-center h-full pl-[20px] w-[182px] border-r-[3px] border-[#0D0D0D]">
+      <header className="bg-[#15121F] border-b-[2px] border-[#0D0D0D] pr-[20px] h-[46px] flex items-center justify-between w-full max-w-[928px] rounded-md">
+        <div className="flex items-center h-full pl-[20px] w-[200px] border-r-[3px] border-[#0D0D0D]">
           <Image
             alt="profile"
             src={profileEmpty}

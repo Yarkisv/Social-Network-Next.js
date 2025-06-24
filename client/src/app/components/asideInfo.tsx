@@ -16,7 +16,7 @@ export default function AsideInfo() {
   };
 
   return (
-    <div className="text-white">
+    <div className="text-white ">
       <div className="flex flex-col pl-[20px] gap-[20px]">
         <div className="flex gap-[5px]  mt-[20px] cursor-pointer">
           <Image alt="profile" src={AsideChats} width={19} height={19} />

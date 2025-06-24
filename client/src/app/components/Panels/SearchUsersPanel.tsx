@@ -80,8 +80,8 @@ export default function SearchUsersPanel() {
               <div
                 key={user.username}
                 onClick={() => handleNavigateToUser(user.username)}
-                className="flex items-center p-2 gap-3 border border-[#2E2E2E] rounded-md hover:bg-[#2E2E2E] transition cursor-pointer"
-              >      
+                className="flex items-center p-2 gap-3 bg-[#] rounded-md hover:bg-[#2E2E2E] transition cursor-pointer"
+              >
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-[#333] flex items-center justify-center">
                   <Image
                     src={`data:image/jpg;base64,${user.avatarBase64}`}

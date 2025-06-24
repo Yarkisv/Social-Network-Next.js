@@ -102,11 +102,11 @@ export default function page() {
 
   return (
     <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
-      <div className="w-[182px] bg-[#15121F]">
+      <div className="w-[200px] rounded-[2px] bg-[#15121F]">
         <AsideInfo />
       </div>
 
-      <div className="w-full max-w-[730px] pt-[20px] px-[20px]">
+      <div className="w-full max-w-[730px] pt-[10px] pl-[10px]">
         <div className="flex items-center rounded-[2px] bg-[#292929] w-full h-[104px] py-[17px] px-4 font-[Manrope]">
           <Image
             className="w-[70px] h-[70px] rounded-full object-cover"
@@ -127,7 +127,7 @@ export default function page() {
         </div>
 
         <form
-          className="bg-[#292929] box-border font-[Manrope] flex flex-col mt-[5px] rounded-[2px] w-full max-w-[690px] py-[10px] pl-[10px] pr-[25px] text-white"
+          className="bg-[#292929] box-border font-[Manrope] flex flex-col mt-[5px] rounded-[2px] w-full  py-[10px] pl-[10px] pr-[25px] text-white"
           onSubmit={handleSubmit}
         >
           <p className="text-[16px] mb-4">Account details</p>

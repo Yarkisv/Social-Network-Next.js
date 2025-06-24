@@ -116,7 +116,6 @@ export default function page() {
       );
 
       if (res.status === 201) {
-        
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -163,6 +162,16 @@ export default function page() {
             <div className="flex items-center gap-[15px]">
               <div className="text-xl font-semibold">{viewedUser.fullname}</div>
               <div className="text-gray-400">@{viewedUser.username}</div>
+              {!isUserCurrent && (
+                <div>
+                  <button
+                    onClick={handleSubscribe}
+                    className="rounded-[2px] bg-[#5020A1] text-white text-center  px-[14px] font-[inter] font-extralight"
+                  >
+                    subscribe
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex gap-8 text-sm text-gray-300 font-light">
               <div>
@@ -181,16 +190,6 @@ export default function page() {
                 </span>{" "}
                 subscriptions
               </div>
-              {!isUserCurrent && (
-                <div>
-                  <button
-                    onClick={handleSubscribe}
-                    className="border-5 bg-white text-black"
-                  >
-                    Subscribe
-                  </button>
-                </div>
-              )}
             </div>
             <div className="text-gray-300">{viewedUser.description ?? ""}</div>
           </div>
