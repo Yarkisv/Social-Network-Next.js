@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import axios from "axios";
 import { closeUploadPostWindow } from "@/app/store/slices/modalSlice";
+import cancel_upload from "../../images/cancel_upload.svg";
 import PostModal from "./PostModal";
 import createPostImg from "../../images/createPostImg.svg";
 import Image from "next/image";
@@ -51,6 +52,10 @@ export default function UploadPostModal() {
     setNewPost({ ...newPost, [name]: value });
   };
 
+  const handleOnClose = () => {
+    dispatch(closeUploadPostWindow());
+  };
+
   const uploadNewPost = async () => {
     try {
       console.log(newPost);
@@ -84,7 +89,13 @@ export default function UploadPostModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#111111]/60">
-      <div className="flex font-[Space_Grotesk] flex-col items-center justify-center h-[440px] w-[400px] text-white bg-[#292929] rounded-[2px] pt-[15px] pb-[20px] px-[20px] overflow-hidden">
+      <div className="flex font-[Space_Grotesk] relative  flex-col items-center justify-center h-[440px] w-[400px] text-white bg-[#292929] rounded-[2px] pt-[15px] pb-[20px] px-[20px] overflow-hidden">
+        <Image
+          onClick={handleOnClose}
+          src={cancel_upload}
+          alt="Avatar"
+          className="absolute top-[10px] right-[10px] "
+        />
         <h2 className="text-[20px] mb-auto">Creating a publication</h2>
 
         {!preview && (
