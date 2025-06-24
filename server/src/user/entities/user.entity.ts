@@ -27,11 +27,11 @@ export class User {
   @Column({ length: 255 })
   password: string;
 
-  // Подписчик - один ко многим
+  // Подписки - массив пользователей на которых подписан пользователь
   @OneToMany(() => Subscription, (subscription) => subscription.subscriber)
   subscriptions: Subscription[];
 
-  // Подписки - один ко многим
+  // Подписчики - массив пользователей которые подписаны на пользователя
   @OneToMany(() => Subscription, (subscription) => subscription.subscribedTo)
   subscribers: Subscription[];
 

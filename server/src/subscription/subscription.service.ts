@@ -3,12 +3,15 @@ import { CreateSubscriptionDto } from "./dto/create-subscription.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Subscription } from "./entities/subscription.entity";
 import { Repository } from "typeorm";
+import { UserService } from "src/user/user.service";
+import { FileService } from "src/services/file.service";
 
 @Injectable()
 export class SubscriptionService {
   constructor(
     @InjectRepository(Subscription)
-    private readonly subscriptionRepository: Repository<Subscription>
+    private readonly subscriptionRepository: Repository<Subscription>,
+    private readonly fileService: FileService
   ) {}
 
   async create(createSubscriptionDto: CreateSubscriptionDto, id: number) {
@@ -36,9 +39,46 @@ export class SubscriptionService {
     return { subscription };
   }
 
-  // findAll() {
-  //   return `This action returns all subscription`;
-  // }
+  async findAllById(user_id: number) {
+    const userSubscriptions = await this.subscriptionRepository.find({
+      where: { subscriber: { user_id: user_id } },
+      relations: ["subscribedTo", "subscriber"],
+    });
+
+    const userSubscribers = await this.subscriptionRepository.find({
+      where: { subscribedTo: { user_id: user_id } },
+      relations: ["subscriber"],
+    });
+
+    const subscriptions = await Promise.all(
+      userSubscriptions.map(async (sub) => {
+        const { user_id, username, fullname } = sub.subscribedTo;
+        const imageBase64 = await this.fileService.getFile(
+          sub.subscriber.avatarPathTo
+        );
+        return { user_id, username, fullname, imageBase64 };
+      })
+    );
+
+    const subscribers = await Promise.all(
+      userSubscribers.map(async (sub) => {
+        const { user_id, username, fullname } = sub.subscriber;
+        const imageBase64 = await this.fileService.getFile(
+          sub.subscriber.avatarPathTo
+        );
+        return { user_id, username, fullname, imageBase64 };
+      })
+    );
+
+    console.log(
+      "User subscriptions: \n",
+      subscriptions,
+      "\nUser subscribers: \n",
+      subscribers
+    );
+
+    return { subscriptions, subscribers };
+  }
 
   // findOne(id: number) {
   //   return `This action returns a #${id} subscription`;

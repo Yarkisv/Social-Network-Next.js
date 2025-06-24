@@ -4,6 +4,8 @@ interface IModalState {
   isOpen: boolean;
   isUploadWindowOpen: boolean;
   isPostModalOpen: boolean;
+  isSubscribersModalOpen: boolean;
+  isSubscriptionsModalOpen: boolean;
   searchQuery: string;
 }
 
@@ -11,6 +13,8 @@ const initialState: IModalState = {
   isOpen: false,
   isUploadWindowOpen: false,
   isPostModalOpen: false,
+  isSubscribersModalOpen: false,
+  isSubscriptionsModalOpen: false,
   searchQuery: "",
 };
 
@@ -37,6 +41,18 @@ export const modalSlice = createSlice({
     closePostModalWindow: (state) => {
       state.isPostModalOpen = false;
     },
+    openSubscribersModal: (state) => {
+      state.isSubscribersModalOpen = true;
+    },
+    closeSubscribersModal: (state) => {
+      state.isSubscribersModalOpen = false;
+    },
+    openSubscribtionsModal: (state) => {
+      state.isSubscriptionsModalOpen = true;
+    },
+    closeSubscribtionsModal: (state) => {
+      state.isSubscriptionsModalOpen = false;
+    },
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
@@ -50,6 +66,10 @@ export const {
   closeUploadPostWindow,
   openPostModalWindow,
   closePostModalWindow,
+  openSubscribersModal,
+  closeSubscribersModal,
+  openSubscribtionsModal,
+  closeSubscribtionsModal,
   setSearchQuery,
 } = modalSlice.actions;
 export default modalSlice.reducer;

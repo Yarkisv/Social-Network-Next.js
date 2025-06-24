@@ -48,9 +48,9 @@ export class AuthController {
 
     return { message: "Login successful" };
   }
-
-  @Get("profile")
+  
   @UseGuards(AuthGuard)
+  @Get("profile")
   profile(@Request() req) {
     const id: number = req.user.user_id;
 

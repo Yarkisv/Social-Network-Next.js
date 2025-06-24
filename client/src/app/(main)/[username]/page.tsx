@@ -10,11 +10,18 @@ import {
   openUploadPostWindow,
   closePostModalWindow,
   openPostModalWindow,
+  openSubscribersModal,
+  closeSubscribersModal,
+  openSubscribtionsModal,
+  closeSubscribtionsModal,
 } from "@/app/store/slices/modalSlice";
 import PostModal from "@/app/components/modals/PostModal";
+import SubscribersModal from "@/app/components/modals/SubscribersModal";
+import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
 import { Post } from "@/app/types/post.type";
 import { User } from "@/app/types/user.type";
 import { useParams } from "next/navigation";
+import { Subs } from "@/app/types/subs.type";
 
 export default function page() {
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -26,6 +33,9 @@ export default function page() {
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [viewedUser, setViewedUser] = useState<User | null>();
 
+  const [subscribers, setSubscribers] = useState<Subs[] | null>([]);
+  const [subscriptions, setSubscriptions] = useState<Subs[] | null>([]);
+
   const [posts, setPosts] = useState<Post[]>();
   const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
 
@@ -34,6 +44,14 @@ export default function page() {
 
   const isPostModalOpen = useAppSelector(
     (state) => state.modal.isPostModalOpen
+  );
+
+  const isSubscribersModalOpen = useAppSelector(
+    (state) => state.modal.isSubscribersModalOpen
+  );
+
+  const isSubscriptionsModalOpen = useAppSelector(
+    (state) => state.modal.isSubscriptionsModalOpen
   );
 
   const dispatch = useAppDispatch();
@@ -51,6 +69,15 @@ export default function page() {
 
         if (postsRes.status === 200) {
           setPosts(postsRes.data);
+        }
+
+        const subscriptionsRes = await axios.get(
+          `${API}/subscription/${currentUser.data?.user_id}`
+        );
+
+        if (subscriptionsRes.status === 200) {
+          setSubscriptions(subscriptionsRes.data.subscriptions);
+          setSubscribers(subscriptionsRes.data.subscribers);
         }
       }
 
@@ -71,6 +98,15 @@ export default function page() {
 
         if (postsRes.status === 200) {
           setPosts(postsRes.data);
+        }
+
+        const subscriptionsRes = await axios.get(
+          `${API}/subscription/${usernameRes.data?.user_id}`
+        );
+
+        if (subscriptionsRes.status === 200) {
+          setSubscriptions(subscriptionsRes.data.subscriptions);
+          setSubscribers(subscriptionsRes.data.subscribers);
         }
       }
 
@@ -100,6 +136,28 @@ export default function page() {
   const handlePostModalClose = () => {
     dispatch(closePostModalWindow());
     setSelectedPost(null);
+  };
+
+  const handleSubscribersModalOpen = () => {
+    console.log(subscribers);
+    console.log(isSubscribersModalOpen);
+    console.log();
+
+    dispatch(openSubscribersModal());
+  };
+
+  const handleSubscribersModalclose = () => {
+    dispatch(closeSubscribersModal());
+  };
+
+  const handleSubscriptionsModalClose = () => {
+    dispatch(closeSubscribtionsModal());
+  };
+
+  const handleSubscriptionsModalOpen = () => {
+    console.log(subscriptions);
+
+    dispatch(openSubscribtionsModal());
   };
 
   const handleSubscribe = async () => {
@@ -144,6 +202,22 @@ export default function page() {
     );
   }
 
+  if (!subscriptions) {
+    return (
+      <div className="min-h-screen bg-[#060606]">
+        <p className="text-white">posts not found</p>
+      </div>
+    );
+  }
+
+  if (!subscribers) {
+    return (
+      <div className="min-h-screen bg-[#060606]">
+        <p className="text-white">posts not found</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
       <div className="w-[182px] bg-[#15121F]">
@@ -178,15 +252,23 @@ export default function page() {
                 <span className="text-white font-medium">{posts.length}</span>{" "}
                 posts
               </div>
-              <div>
+              <div onClick={handleSubscribersModalOpen}>
                 <span className="text-white font-medium">
-                  {viewedUser.subscribers ?? 0}
+                  {subscribers.length > 0 ? (
+                    <p>{subscribers.length}</p>
+                  ) : (
+                    <p>0</p>
+                  )}
                 </span>{" "}
                 followers
               </div>
-              <div>
+              <div onClick={handleSubscriptionsModalOpen}>
                 <span className="text-white font-medium">
-                  {viewedUser.subscriptions ?? 0}
+                  {subscriptions.length > 0 ? (
+                    <p>{subscriptions.length}</p>
+                  ) : (
+                    <p>0</p>
+                  )}
                 </span>{" "}
                 subscriptions
               </div>
@@ -274,6 +356,18 @@ export default function page() {
           isOpen={isPostModalOpen}
         />
       )}
+
+      <SubscribersModal
+        subs={subscribers}
+        isOpen={isSubscribersModalOpen}
+        onClose={handleSubscribersModalclose}
+      />
+
+      <SubscriptionsModal
+        subs={subscriptions}
+        isOpen={isSubscriptionsModalOpen}
+        onClose={handleSubscriptionsModalClose}
+      />
     </div>
   );
 }

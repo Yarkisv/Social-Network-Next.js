@@ -64,6 +64,32 @@ export class UserService {
     return modifiedUsers;
   }
 
+  async findOriginalById(id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        user_id: id,
+      },
+      select: [
+        "user_id",
+        "fullname",
+        "username",
+        "email",
+        "phone",
+        "description",
+        "avatarPathTo",
+      ],
+      relations: [
+        "chatMemberships",
+        "sentMessages",
+        "posts",
+        "subscribers",
+        "subscriptions",
+      ],
+    });
+
+    return { user };
+  }
+
   async findByUsername(username: string) {
     const user = await this.userRepository.findBy({
       username: username,
@@ -83,6 +109,7 @@ export class UserService {
         };
       })
     );
+    
 
     console.log("User by username: ", modifiedUser[0]);
 
@@ -127,12 +154,16 @@ export class UserService {
         "username",
         "email",
         "phone",
-        "subscribers",
-        "subscriptions",
         "description",
         "avatarPathTo",
       ],
-      relations: ["chatMemberships", "sentMessages", "posts"],
+      relations: [
+        "chatMemberships",
+        "sentMessages",
+        "posts",
+        "subscribers",
+        "subscriptions",
+      ],
     });
 
     if (!user) {

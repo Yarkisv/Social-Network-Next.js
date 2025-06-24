@@ -1,4 +1,12 @@
-import { Controller, Post, Body, UseGuards, Request } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  Param,
+} from "@nestjs/common";
 import { SubscriptionService } from "./subscription.service";
 import { CreateSubscriptionDto } from "./dto/create-subscription.dto";
 import { AuthGuard } from "src/auth/guards/auth.guard";
@@ -15,10 +23,15 @@ export class SubscriptionController {
     return this.subscriptionService.create(createSubscriptionDto, id);
   }
 
-  // @Get(":id")
-  // findOne(@Param("id") id: string) {
-  //   return this.subscriptionService.findOne(+id);
-  // }
+  @Get(":id")
+  async findAllById(@Param("id") id: number) {
+    console.log(id);
+
+    const { subscriptions, subscribers } =
+      await this.subscriptionService.findAllById(id);
+
+    return { subscriptions, subscribers };
+  }
 
   // @Patch(":id")
   // update(

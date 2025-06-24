@@ -32,6 +32,9 @@ export declare class UserService {
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
+    findOriginalById(id: number): Promise<{
+        user: User | null;
+    }>;
     findByUsername(username: string): Promise<{
         avatarBase64: string;
         user_id: number;

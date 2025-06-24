@@ -62,6 +62,30 @@ let UserService = class UserService {
         });
         return modifiedUsers;
     }
+    async findOriginalById(id) {
+        const user = await this.userRepository.findOne({
+            where: {
+                user_id: id,
+            },
+            select: [
+                "user_id",
+                "fullname",
+                "username",
+                "email",
+                "phone",
+                "description",
+                "avatarPathTo",
+            ],
+            relations: [
+                "chatMemberships",
+                "sentMessages",
+                "posts",
+                "subscribers",
+                "subscriptions",
+            ],
+        });
+        return { user };
+    }
     async findByUsername(username) {
         const user = await this.userRepository.findBy({
             username: username,
@@ -109,12 +133,16 @@ let UserService = class UserService {
                 "username",
                 "email",
                 "phone",
-                "subscribers",
-                "subscriptions",
                 "description",
                 "avatarPathTo",
             ],
-            relations: ["chatMemberships", "sentMessages", "posts"],
+            relations: [
+                "chatMemberships",
+                "sentMessages",
+                "posts",
+                "subscribers",
+                "subscriptions",
+            ],
         });
         if (!user) {
             throw new common_1.NotFoundException("User not found");
