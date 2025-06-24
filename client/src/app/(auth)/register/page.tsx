@@ -24,16 +24,18 @@ export default function RegisterPage() {
     password: "",
   });
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    console.log(user);
     const response = await axios.post(`${API}/user/register`, user);
     if (response.status === 201) {
       setUser({
@@ -132,25 +134,21 @@ export default function RegisterPage() {
             <input
               type={isPasswordVisible ? "text" : "password"}
               name="password"
-              placeholder="Password"
               value={user.password}
               onChange={handleChange}
+              placeholder="Password"
+              autoComplete="true"
               required
-              autoComplete="current-password"
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
             <button
               className="absolute right-3 cursor-pointer top-3 text-white"
               onClick={(e) => {
                 e.preventDefault();
-                setIsPasswordVisible((v) => !v);
+                setIsPasswordVisible(!isPasswordVisible);
               }}
             >
-              {!isPasswordVisible ? (
-                <GrFormView size={20} />
-              ) : (
-                <GrHide size={20} />
-              )}
+              {!isPasswordVisible ? <GrFormView /> : <GrHide />}
             </button>
             <p className="text-sm text-gray-400 mt-1">
               Use at least 6 characters

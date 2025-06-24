@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import axios from "axios";
-import { redirect } from "next/navigation";
-import { GrFormView, GrHide } from "react-icons/gr";
-
-import Cubes from "../../components/cubes";
 import logoAuth from "../../images/logoAuth.svg";
-import google from "../../images/google.svg";
 import facebok from "../../images/facebok.svg";
+import google from "../../images/google.svg";
+import Image from "next/image";
+import Link from "next/link";
+import Cubes from "../../components/cubes";
+import { redirect } from "next/navigation";
+import axios from "axios";
+import { GrFormView, GrHide } from "react-icons/gr";
 
 export default function LoginPage() {
   interface IUser {
@@ -27,13 +26,13 @@ export default function LoginPage() {
   const [isRememberMe, setIsRememberMe] = useState(false);
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     const response = await axios.post(`${API}/auth/login`, user, {
       withCredentials: true,
     });
@@ -72,7 +71,6 @@ export default function LoginPage() {
               onChange={handleChange}
               placeholder="Email"
               required
-              autoComplete="email"
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
             <p className="text-sm text-gray-400 mt-1">
@@ -88,19 +86,17 @@ export default function LoginPage() {
               onChange={handleChange}
               placeholder="Password"
               required
-              autoComplete="current-password"
+              autoComplete="true"
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
             <button
-              type="button"
-              className="absolute cursor-pointer right-3 top-3 text-white"
-              onClick={() => setIsPasswordVisible((prev) => !prev)}
+              className="absolute right-3 cursor-pointer top-[12px] text-white"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsPasswordVisible(!isPasswordVisible);
+              }}
             >
-              {!isPasswordVisible ? (
-                <GrFormView size={20} />
-              ) : (
-                <GrHide size={20} />
-              )}
+              {!isPasswordVisible ? <GrFormView /> : <GrHide />}
             </button>
             <p className="text-sm text-gray-400 mt-1">
               Use your account password
