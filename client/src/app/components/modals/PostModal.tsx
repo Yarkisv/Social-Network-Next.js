@@ -25,7 +25,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
           className="absolute top-2 right-2 text-gray-300 hover:text-white text-[14px]"
           onClick={onClose}
         >
-          ✖
+          x
         </button>
 
         <div className="h-full w-[365px] flex-shrink-0">

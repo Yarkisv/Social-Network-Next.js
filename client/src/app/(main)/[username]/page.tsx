@@ -220,7 +220,7 @@ export default function page() {
 
   return (
     <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
-      <div className="w-[182px] bg-[#15121F]">
+      <div className="w-[198px] bg-[#15121F]">
         <AsideInfo />
       </div>
       <div className="w-full max-w-[730px] pt-[20px] px-[20px] font-[Manrope]">
@@ -240,7 +240,7 @@ export default function page() {
                 <div>
                   <button
                     onClick={handleSubscribe}
-                    className="rounded-[2px] bg-[#5020A1] text-white text-center  px-[14px] font-[inter] font-extralight"
+                    className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center  px-[14px] font-[inter] font-extralight"
                   >
                     subscribe
                   </button>
@@ -252,7 +252,10 @@ export default function page() {
                 <span className="text-white font-medium">{posts.length}</span>{" "}
                 posts
               </div>
-              <div onClick={handleSubscribersModalOpen}>
+              <div
+                onClick={handleSubscribersModalOpen}
+                className="flex  cursor-pointer gap-1"
+              >
                 <span className="text-white font-medium">
                   {subscribers.length > 0 ? (
                     <p>{subscribers.length}</p>
@@ -262,7 +265,10 @@ export default function page() {
                 </span>{" "}
                 followers
               </div>
-              <div onClick={handleSubscriptionsModalOpen}>
+              <div
+                onClick={handleSubscriptionsModalOpen}
+                className="flex  cursor-pointer gap-1"
+              >
                 <span className="text-white font-medium">
                   {subscriptions.length > 0 ? (
                     <p>{subscriptions.length}</p>
