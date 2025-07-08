@@ -192,13 +192,31 @@ export default function page() {
       );
 
       if (res.status === 201) {
+        fetchData();
       }
     } catch (error) {
       console.log("Error: ", error);
     }
   };
 
-  const handleUnsubscribe = async () => {};
+  const handleUnsubscribe = async () => {
+    console.log("unsub");
+
+    try {
+      const res = await axios.delete(
+        `${API}/subscription/delete/${viewedUser?.user_id}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (res.status === 200) {
+        fetchData();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (username) {

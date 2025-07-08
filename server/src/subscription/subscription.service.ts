@@ -99,4 +99,18 @@ export class SubscriptionService {
 
     return isSubscribed;
   }
+
+  async deleteSubscription(current_user_id: number, viewed_user_id: number) {
+    const subscription = await this.subscriptionRepository.findOne({
+      where: {
+        subscriber: { user_id: current_user_id },
+        subscribedTo: { user_id: viewed_user_id },
+      },
+      relations: ["subscriber", "subscribedTo"],
+    });
+
+    if (subscription) {
+      await this.subscriptionRepository.remove(subscription);
+    }
+  }
 }

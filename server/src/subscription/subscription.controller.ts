@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Query,
+  Delete,
 } from "@nestjs/common";
 import { SubscriptionService } from "./subscription.service";
 import { CreateSubscriptionDto } from "./dto/create-subscription.dto";
@@ -54,5 +55,22 @@ export class SubscriptionController {
     console.log(isSub);
 
     return isSub;
+  }
+
+  @Delete("delete/:id")
+  @UseGuards(AuthGuard)
+  async deleteSubscription(
+    @Param("id") viewed_user_id: number,
+    @Request() req
+  ) {
+    const id = req.user.user_id;
+
+    console.log("current user: ", id);
+    console.log("viewed user: ", viewed_user_id);
+
+    return await this.subscriptionService.deleteSubscription(
+      id,
+      viewed_user_id
+    );
   }
 }
