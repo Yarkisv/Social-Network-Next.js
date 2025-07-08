@@ -22,7 +22,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <div className="bg-[#292929] rounded-[2px] max-w-[900px] w-full h-[365px] flex gap-4 relative">
         <button
-          className="absolute top-2 right-2 text-gray-300 hover:text-white text-[14px]"
+          className="absolute top-2 right-2 text-gray-300 hover:text-white text-[14px] cursor-pointer"
           onClick={onClose}
         >
           x

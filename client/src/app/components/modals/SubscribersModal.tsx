@@ -3,6 +3,7 @@ import { Subs } from "@/app/types/subs.type";
 import cancel_upload from "../../images/cancel_upload.svg";
 
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 type SubsModalProps = {
   subs: Subs[];
@@ -15,6 +16,11 @@ export default function SubscribersModal({
   isOpen,
   onClose,
 }: SubsModalProps) {
+  const handleNavigateToProfile = (username: string) => {
+    onClose();
+    redirect(`/${username}`);
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -26,14 +32,15 @@ export default function SubscribersModal({
         <Image
           onClick={onClose}
           src={cancel_upload}
-          alt="Avatar"
-          className="absolute top-[10px] right-[10px] "
+          alt="close"
+          className="absolute top-[10px] right-[10px] cursor-pointer"
         />
         <ul className="space-y-3">
           {subs.length > 0 ? (
             subs.map((sub) => (
               <li
                 key={sub.user_id}
+                onClick={() => handleNavigateToProfile(sub.username)}
                 className="flex items-center p-2 rounded-[2px] hover:bg-[#2E2E2E] transition cursor-pointer"
               >
                 <div className="flex items-center gap-4 flex-1">

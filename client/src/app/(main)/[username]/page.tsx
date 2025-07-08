@@ -35,6 +35,7 @@ export default function page() {
 
   const [subscribers, setSubscribers] = useState<Subs[] | null>([]);
   const [subscriptions, setSubscriptions] = useState<Subs[] | null>([]);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
 
   const [posts, setPosts] = useState<Post[]>();
   const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
@@ -58,11 +59,13 @@ export default function page() {
 
   const fetchData = async () => {
     try {
+      // получение информации о текущем пользователе
       const currentUser = await axios.get(`${API}/auth/profile`, {
         withCredentials: true,
       });
 
       if (currentUser.status === 200) {
+        // получение постов текущего пользователя
         const postsRes = await axios.get(
           `${API}/post/get/${currentUser.data?.user_id}`
         );
@@ -71,6 +74,7 @@ export default function page() {
           setPosts(postsRes.data);
         }
 
+        // получение подписок и подписчиков текущего пользователя
         const subscriptionsRes = await axios.get(
           `${API}/subscription/${currentUser.data?.user_id}`
         );
@@ -89,9 +93,11 @@ export default function page() {
 
       console.log(username);
 
+      // получение информации просматриваемого пользователя
       const usernameRes = await axios.get(`${API}/user/username/${username}`);
 
       if (usernameRes.status === 200) {
+        // получение постов просматриваемого пользователя
         const postsRes = await axios.get(
           `${API}/post/get/${usernameRes.data?.user_id}`
         );
@@ -115,6 +121,19 @@ export default function page() {
       console.log(usernameRes.data);
 
       setViewedUser(viewed);
+
+      const isSubscribedRes = await axios.get(
+        `${API}/subscription/is-subscribed/${current?.user_id}`,
+        {
+          params: {
+            viewed_user_id: viewed?.user_id,
+          },
+        }
+      );
+
+      if (isSubscribedRes.status === 200) {
+        setIsSubscribed(isSubscribedRes.data);
+      }
 
       if (current.username === viewed.username) {
         setIsUserCurrent(true);
@@ -141,7 +160,6 @@ export default function page() {
   const handleSubscribersModalOpen = () => {
     console.log(subscribers);
     console.log(isSubscribersModalOpen);
-    console.log();
 
     dispatch(openSubscribersModal());
   };
@@ -179,6 +197,8 @@ export default function page() {
       console.log("Error: ", error);
     }
   };
+
+  const handleUnsubscribe = async () => {};
 
   useEffect(() => {
     if (username) {
@@ -229,8 +249,8 @@ export default function page() {
             className="w-28 h-28 rounded-full object-cover"
             src={`data:image/png;base64,${viewedUser.avatarBase64}`}
             alt="Avatar"
-            width={112}
-            height={112}
+            width="112"
+            height="112"
           />
           <div className="flex flex-col gap-4 flex-1 font-light">
             <div className="flex items-center gap-[15px]">
@@ -239,10 +259,10 @@ export default function page() {
               {!isUserCurrent && (
                 <div>
                   <button
-                    onClick={handleSubscribe}
-                    className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center  px-[14px] font-[inter] font-extralight"
+                    onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
+                    className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight"
                   >
-                    subscribe
+                    {isSubscribed ? "unsubscribe" : "subscribe"}
                   </button>
                 </div>
               )}
@@ -263,7 +283,7 @@ export default function page() {
                     <p>0</p>
                   )}
                 </span>{" "}
-                followers
+                subscribers
               </div>
               <div
                 onClick={handleSubscriptionsModalOpen}

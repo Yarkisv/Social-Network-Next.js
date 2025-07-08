@@ -2,7 +2,6 @@ import { ChatMember } from "src/chat-members/entities/chat-member.entity";
 import {
   Column,
   Entity,
-  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";

@@ -8,6 +8,7 @@ import { Subscription } from "./entities/subscription.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "src/user/user.module";
 import { FileService } from "src/services/file.service";
+import { UserService } from "src/user/user.service";
 
 @Module({
   imports: [UserModule, TypeOrmModule.forFeature([Subscription]), AuthModule],

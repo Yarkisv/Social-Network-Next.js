@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import axios from "axios";
 import { closeUploadPostWindow } from "@/app/store/slices/modalSlice";
 import cancel_upload from "../../images/cancel_upload.svg";
-import PostModal from "./PostModal";
 import createPostImg from "../../images/createPostImg.svg";
 import Image from "next/image";
 
@@ -94,7 +93,7 @@ export default function UploadPostModal() {
           onClick={handleOnClose}
           src={cancel_upload}
           alt="Avatar"
-          className="absolute top-[10px] right-[10px] "
+          className="absolute top-[10px] right-[10px] cursor-pointer"
         />
         <h2 className="text-[20px] mb-auto">Creating a publication</h2>
 

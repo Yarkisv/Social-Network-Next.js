@@ -6,6 +6,7 @@ import {
   Request,
   Get,
   Param,
+  Query,
 } from "@nestjs/common";
 import { SubscriptionService } from "./subscription.service";
 import { CreateSubscriptionDto } from "./dto/create-subscription.dto";
@@ -33,16 +34,25 @@ export class SubscriptionController {
     return { subscriptions, subscribers };
   }
 
-  // @Patch(":id")
-  // update(
-  //   @Param("id") id: string,
-  //   @Body() updateSubscriptionDto: UpdateSubscriptionDto
-  // ) {
-  //   return this.subscriptionService.update(+id, updateSubscriptionDto);
-  // }
+  @Get("is-subscribed/:id")
+  async checkIsAlreadySubscribed(
+    @Param("id") current_user_id: number,
+    @Query("viewed_user_id") viewed_user_id: number
+  ) {
+    console.log(
+      "Current user: ",
+      current_user_id,
+      " viewed user: ",
+      viewed_user_id
+    );
 
-  // @Delete(":id")
-  // remove(@Param("id") id: string) {
-  //   return this.subscriptionService.remove(+id);
-  // }
+    const isSub = await this.subscriptionService.checkIsAlreadySubscribed(
+      current_user_id,
+      viewed_user_id
+    );
+
+    console.log(isSub);
+
+    return isSub;
+  }
 }

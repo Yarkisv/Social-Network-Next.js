@@ -11,7 +11,8 @@ export class SubscriptionService {
   constructor(
     @InjectRepository(Subscription)
     private readonly subscriptionRepository: Repository<Subscription>,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
+    private readonly userService: UserService
   ) {}
 
   async create(createSubscriptionDto: CreateSubscriptionDto, id: number) {
@@ -80,15 +81,22 @@ export class SubscriptionService {
     return { subscriptions, subscribers };
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} subscription`;
-  // }
+  async checkIsAlreadySubscribed(
+    current_user_id: number,
+    viewed_user_id: number
+  ) {
+    let isSubscribed: boolean = false;
 
-  // update(id: number, updateSubscriptionDto: UpdateSubscriptionDto) {
-  //   return `This action updates a #${id} subscription`;
-  // }
+    const { subscribers } = await this.findAllById(viewed_user_id);
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} subscription`;
-  // }
+    for (let i = 0; i < subscribers.length; i++) {
+      if (Number(subscribers[i].user_id) === Number(current_user_id)) {
+        isSubscribed = true;
+      }
+    }
+
+    console.log(isSubscribed);
+
+    return isSubscribed;
+  }
 }
