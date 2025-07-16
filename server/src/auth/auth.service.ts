@@ -62,9 +62,13 @@ export class AuthService {
       const user = await this.userService.findById(user_id);
       if (!user) throw new ForbiddenException("Access Denied");
 
-      const tokens = await this.getTokens(user_id, username, email);
+      const { access_token, refresh_token } = await this.getTokens(
+        user_id,
+        username,
+        email
+      );
 
-      return tokens;
+      return { access_token, refresh_token };
     } catch (err) {
       throw new ForbiddenException(`Access Denied: ${err}`);
     }

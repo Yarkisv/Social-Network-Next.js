@@ -23,6 +23,8 @@ import { User } from "@/app/types/user.type";
 import { useParams } from "next/navigation";
 import { Subs } from "@/app/types/subs.type";
 
+import axiosInstance from "@/lib/axios";
+
 export default function page() {
   const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -60,9 +62,7 @@ export default function page() {
   const fetchData = async () => {
     try {
       // получение информации о текущем пользователе
-      const currentUser = await axios.get(`${API}/auth/profile`, {
-        withCredentials: true,
-      });
+      const currentUser = await axiosInstance.get("/auth/profile");
 
       if (currentUser.status === 200) {
         // получение постов текущего пользователя

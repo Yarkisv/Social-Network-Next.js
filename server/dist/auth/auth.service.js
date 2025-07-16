@@ -54,8 +54,8 @@ let AuthService = class AuthService {
             const user = await this.userService.findById(user_id);
             if (!user)
                 throw new common_1.ForbiddenException("Access Denied");
-            const tokens = await this.getTokens(user_id, username, email);
-            return tokens;
+            const { access_token, refresh_token } = await this.getTokens(user_id, username, email);
+            return { access_token, refresh_token };
         }
         catch (err) {
             throw new common_1.ForbiddenException(`Access Denied: ${err}`);

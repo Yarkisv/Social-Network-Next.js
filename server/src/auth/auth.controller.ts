@@ -48,7 +48,7 @@ export class AuthController {
 
     return { message: "Login successful" };
   }
-  
+
   @UseGuards(AuthGuard)
   @Get("profile")
   profile(@Request() req) {
@@ -59,9 +59,29 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @Get("refresh")
-  refreshTokens(@Request() req) {
+  async refreshTokens(
+    @Request() req,
+    @Res({ passthrough: true }) response: Response
+  ) {
     const refreshToken = req.user.token;
 
-    return this.authService.refreshTokens(refreshToken);
+    console.log("Refresh token from request: ", refreshToken);
+
+    const { access_token, refresh_token } =
+      await this.authService.refreshTokens(refreshToken);
+
+    response.cookie("access_token", access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+    });
+
+    response.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
   }
 }

@@ -10,8 +10,5 @@ export declare class AuthController {
         message: string;
     }>;
     profile(req: any): Promise<any>;
-    refreshTokens(req: any): Promise<{
-        access_token: string;
-        refresh_token: string;
-    }>;
+    refreshTokens(req: any, response: Response): Promise<void>;
 }

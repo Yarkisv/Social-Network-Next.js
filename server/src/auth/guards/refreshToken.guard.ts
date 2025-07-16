@@ -13,9 +13,10 @@ export class RefreshTokenGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.cookies["refresh_token"];
+    const token = this.extractTokenFromHeader(request);
 
     if (!token) {
+      console.log("Refresh token undefined");
       throw new UnauthorizedException();
     }
 
@@ -43,7 +44,12 @@ export class RefreshTokenGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(" ") ?? [];
-    return type === "Bearer" ? token : undefined;
+    const authHeader = request.headers["authorization"];
+
+    if (authHeader?.startsWith("Bearer ")) {
+      return authHeader.split(" ")[1];
+    }
+
+    return request.cookies?.["refresh_token"];
   }
 }
