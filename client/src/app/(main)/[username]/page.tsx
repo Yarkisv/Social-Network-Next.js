@@ -279,26 +279,19 @@ export default function page() {
               <div className="text-xl font-semibold">{viewedUser.fullname}</div>
               <div className="text-gray-400">@{viewedUser.username}</div>
               {!isUserCurrent && (
-                <div>
-                  <div>
-                    <button
-                      onClick={
-                        isSubscribed ? handleUnsubscribe : handleSubscribe
-                      }
-                      className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight"
-                    >
-                      {isSubscribed ? "unsubscribe" : "subscribe"}
-                    </button>
-                  </div>
-                  <div>
-                    <p>Write a message</p>
-                    <button
-                      className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight"
-                      onClick={handleChatClick}
-                    >
-                      Chat
-                    </button>
-                  </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
+                    className="rounded-[2px] bg-[#5020A1] hover:bg-[#6B3FCF] transition-colors cursor-pointer h-[30px] duration-200 text-white text-sm font-medium px-6 "
+                  >
+                    {isSubscribed ? "Unsubscribe" : "Subscribe"}
+                  </button>
+                  <button
+                    onClick={handleChatClick}
+                    className="rounded-[2px] bg-transparent border border-[#5020A1] cursor-pointer hover:bg-[#1D1333] h-[30px] transition-colors duration-200 text-white text-sm font-medium px-6 "
+                  >
+                    Chat
+                  </button>
                 </div>
               )}
             </div>
@@ -341,7 +334,7 @@ export default function page() {
         <div className="flex justify-center gap-12 mb-4 font-light">
           <button
             onClick={() => setActiveTab("posts")}
-            className={`pb-2 text-sm font-semibold ${
+            className={`pb-2 text-sm cursor-pointer font-semibold ${
               activeTab === "posts"
                 ? "border-b-2 border-white text-white"
                 : "text-gray-500"
@@ -351,7 +344,7 @@ export default function page() {
           </button>
           <button
             onClick={() => setActiveTab("saved")}
-            className={`pb-2 text-sm font-semibold ${
+            className={`pb-2 text-sm cursor-pointer font-semibold ${
               activeTab === "saved"
                 ? "border-b-2 border-white text-white"
                 : "text-gray-500"
