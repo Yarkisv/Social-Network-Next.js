@@ -16,6 +16,9 @@ export class ChatMember {
   @Column()
   chat_id: number;
 
+  @Column()
+  user_id: number;
+
   @ManyToOne(() => Chat, (chat) => chat.members, {
     onDelete: "CASCADE",
   })

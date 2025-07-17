@@ -20,7 +20,7 @@ import SubscribersModal from "@/app/components/modals/SubscribersModal";
 import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
 import { Post } from "@/app/types/post.type";
 import { User } from "@/app/types/user.type";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { Subs } from "@/app/types/subs.type";
 
 import axiosInstance from "@/lib/axios";
@@ -218,6 +218,10 @@ export default function page() {
     }
   };
 
+  const handleChatClick = async () => {
+    redirect("/chats");
+  };
+
   useEffect(() => {
     if (username) {
       fetchData();
@@ -276,12 +280,25 @@ export default function page() {
               <div className="text-gray-400">@{viewedUser.username}</div>
               {!isUserCurrent && (
                 <div>
-                  <button
-                    onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
-                    className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight"
-                  >
-                    {isSubscribed ? "unsubscribe" : "subscribe"}
-                  </button>
+                  <div>
+                    <button
+                      onClick={
+                        isSubscribed ? handleUnsubscribe : handleSubscribe
+                      }
+                      className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight"
+                    >
+                      {isSubscribed ? "unsubscribe" : "subscribe"}
+                    </button>
+                  </div>
+                  <div>
+                    <p>Write a message</p>
+                    <button
+                      className="rounded-[2px] bg-[#5020A1] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight"
+                      onClick={handleChatClick}
+                    >
+                      Chat
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
