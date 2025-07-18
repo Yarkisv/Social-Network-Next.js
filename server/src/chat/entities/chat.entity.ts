@@ -1,10 +1,5 @@
 import { ChatMember } from "src/chat-members/entities/chat-member.entity";
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("Chats")
 export class Chat {

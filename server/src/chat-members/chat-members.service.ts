@@ -2,13 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { CreateChatMemberDto } from "./dto/create-chat-member.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ChatMember } from "./entities/chat-member.entity";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class ChatMembersService {
   constructor(
     @InjectRepository(ChatMember)
-    private readonly chatMembersRepository: Repository<ChatMember>
+    private readonly chatMembersRepository: Repository<ChatMember>,
+    private readonly userService: UserService
   ) {}
 
   async create(createChatMemberDto: CreateChatMemberDto) {
@@ -27,13 +29,64 @@ export class ChatMembersService {
   }
 
   async findAllChatsByUserId(user_id: number) {
-    const chats = await this.chatMembersRepository.find({
+    const chatMemberships = await this.chatMembersRepository.find({
       where: {
         user: { user_id: user_id },
       },
       relations: ["chat"],
     });
 
+    const chats = chatMemberships.map((membership) => membership.chat);
+    const chatIds = chats.map((chat) => chat.chat_id);
+
+    const chatMembers = await this.chatMembersRepository.find({
+      where: { chat_id: In(chatIds) },
+    });
+
+    const modifiedChatMembers = chatMembers.map(
+      (chatMember) => chatMember.user_id
+    );
+
     console.log(chats);
+    console.log(chatMembers);
+    console.log(modifiedChatMembers);
+
+    const notCurrentUserId = modifiedChatMembers.find((id) => id !== user_id);
+
+    console.log(
+      "User with id: ",
+      user_id,
+      " has chat with user with id: ",
+      notCurrentUserId
+    );    
+
+    return chats;
+  }
+
+  async isPrivateChatBetweenTwoUsersExists(user1_id: number, user2_id: number) {
+    const user1Chats = await this.chatMembersRepository.find({
+      where: { user: { user_id: user1_id } },
+    });
+
+    const user2Chats = await this.chatMembersRepository.find({
+      where: { user: { user_id: user2_id } },
+    });
+
+    console.log("Chats user 1: ", user1Chats, "\nChats user 2: ", user2Chats);
+
+    let isChatExists: boolean = false;
+
+    for (let i = 0; i < user1Chats.length; i++) {
+      for (let j = 0; j < user2Chats.length; j++) {
+        if (user1Chats[i].chat_id === user2Chats[j].chat_id) {
+          isChatExists = true;
+          return true;
+        }
+      }
+    }
+
+    console.log(isChatExists);
+
+    return false;
   }
 }

@@ -15,10 +15,17 @@ export default function AsideInfo() {
     redirect("/settings");
   };
 
+  const handleChatsClick = () => {
+    redirect("/chats");
+  };
+
   return (
     <div className="text-white max-w-[198px] border-l-[2px]  border-[#0D0D0D] ">
       <div className="flex flex-col pl-[20px] gap-[20px]">
-        <div className="flex gap-[5px]  mt-[20px] cursor-pointer">
+        <div
+          className="flex gap-[5px]  mt-[20px] cursor-pointer"
+          onClick={handleChatsClick}
+        >
           <Image alt="profile" src={AsideChats} width={19} height={19} />
           <p>Chats</p>
         </div>

@@ -24,7 +24,7 @@ export class ChatService {
     });
 
     const chatMembersDto: CreateChatMemberDto = {
-      chat_id: 1,
+      chat_id: chat.chat_id,
       users_id: [current_user_id, Number(user_id)],
     };
 
