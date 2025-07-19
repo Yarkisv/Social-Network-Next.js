@@ -1,9 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateChatMemberDto } from "./dto/create-chat-member.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ChatMember } from "./entities/chat-member.entity";
 import { In, Repository } from "typeorm";
 import { UserService } from "src/user/user.service";
+import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class ChatMembersService {
@@ -47,20 +48,42 @@ export class ChatMembersService {
       (chatMember) => chatMember.user_id
     );
 
-    console.log(chats);
-    console.log(chatMembers);
-    console.log(modifiedChatMembers);
-
-    const notCurrentUserId = modifiedChatMembers.find((id) => id !== user_id);
+    const notCurrentUsersId = modifiedChatMembers.filter(
+      (member) => member !== user_id
+    );
 
     console.log(
       "User with id: ",
       user_id,
       " has chat with user with id: ",
-      notCurrentUserId
-    );    
+      notCurrentUsersId
+    );
 
-    return chats;
+    const modifiedChats = await Promise.all(
+      chats.map(async (chat) => {
+        const member = chatMembers.find(
+          (chatMember) =>
+            chatMember.chat_id === chat.chat_id &&
+            chatMember.user_id !== user_id
+        );
+
+        if (!member) return null;
+
+        const user = await this.userService.findById(member?.user_id);
+
+        return {
+          ...chat,
+          user_id: user.user_id,
+          username: user.username,
+          chatName: user.fullname,
+          avatarBase64: user.avatarBase64,
+        };
+      })
+    );
+
+    console.log(modifiedChats);
+
+    return modifiedChats;
   }
 
   async isPrivateChatBetweenTwoUsersExists(user1_id: number, user2_id: number) {
@@ -88,5 +111,48 @@ export class ChatMembersService {
     console.log(isChatExists);
 
     return false;
+  }
+
+  async findChatByUserId(user_id: number, chat_id: number) {
+    const chatMembership = await this.chatMembersRepository.findOne({
+      where: {
+        chat: { chat_id: chat_id },
+      },
+      relations: ["chat"],
+    });
+
+    if (!chatMembership) {
+      throw new NotFoundException();
+    }
+
+    const chat = chatMembership?.chat;
+
+    console.log(chat);
+
+    const chatMembers = await this.chatMembersRepository.find({
+      where: {
+        chat: { chat_id: chat_id },
+      },
+    });
+
+    console.log(chatMembers);
+
+    const notCurrentMember = chatMembers.find(
+      (chatMember) => chatMember.user_id !== user_id
+    );
+
+    if (!notCurrentMember) return null;
+
+    const notCurrentUser = await this.userService.findById(
+      notCurrentMember?.user_id
+    );
+
+    return {
+      ...chat,
+      user_id: notCurrentUser.user_id,
+      username: notCurrentUser.username,
+      chatName: notCurrentUser.fullname,
+      avatarBase64: notCurrentUser.avatarBase64,
+    };
   }
 }

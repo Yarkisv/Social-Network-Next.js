@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   Res,
@@ -43,5 +44,14 @@ export class ChatController {
     const user_id: number = req.user.user_id;
 
     return this.chatMembersService.findAllChatsByUserId(user_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("get/:id")
+  async getChatByUserId(@Request() req, @Param("id") id: number) {
+    const user_id: number = req.user.user_id;
+    const chat_id: number = id;
+
+    return this.chatMembersService.findChatByUserId(user_id, chat_id);
   }
 }

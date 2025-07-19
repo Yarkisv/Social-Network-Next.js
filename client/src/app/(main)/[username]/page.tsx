@@ -219,6 +219,15 @@ export default function page() {
   };
 
   const handleChatClick = async () => {
+    try {
+      await axiosInstance.post("chat/new", {
+        user_id: viewedUser?.user_id,
+        created_at: new Date(),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
     redirect("/chats");
   };
 

@@ -1,3 +1,5 @@
+"use client";
+
 import AsideInfo from "@/app/components/asideInfo";
 import Image from "next/image";
 import AsideSettings from "../../../images/AsideImg/AsideSettings.svg";
@@ -5,9 +7,38 @@ import ProfilePost from "../../../images/ProfilePost.png";
 import profileEmpty from "../../../images/profileEmpty.png";
 import likeChat from "../../../images/likeChat.svg";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import axiosInstance from "@/lib/axios";
+import { Chat } from "@/app/types/chat.type";
 
 export default function page() {
+  const [chat, setChat] = useState<Chat>();
+
+  const params = useParams();
+
+  const chat_id = params.chatId;
+
+  const fetchChatInfo = async () => {
+    try {
+      const response = await axiosInstance.get(`chat/get/${chat_id}`);
+
+      if (response.status === 200) {
+        setChat(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchChatInfo();
+  }, []);
+
+  if (!chat) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
       <div className="w-[198px] bg-[#15121F]">
@@ -15,17 +46,19 @@ export default function page() {
       </div>
       <div className="w-full max-w-[730px] h-screen bg-[#120921] flex flex-col p-5 font-[Manrope]  ">
         <header className="flex items-center border-b border-[#2f2f2f] pb-3 mb-4">
-          <img
-            src="/team-avatar.png"
+          <Image
+            src={`data:image/png;base64,${chat.avatarBase64}`}
             alt="Chat avatar"
+            height={10}
+            width={10}
             className="w-10 h-10 rounded-full mr-3 object-cover"
           />
-          <h2 className="text-xl font-semibold text-white">Web Dev Team</h2>
-          <Image
+          <h2 className="text-xl font-semibold text-white">{chat?.chatName}</h2>
+          {/* <Image
             src={AsideSettings}
             alt="Saved post"
             className=" h-[20px] w-[20px] ml-[10px] object-cover "
-          />
+          /> */}
         </header>
 
         <section className="flex-1  flex flex-col gap-3 w-full font-[Space_Grotesk] rounded-[2px] pr-1">

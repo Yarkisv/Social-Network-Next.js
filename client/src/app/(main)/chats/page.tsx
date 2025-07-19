@@ -50,12 +50,14 @@ export default function page() {
                   onClick={() => navigateToChat(chat.chat_id)}
                 >
                   <Image
-                    src={ProfilePost}
+                    src={`data:image/png;base64,${chat.avatarBase64}`}
                     alt="Saved post"
+                    width={46}
+                    height={46}
                     className=" h-[46px] w-[46px] object-cover rounded-full"
                   />
                   <div className="ml-[5px] font-[Space_Grotesk] font-[200] ">
-                    <p>Web dev team</p>
+                    <p>{chat.chatName}</p>
                     <p>message</p>
                   </div>
                   <div className="ml-auto mr-[20px] flex flex-col gap-[4px]  items-center ">
