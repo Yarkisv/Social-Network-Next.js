@@ -1,4 +1,10 @@
 import AsideInfo from "@/app/components/asideInfo";
+import Image from "next/image";
+import AsideSettings from "../../../images/AsideImg/AsideSettings.svg";
+import ProfilePost from "../../../images/ProfilePost.png";
+import profileEmpty from "../../../images/profileEmpty.png";
+import likeChat from "../../../images/likeChat.svg";
+
 import React from "react";
 
 export default function page() {
@@ -7,7 +13,7 @@ export default function page() {
       <div className="w-[198px] bg-[#15121F]">
         <AsideInfo />
       </div>
-      <div className="w-full max-w-[730px] flex flex-col p-5 font-[Manrope] bg-[#111] rounded-2xl border border-[#2a2a2a]">
+      <div className="w-full max-w-[730px] h-screen bg-[#120921] flex flex-col p-5 font-[Manrope]  ">
         <header className="flex items-center border-b border-[#2f2f2f] pb-3 mb-4">
           <img
             src="/team-avatar.png"
@@ -15,30 +21,83 @@ export default function page() {
             className="w-10 h-10 rounded-full mr-3 object-cover"
           />
           <h2 className="text-xl font-semibold text-white">Web Dev Team</h2>
+          <Image
+            src={AsideSettings}
+            alt="Saved post"
+            className=" h-[20px] w-[20px] ml-[10px] object-cover "
+          />
         </header>
 
-        <section className="flex-1 overflow-y-auto flex flex-col gap-3 bg-[#0d0d0d] p-4 rounded-xl h-[400px]">
-          <div className="self-start bg-[#1f1f1f] px-4 py-3 rounded-xl max-w-[75%]">
-            <p className="text-sm text-white">Hello! 👋</p>
-            <span className="block mt-1 text-xs text-gray-400">10:00</span>
+        <section className="flex-1  flex flex-col gap-3 w-full font-[Space_Grotesk] rounded-[2px] pr-1">
+          <div className="self-start flex my-[5px] bg-[#252037] ml-[15px] rounded-[2px] w-[98%] items-center ">
+            <Image
+              src={ProfilePost}
+              alt="Saved post"
+              className="h-[55px] w-[55px] ml-[-15px] object-cover rounded-full"
+            />
+            <div className="ml-[10px] flex flex-col flex-1">
+              <p className="font-[200] text-sm mb-[5px]">Web dev team</p>
+              <p className="font-[200] text-sm text-white">Hello! 👋</p>
+            </div>
+            <div className="ml-auto flex flex-col items-center justify-center gap-[10px] mr-[10px] ">
+              <span className="text-xs text-gray-400">10:00</span>
+              <Image
+                src={likeChat}
+                alt="Like icon"
+                className="h-[10px] w-[10px]  cursor-pointer"
+              />
+            </div>
           </div>
-          <div className="self-end bg-[#7e22ce] px-4 py-3 rounded-xl max-w-[75%] text-white">
-            <p className="text-sm">Hi! Ready to code?</p>
-            <span className="block mt-1 text-xs text-gray-300">10:01</span>
+          <div className="self-start flex my-[5px] bg-[#393154] ml-[15px] rounded-[2px] w-[98%] items-center ">
+            <Image
+              src={profileEmpty}
+              alt="Saved post"
+              className="h-[55px] w-[55px] ml-[-15px] object-cover rounded-full"
+            />
+            <div className="ml-[10px] flex flex-col flex-1">
+              <p className="font-[200] text-sm mb-[5px]">AJAV studio</p>
+              <p className="font-[200] text-sm text-white">
+                Hi! Ready to code?
+              </p>
+            </div>
+            <div className="ml-auto flex flex-col items-center justify-center gap-[10px] mr-[10px] ">
+              <span className="text-xs text-gray-400">10:00</span>
+              <Image
+                src={likeChat}
+                alt="Like icon"
+                className="h-[10px] w-[10px] cursor-pointer"
+              />
+            </div>
           </div>
-          <div className="self-start bg-[#1f1f1f] px-4 py-3 rounded-xl max-w-[75%]">
-            <p className="text-sm text-white">Always 😎</p>
-            <span className="block mt-1 text-xs text-gray-400">10:02</span>
+
+          <div className="self-start flex my-[5px] bg-[#252037] ml-[15px] rounded-[2px] w-[98%] items-center ">
+            <Image
+              src={ProfilePost}
+              alt="Saved post"
+              className="h-[55px] w-[55px] ml-[-15px] object-cover rounded-full"
+            />
+            <div className="ml-[10px] flex flex-col flex-1">
+              <p className="font-[200] text-sm mb-[5px]">Web dev team</p>
+              <p className="font-[200] text-sm text-white">Always</p>
+            </div>
+            <div className="ml-auto flex flex-col items-center justify-center gap-[10px] mr-[10px] ">
+              <span className="text-xs text-gray-400">10:00</span>
+              <Image
+                src={likeChat}
+                alt="Like icon"
+                className="h-[10px] w-[10px]  cursor-pointer"
+              />
+            </div>
           </div>
         </section>
 
-        <footer className="flex items-end gap-3 mt-4">
+        <footer className="flex items-center gap-3 mt-4">
           <textarea
             placeholder="Type a message..."
             rows={1}
-            className="flex-1 resize-none px-4 py-3 rounded-xl bg-[#1a1a1a] text-white border border-[#333] outline-none"
+            className="flex-1 resize-none px-4 py-3 rounded-[2px] bg-[#1a1a1a] text-white border border-[#333] outline-none"
           />
-          <button className="bg-[#9333EA] hover:bg-[#7e22ce] px-5 py-3 rounded-xl text-white font-semibold">
+          <button className="bg-[#9333EA] hover:bg-[#7e22ce] px-[16px] py-[10px] rounded-[2px] text-white  cursor-pointer font-semibold">
             Send
           </button>
         </footer>
