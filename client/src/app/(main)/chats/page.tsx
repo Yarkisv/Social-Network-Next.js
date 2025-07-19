@@ -39,13 +39,13 @@ export default function page() {
       <div className="w-[198px] bg-[#15121F]">
         <AsideInfo />
       </div>
-      <div className="w-full max-w-[730px] flex pt-[20px] px-[20px] font-[Manrope]">
+      <div className="w-full max-w-[730px] bg-[#120921] flex pt-[20px] px-[20px] font-[Manrope]">
         <div className="w-[520px] flex flex-col gap-[20px]">
           {chats?.length > 0 ? (
             <div>
               {chats.map((chat) => (
                 <div
-                  className="flex border-1 p-[5px]"
+                  className="flex p-[5px] cursor-pointer"
                   key={chat.chat_id}
                   onClick={() => navigateToChat(chat.chat_id)}
                 >
