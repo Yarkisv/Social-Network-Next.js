@@ -4,6 +4,8 @@ import AsideInfo from "@/app/components/asideInfo";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ProfilePost from "../../images/ProfilePost.png";
+import NoChats from "../../images/NoChats.svg";
+
 import axiosInstance from "@/lib/axios";
 import { Chat } from "@/app/types/chat.type";
 import { useRouter } from "next/navigation";
@@ -40,12 +42,12 @@ export default function page() {
         <AsideInfo />
       </div>
       <div className="w-full max-w-[730px] bg-[#120921] flex pt-[20px] px-[20px] font-[Manrope]">
-        <div className="w-[520px] flex flex-col gap-[20px]">
+        <div className="w-full flex flex-col gap-[20px]">
           {chats?.length > 0 ? (
             <div>
               {chats.map((chat) => (
                 <div
-                  className="flex p-[5px] cursor-pointer"
+                  className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200"
                   key={chat.chat_id}
                   onClick={() => navigateToChat(chat.chat_id)}
                 >
@@ -72,8 +74,16 @@ export default function page() {
               ))}
             </div>
           ) : (
-            <div>
-              <p>No chats yet</p>
+            <div className="flex flex-col items-center justify-center mt-20 text-center text-white/70">
+              <Image
+                src={NoChats}
+                alt="Saved post"
+                className=" h-[40px] w-[40px] object-cover mb-[5px]"
+              />
+              <p className="text-lg font-semibold">No chats yet</p>
+              <p className="text-sm text-white/50">
+                Start a conversation to see it here.
+              </p>
             </div>
           )}
         </div>
