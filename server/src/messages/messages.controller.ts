@@ -1,11 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
+import { MessagesService } from "./messages.service";
+import { CreateMessageDto } from "./dto/create-message.dto";
+import { UpdateMessageDto } from "./dto/update-message.dto";
 
-@Controller('messages')
+@Controller("messages")
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
+
+  @Get("get/:id")
+  async fetchAllMessagesByChatId(@Param("id") id: number) {
+    console.log("Chat id: ", id);
+
+    return await this.messagesService.findAllByChatId(id);
+  }
 
   // @Post()
   // create(@Body() createMessageDto: CreateMessageDto) {
@@ -21,6 +36,4 @@ export class MessagesController {
   // findOne(@Param('id') id: string) {
   //   return this.messagesService.findOne(+id);
   // }
-
-  
 }
