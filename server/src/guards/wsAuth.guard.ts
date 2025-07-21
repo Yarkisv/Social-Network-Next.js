@@ -6,24 +6,27 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as cookie from "cookie";
+import { Socket } from "socket.io";
 
 @Injectable()
 export class WsAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const client = context.switchToWs().getClient();
-    const { cookie: rawCookie } = client.handshake.headers;
+    const client = context.switchToWs().getClient<Socket>();
+    const rawCookie = client.handshake.headers?.cookie;
 
-    if (!rawCookie) {
+    if (typeof rawCookie !== "string") {
       throw new UnauthorizedException("No cookie header");
     }
 
     const parsedCookies = cookie.parse(rawCookie);
     const token = parsedCookies["access_token"];
 
+    console.log(token);
+
     if (!token) {
-      throw new UnauthorizedException("No access_token cookie");
+      throw new UnauthorizedException("No access_token");
     }
 
     try {
@@ -31,13 +34,11 @@ export class WsAuthGuard implements CanActivate {
         secret: process.env.ACCESS_JWT_SECRET,
       });
 
-      // можно повесить user прямо на клиента:
-      client.user = payload;
+      client.data.user = payload;
+      return true;
     } catch (e) {
       console.error("JWT verification failed:", e);
       throw new UnauthorizedException("Invalid token");
     }
-
-    return true;
   }
 }

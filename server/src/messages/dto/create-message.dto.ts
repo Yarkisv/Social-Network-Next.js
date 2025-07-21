@@ -6,14 +6,6 @@ export class CreateMessageDto {
   chat_id: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  sender_id: number;
-
-  @IsNotEmpty()
   @IsString()
   content: string;
-
-  @IsNotEmpty()
-  @IsDate()
-  sent_at: Date;
 }

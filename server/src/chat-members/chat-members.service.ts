@@ -52,12 +52,12 @@ export class ChatMembersService {
       (member) => member !== user_id
     );
 
-    console.log(
-      "User with id: ",
-      user_id,
-      " has chat with user with id: ",
-      notCurrentUsersId
-    );
+    // console.log(
+    //   "User with id: ",
+    //   user_id,
+    //   " has chat with user with id: ",
+    //   notCurrentUsersId
+    // );
 
     const modifiedChats = await Promise.all(
       chats.map(async (chat) => {
@@ -81,7 +81,7 @@ export class ChatMembersService {
       })
     );
 
-    console.log(modifiedChats);
+    // console.log(modifiedChats);
 
     return modifiedChats;
   }
@@ -127,7 +127,7 @@ export class ChatMembersService {
 
     const chat = chatMembership?.chat;
 
-    console.log(chat);
+    // console.log(chat);
 
     const chatMembers = await this.chatMembersRepository.find({
       where: {
@@ -135,7 +135,7 @@ export class ChatMembersService {
       },
     });
 
-    console.log(chatMembers);
+    // console.log(chatMembers);
 
     const notCurrentMember = chatMembers.find(
       (chatMember) => chatMember.user_id !== user_id

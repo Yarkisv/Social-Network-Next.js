@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -24,6 +25,7 @@ export class Message {
   @CreateDateColumn()
   sent_at: Date;
 
-  @ManyToOne(() => User, user => user.sentMessages)
-  user: User
+  @ManyToOne(() => User, (user) => user.sentMessages)
+  @JoinColumn({ name: "sender_id" })
+  user: User;
 }

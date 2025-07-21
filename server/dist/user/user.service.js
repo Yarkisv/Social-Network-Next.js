@@ -151,7 +151,6 @@ let UserService = class UserService {
         const modifiedUser = JSON.parse(JSON.stringify(user));
         delete modifiedUser.avatarPathTo;
         modifiedUser.avatarBase64 = avatarBase64;
-        console.log(modifiedUser);
         return modifiedUser;
     }
     async updateUser(id, updateUserDto, file) {

@@ -9,7 +9,7 @@ export class FileService {
   async uploadFile(file: Express.Multer.File, folder: string) {
     const uploadFolder = join(__dirname, "..", "..", "static", folder);
 
-    console.log(folder);
+    // console.log(folder);
 
     let pathTo: string = "";
 
@@ -33,7 +33,7 @@ export class FileService {
   async getFile(pathTo: string, username?: string) {
     let filePath: string = "";
 
-    console.log(pathTo);
+    // console.log(pathTo);
 
     if (!username) {
       filePath = join(process.cwd(), `/static/${pathTo}`);

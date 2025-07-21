@@ -1,4 +1,4 @@
-import { Logger } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -9,6 +9,7 @@ import {
 } from "@nestjs/websockets";
 
 import { Server } from "socket.io";
+import { WsAuthGuard } from "src/guards/wsAuth.guard";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { MessagesService } from "src/messages/messages.service";
 
@@ -37,12 +38,17 @@ export class ChatGateway
     this.logger.log(`Cliend id:${client.id} disconnected`);
   }
 
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage("message")
   async handleMessage(client: any, payload: CreateMessageDto) {
     this.logger.log(`Message received from client id: ${client.id}`);
     this.logger.debug(`Payload: ${JSON.stringify(payload)}`);
 
-    const message = await this.messageService.create(payload);
+    const user = client.data.user;
+
+    console.log("Sender id: ", user.user_id);
+
+    const message = await this.messageService.create(payload, user.user_id);
 
     this.io.emit("newMessage", message);
   }

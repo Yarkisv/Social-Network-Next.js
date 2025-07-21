@@ -180,7 +180,7 @@ export class UserService {
 
     modifiedUser.avatarBase64 = avatarBase64;
 
-    console.log(modifiedUser);
+    // console.log(modifiedUser);
 
     return modifiedUser;
   }

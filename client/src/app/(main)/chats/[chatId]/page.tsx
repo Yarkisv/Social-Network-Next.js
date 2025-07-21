@@ -2,9 +2,6 @@
 
 import AsideInfo from "@/app/components/asideInfo";
 import Image from "next/image";
-import AsideSettings from "../../../images/AsideImg/AsideSettings.svg";
-import ProfilePost from "../../../images/ProfilePost.png";
-import profileEmpty from "../../../images/profileEmpty.png";
 import likeChat from "../../../images/likeChat.svg";
 import NoChats from "../../../images/NoChats.svg";
 
@@ -12,7 +9,7 @@ import AddFiile from "../../../images/AddFiile.svg";
 import sendMessageButton from "../../../images/sendMessageButton.svg";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { Chat } from "@/app/types/chat.type";
 import { useConnectSocket } from "@/hooks/useConnectSocket";
@@ -22,10 +19,14 @@ import axios from "axios";
 
 export default function page() {
   const [chat, setChat] = useState<Chat>();
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const params = useParams();
 
   const chat_id = params.chatId;
+
+  useConnectSocket();
 
   const fetchChatInfo = async () => {
     try {
@@ -33,20 +34,38 @@ export default function page() {
 
       if (response.status === 200) {
         setChat(response.data);
+
+        fetchAllMessages();
       }
     } catch (error) {
-      console.log(error);
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        redirect("/chats");
+      } else {
+        console.log("Unexpected error:", error);
+      }
     }
   };
 
   const fetchAllMessages = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/messages/get/${1}`
+        `http://localhost:4000/api/messages/get/${chat_id}`
       );
 
       if (response.status === 200) {
-        setMessages(response.data);
+        const modifiedMessages = response.data.map((message: any) => {
+          const date = new Date(message.sent_at);
+
+          const hours = String(date.getHours()).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
+
+          return {
+            ...message,
+            time: `${hours}:${minutes}`,
+          };
+        });
+
+        setMessages(modifiedMessages);
       }
     } catch (error) {
       console.log(error);
@@ -55,27 +74,27 @@ export default function page() {
 
   useEffect(() => {
     fetchChatInfo();
-  }, []);
-
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  useConnectSocket();
-
-  useEffect(() => {
-    fetchAllMessages();
 
     SocketApi.socket?.on("newMessage", (message) => {
-      setMessages((prev) => [...prev, message]);
+      setMessages((prev) => {
+        const date = new Date(message.sent_at);
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        const modifiedMessage = {
+          ...message,
+          time: `${hours}:${minutes}`,
+        };
+
+        return [...prev, modifiedMessage];
+      });
     });
-  }, []);
+  }, [chat_id]);
 
   const sendMessage = () => {
     const payload = {
-      chat_id: 1,
-      sender_id: 1,
+      chat_id: chat_id,
       content: message,
-      sent_at: new Date().toString(),
     };
 
     if (message.length > 0) {
@@ -111,22 +130,20 @@ export default function page() {
             {messages.length > 0 ? (
               <div>
                 {messages.map((message) =>
-                  message.sender_id === 1 ? (
+                  message.sender_id !== chat.user_id ? (
                     <div
-                      className="self-end flex my-[10px] bg-[#252037] ml-[10px]   rounded-[2px] w-[55%] items-center"
-                      key={message.message_id}
+                      className="self-end flex my-[10px] bg-[green] ml-[10px]   rounded-[2px] w-[55%] items-center"
+                      key={`${message.message_id}-${message.time}`}
                     >
                       <div className="ml-[10px] flex flex-col flex-1">
-                        <p className="font-[200] text-sm mb-[5px]">
-                          Web dev team
-                        </p>
+                        <p className="font-[200] text-sm mb-[5px]">You</p>
                         <p className="font-[200] text-sm text-white break-words whitespace-pre-wrap">
                           {message.content}
                         </p>
                       </div>
                       <div className="ml-auto flex flex-col items-center justify-center gap-[10px] mr-[10px]">
                         <span className="text-xs text-gray-400">
-                          {message.sent_at?.toString()}
+                          {message.time?.toString()}
                         </span>
                         <Image
                           src={likeChat}
@@ -136,16 +153,21 @@ export default function page() {
                       </div>
                     </div>
                   ) : (
-                    <div>
+                    <div
+                      className="self-end flex my-[10px] bg-[#252037] ml-[10px] rounded-[2px] w-[55%] items-center"
+                      key={`${message.message_id}-${message.time}`}
+                    >
                       <div className="ml-[10px]  flex flex-col flex-1">
-                        <p className="font-[200] text-sm mb-[5px]">Web dev</p>
+                        <p className="font-[200] text-sm mb-[5px]">
+                          {chat.chatName}
+                        </p>
                         <p className="font-[200] text-sm text-white break-words whitespace-pre-wrap">
                           {message.content}
                         </p>
                       </div>
                       <div className="ml-auto flex flex-col items-center justify-center gap-[10px] mr-[10px]">
                         <span className="text-xs text-gray-400">
-                          {message.sent_at?.toString()}
+                          {message.time?.toString()}
                         </span>
                         <Image
                           src={likeChat}

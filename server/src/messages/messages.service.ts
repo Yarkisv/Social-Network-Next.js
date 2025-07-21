@@ -12,12 +12,14 @@ export class MessagesService {
     private readonly messageRepository: Repository<Message>
   ) {}
 
-  async create(createMessageDto: CreateMessageDto) {
+  async create(createMessageDto: CreateMessageDto, sender_id: number) {
+    const now = new Date();
+
     const message = await this.messageRepository.save({
       chat_id: createMessageDto.chat_id,
-      sender_id: createMessageDto.sender_id,
+      sender_id: sender_id,
       content: createMessageDto.content,
-      sent_at: createMessageDto.sent_at,
+      sent_at: now,
     });
 
     return message;
