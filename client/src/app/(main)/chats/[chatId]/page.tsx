@@ -66,6 +66,7 @@ export default function page() {
         });
 
         setMessages(modifiedMessages);
+        console.log(modifiedMessages);
       }
     } catch (error) {
       console.log(error);
@@ -77,6 +78,12 @@ export default function page() {
 
     SocketApi.socket?.on("newMessage", (message) => {
       setMessages((prev) => {
+        const alreadyExists = prev.some(
+          (m) => m.message_id === message.message_id
+        );
+
+        if (alreadyExists) return prev;
+
         const date = new Date(message.sent_at);
         const hours = String(date.getHours()).padStart(2, "0");
         const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -133,7 +140,7 @@ export default function page() {
                   message.sender_id !== chat.user_id ? (
                     <div
                       className="self-end ml-auto my-[6px] bg-green-600 rounded-[6px] rounded-br-[0px] max-w-[70%] flex flex-col py-2 px-3"
-                      key={`${message.message_id}-${message.time}`}
+                      key={message.message_id}
                     >
                       <div className="flex justify-between items-center gap-[60px] mb-1">
                         <p className="text-sm font-medium text-white">You</p>
@@ -155,10 +162,12 @@ export default function page() {
                   ) : (
                     <div
                       className="self-start my-[6px] bg-[#252037] ml-[10px] rounded-[6px] rounded-bl-[0px] max-w-[70%] flex flex-col py-2 px-3"
-                      key={`${message.message_id}-${message.time}`}
+                      key={message.message_id}
                     >
                       <div className="flex justify-between items-center gap-[20px] mb-1">
-                        <p className="text-sm font-medium text-white">Web</p>
+                        <p className="text-sm font-medium text-white">
+                          {chat.chatName}
+                        </p>
                         <span className="text-xs text-gray-300">
                           {message.time?.toString()}
                         </span>
@@ -198,15 +207,23 @@ export default function page() {
             placeholder="Type a message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
             className="flex-1 px-4 py-3 rounded-lg bg-[#1a1a1a] text-white border border-[#333] outline-none"
           />
 
-          <button className="w-[50px] h-[50px] rounded-lg transition-all duration-200 shadow-md hover:shadow-lg bg-[#9333EA] hover:bg-[#7e22ce] flex items-center justify-center">
+          <button
+            className="cursor-pointer w-[50px] h-[50px] rounded-lg transition-all duration-200 shadow-md hover:shadow-lg bg-[#9333EA] hover:bg-[#7e22ce] flex items-center justify-center"
+            onClick={sendMessage}
+          >
             <Image
               src={message.trim() ? sendMessageButton : AddFiile}
               alt="Action icon"
               className="h-[20px] w-[20px] cursor-pointer object-contain"
-              onClick={sendMessage}
             />
           </button>
         </footer>
