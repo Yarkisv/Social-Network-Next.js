@@ -23,7 +23,7 @@ export class WsAuthGuard implements CanActivate {
     const parsedCookies = cookie.parse(rawCookie);
     const token = parsedCookies["access_token"];
 
-    console.log(token);
+    // console.log(token);
 
     if (!token) {
       throw new UnauthorizedException("No access_token");

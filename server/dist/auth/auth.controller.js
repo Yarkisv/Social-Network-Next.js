@@ -44,7 +44,32 @@ let AuthController = class AuthController {
     }
     profile(req) {
         const id = req.user.user_id;
+        console.log(id);
         return this.userServise.findById(id);
+    }
+    async checkToken(req) {
+        const token = req.user.token;
+        if (!token) {
+            throw new common_1.UnauthorizedException("Not authorized");
+        }
+        return { message: "Token valid" };
+    }
+    async logout(req, response) {
+        const token = req.user.token;
+        if (!token) {
+            throw new common_1.UnauthorizedException("Not authorized");
+        }
+        response.clearCookie("access_token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+        });
+        response.clearCookie("refresh_token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+        });
+        return response.status(200).json({ message: "Logout successful" });
     }
     async refreshTokens(req, response) {
         const refreshToken = req.user.token;
@@ -82,6 +107,23 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "profile", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)("/check-token"),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkToken", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)("logout"),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.UseGuards)(refreshToken_guard_1.RefreshTokenGuard),
     (0, common_1.Get)("refresh"),

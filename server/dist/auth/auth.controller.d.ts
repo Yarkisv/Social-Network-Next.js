@@ -10,5 +10,9 @@ export declare class AuthController {
         message: string;
     }>;
     profile(req: any): Promise<any>;
+    checkToken(req: any): Promise<{
+        message: string;
+    }>;
+    logout(req: any, response: Response): Promise<Response<any, Record<string, any>>>;
     refreshTokens(req: any, response: Response): Promise<void>;
 }

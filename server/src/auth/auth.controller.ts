@@ -8,6 +8,7 @@ import {
   UseGuards,
   Request,
   Res,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/create-auth.dto";
@@ -54,7 +55,45 @@ export class AuthController {
   profile(@Request() req) {
     const id: number = req.user.user_id;
 
+    console.log(id);
+
     return this.userServise.findById(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("/check-token")
+  async checkToken(@Request() req) {
+    const token = req.user.token;
+
+    if (!token) {
+      throw new UnauthorizedException("Not authorized");
+    }
+
+    return { message: "Token valid" };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("logout")
+  async logout(@Request() req, @Res() response: Response) {
+    const token = req.user.token;
+
+    if (!token) {
+      throw new UnauthorizedException("Not authorized");
+    }
+
+    response.clearCookie("access_token", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+
+    response.clearCookie("refresh_token", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+
+    return response.status(200).json({ message: "Logout successful" });
   }
 
   @UseGuards(RefreshTokenGuard)

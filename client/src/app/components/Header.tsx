@@ -8,8 +8,12 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { openModal, setSearchQuery } from "../store/slices/modalSlice";
 import SearchUsersPanel from "../components/Panels/SearchUsersPanel";
+import axiosInstance from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
+
   const [inputText, setInputText] = useState<string>("");
 
   const isOpen = useAppSelector((state) => state.modal.isOpen);
@@ -21,6 +25,20 @@ export default function Header() {
 
   const handleOnChange = () => {
     dispatch(setSearchQuery(inputText));
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      console.log("Sendeing request");
+
+      const response = await axiosInstance.get("/auth/logout");
+
+      if (response.status === 200) {
+        router.push("/login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -39,13 +57,15 @@ export default function Header() {
             className="rounded-full"
           />
           <p className="text-white ml-[10px] text-[18px]">Profile</p>
-          <Image
-            alt="logout"
-            src={LogOut}
-            width={22}
-            height={22}
-            className="ml-[25px]"
-          />
+          <div onClick={handleLogoutClick} className="cursor-pointer">
+            <Image
+              alt="logout"
+              src={LogOut}
+              width={22}
+              height={22}
+              className="ml-[25px]"
+            />
+          </div>
         </div>
 
         <h1 className="text-2xl font-bold text-[#C084FC] text-center flex-1">

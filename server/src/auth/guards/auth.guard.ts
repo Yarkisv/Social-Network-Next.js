@@ -20,8 +20,6 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    console.log(token);
-
     const ACCESS_JWT_SECRET = process.env.ACCESS_JWT_SECRET;
 
     try {

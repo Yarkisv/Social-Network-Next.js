@@ -47,7 +47,7 @@ export default function page() {
             <div>
               {chats.map((chat) => (
                 <div
-                  className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200"
+                  className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200 border-1"
                   key={chat.chat_id}
                   onClick={() => navigateToChat(chat.chat_id)}
                 >
@@ -62,14 +62,14 @@ export default function page() {
                     <p>{chat.chatName}</p>
                     <p>message</p>
                   </div>
-                  <div className="ml-auto mr-[20px] flex flex-col gap-[4px]  items-center ">
+                  {/* <div className="ml-auto mr-[20px] flex flex-col gap-[4px]  items-center ">
                     <p className="font-[Space_Grotesk] font-[200] text-[14px]">
                       3:05
                     </p>
                     <p className="bg-[#C084FC] rounded-[10px] text-[13px] px-[5px]">
                       322
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>

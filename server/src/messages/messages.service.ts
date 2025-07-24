@@ -32,7 +32,7 @@ export class MessagesService {
       },
     });
 
-    console.log(messages);
+    // console.log(messages);
 
     return messages;
   }

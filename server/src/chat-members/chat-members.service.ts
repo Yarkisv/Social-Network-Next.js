@@ -114,18 +114,31 @@ export class ChatMembersService {
   }
 
   async findChatByUserId(user_id: number, chat_id: number) {
-    const chatMembership = await this.chatMembersRepository.findOne({
+    const chatMemberships = await this.chatMembersRepository.find({
       where: {
         chat: { chat_id: chat_id },
       },
       relations: ["chat"],
     });
 
-    if (!chatMembership) {
+    // Проверка что id пользователя из токена есть в участниках чата
+    const isUserCanReadChat = chatMemberships.some(
+      (chatMember) => chatMember.user_id === user_id
+    );
+
+    if (!isUserCanReadChat) {
+      console.log(`Is user can read chat: ${isUserCanReadChat}`);
+
       throw new NotFoundException();
     }
 
-    const chat = chatMembership?.chat;
+    console.log(`Is user can read chat: ${isUserCanReadChat}`);
+
+    if (!chatMemberships) {
+      throw new NotFoundException();
+    }
+
+    const chat = chatMemberships[0].chat;
 
     // console.log(chat);
 
