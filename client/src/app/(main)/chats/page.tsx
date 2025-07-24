@@ -37,7 +37,7 @@ export default function page() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4">
+    <div className="h-[95%] bg-[#060606] text-white flex justify-center px-4">
       <div className="w-[198px] bg-[#15121F]">
         <AsideInfo />
       </div>

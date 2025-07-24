@@ -2,7 +2,7 @@ import AsideInfo from "../components/asideInfo";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#060606] text-white flex justify-center px-4 ">
+    <div className="h-screen bg-[#060606] text-white flex justify-center px-4 ">
       <div className="w-[200px] bg-[#15121F] ">
         <AsideInfo />
       </div>

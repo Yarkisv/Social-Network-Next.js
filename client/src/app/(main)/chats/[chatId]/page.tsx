@@ -116,7 +116,7 @@ export default function page() {
   }
 
   return (
-    <div className="min-h-screen  bg-[#060606] text-white flex justify-center">
+    <div className="h-screen bg-[#060606] text-white flex justify-center">
       <div className="w-[198px] bg-[#15121F]">
         <AsideInfo />
       </div>
@@ -132,31 +132,36 @@ export default function page() {
           <h2 className="text-xl font-semibold text-white">{chat?.chatName}</h2>
         </header>
 
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <section className="flex-1 overflow-y-auto flex flex-col gap-3 w-full font-[Space_Grotesk] pr-1 pb-2">
+        <div className="flex flex-col flex-1 min-h-0">
+          <section
+            id="messagesContainer"
+            className="flex-1 overflow-y-auto flex flex-col gap-3 w-full font-[Manrope] font-[400] pr-1 pb-2 scrollbar-visible"
+          >
             {messages.length > 0 ? (
-              <div className="flex flex-col gap-2 justify-end h-full">
+              <div className="flex flex-col gap-2 justify-end">
                 {messages.map((message) =>
                   message.sender_id !== chat.user_id ? (
                     <div
                       className="self-end ml-auto my-[6px] bg-green-600 rounded-[6px] rounded-br-[0px] max-w-[70%] flex flex-col py-2 px-3"
                       key={message.message_id}
                     >
-                      <div className="flex justify-between items-center gap-[60px] mb-1">
+                      <div className="flex justify-between items-center gap-[10px] mb-1">
                         <p className="text-sm font-medium text-white">You</p>
                         <span className="text-xs text-gray-300">
                           {message.time?.toString()}
                         </span>
                       </div>
-                      <p className="font-[200] text-sm text-white break-words whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                      <div className="flex relative justify-end mt-1">
-                        <Image
-                          src={likeChat}
-                          alt="Like icon"
-                          className="h-[12px] absolute bottom-[5px] w-[12px] cursor-pointer"
-                        />
+                      <div className="flex justify-between gap-2 mt-1">
+                        <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
+                          {message.content}
+                        </p>
+                        <div className="flex items-end flex-shrink-0">
+                          <Image
+                            src={likeChat}
+                            alt="Like icon"
+                            className="h-[14px] w-[14px] cursor-pointer"
+                          />
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -172,15 +177,17 @@ export default function page() {
                           {message.time?.toString()}
                         </span>
                       </div>
-                      <p className="font-[200] text-sm text-white break-words whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                      <div className="flex relative justify-end mt-1">
-                        <Image
-                          src={likeChat}
-                          alt="Like icon"
-                          className="h-[12px] absolute bottom-[5px] w-[12px] cursor-pointer"
-                        />
+                      <div className="flex justify-between gap-2 mt-1">
+                        <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
+                          {message.content}
+                        </p>
+                        <div className="flex items-end flex-shrink-0">
+                          <Image
+                            src={likeChat}
+                            alt="Like icon"
+                            className="h-[14px] w-[14px] cursor-pointer"
+                          />
+                        </div>
                       </div>
                     </div>
                   )
@@ -201,6 +208,7 @@ export default function page() {
             )}
           </section>
         </div>
+
         <footer className="flex sticky bottom-0 items-center gap-[8px] p-3 bg-[#1c1c1e] border-t border-[#2a2a2e] rounded-t-xl shadow-lg">
           <input
             type="text"
