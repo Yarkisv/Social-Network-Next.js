@@ -16,6 +16,8 @@ export default function Header() {
 
   const [inputText, setInputText] = useState<string>("");
 
+  const user = useAppSelector((state) => state.user.user);
+
   const isOpen = useAppSelector((state) => state.modal.isOpen);
   const dispatch = useAppDispatch();
 
@@ -41,6 +43,10 @@ export default function Header() {
     }
   };
 
+  const handleProfileClick = async () => {
+    router.push(`/${user?.username}`);
+  };
+
   useEffect(() => {
     handleOnChange();
   }, [inputText]);
@@ -55,8 +61,14 @@ export default function Header() {
             width={30}
             height={30}
             className="rounded-full"
+            onClick={handleProfileClick}
           />
-          <p className="text-white ml-[10px] text-[18px]">Profile</p>
+          <p
+            className="text-white ml-[10px] text-[18px]"
+            onClick={handleProfileClick}
+          >
+            Profile
+          </p>
           <div onClick={handleLogoutClick} className="cursor-pointer">
             <Image
               alt="logout"

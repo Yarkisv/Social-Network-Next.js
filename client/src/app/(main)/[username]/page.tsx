@@ -16,34 +16,22 @@ import {
   closeSubscribtionsModal,
 } from "@/app/store/slices/modalSlice";
 import PostModal from "@/app/components/modals/PostModal";
-import SubscribersModal from "@/app/components/modals/SubscribersModal";
-import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
 import { Post } from "@/app/types/post.type";
-import { User } from "@/app/types/user.type";
 import { redirect, useParams } from "next/navigation";
-import { Subs } from "@/app/types/subs.type";
-
+import { FullUser } from "@/app/types/full-user.type";
 import axiosInstance from "@/lib/axios";
 
 export default function page() {
-  const API = process.env.NEXT_PUBLIC_API_URL;
-
+  const dispatch = useAppDispatch();
   const params = useParams();
-
-  const username = params.username;
-
-  const [currentUser, setCurrentUser] = useState<User | null>();
-  const [viewedUser, setViewedUser] = useState<User | null>();
-
-  const [subscribers, setSubscribers] = useState<Subs[] | null>([]);
-  const [subscriptions, setSubscriptions] = useState<Subs[] | null>([]);
+  const currentUser = useAppSelector((state) => state.user.user);
+  const [fullUserData, setFullUserData] = useState<FullUser>();
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
-
-  const [posts, setPosts] = useState<Post[]>();
   const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
-
   const [selectedPost, setSelectedPost] = useState<Post | null>();
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  const username = params.username;
 
   const isPostModalOpen = useAppSelector(
     (state) => state.modal.isPostModalOpen
@@ -57,86 +45,30 @@ export default function page() {
     (state) => state.modal.isSubscriptionsModalOpen
   );
 
-  const dispatch = useAppDispatch();
-
   const fetchData = async () => {
     try {
-      // получение информации о текущем пользователе
-      const currentUser = await axiosInstance.get("/auth/profile");
+      const response = await axios.get(`${API}/auth/get-full/${username}`);
 
-      if (currentUser.status === 200) {
-        // получение постов текущего пользователя
-        const postsRes = await axios.get(
-          `${API}/post/get/${currentUser.data?.user_id}`
-        );
+      if (response.status === 200) {
+        setFullUserData(response.data);
 
-        if (postsRes.status === 200) {
-          setPosts(postsRes.data);
-        }
+        const isCurrent = currentUser?.username === response.data.user.username;
 
-        // получение подписок и подписчиков текущего пользователя
-        const subscriptionsRes = await axios.get(
-          `${API}/subscription/${currentUser.data?.user_id}`
-        );
-
-        if (subscriptionsRes.status === 200) {
-          setSubscriptions(subscriptionsRes.data.subscriptions);
-          setSubscribers(subscriptionsRes.data.subscribers);
-        }
+        setIsUserCurrent(isCurrent);
       }
 
-      const current = currentUser.data;
-
-      console.log(currentUser.data);
-
-      setCurrentUser(current);
-
-      console.log(username);
-
-      // получение информации просматриваемого пользователя
-      const usernameRes = await axios.get(`${API}/user/username/${username}`);
-
-      if (usernameRes.status === 200) {
-        // получение постов просматриваемого пользователя
-        const postsRes = await axios.get(
-          `${API}/post/get/${usernameRes.data?.user_id}`
+      if (!isUserCurrent) {
+        const isSubscribedRes = await axios.get(
+          `${API}/subscription/is-subscribed/${currentUser?.user_id}`,
+          {
+            params: {
+              viewed_user_id: response.data?.user?.user_id,
+            },
+          }
         );
-
-        if (postsRes.status === 200) {
-          setPosts(postsRes.data);
+        if (isSubscribedRes.status === 200) {
+          setIsSubscribed(isSubscribedRes.data);
         }
-
-        const subscriptionsRes = await axios.get(
-          `${API}/subscription/${usernameRes.data?.user_id}`
-        );
-
-        if (subscriptionsRes.status === 200) {
-          setSubscriptions(subscriptionsRes.data.subscriptions);
-          setSubscribers(subscriptionsRes.data.subscribers);
-        }
-      }
-
-      const viewed = usernameRes.data;
-
-      console.log(usernameRes.data);
-
-      setViewedUser(viewed);
-
-      const isSubscribedRes = await axios.get(
-        `${API}/subscription/is-subscribed/${current?.user_id}`,
-        {
-          params: {
-            viewed_user_id: viewed?.user_id,
-          },
-        }
-      );
-
-      if (isSubscribedRes.status === 200) {
-        setIsSubscribed(isSubscribedRes.data);
-      }
-
-      if (current.username === viewed.username) {
-        setIsUserCurrent(true);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -145,7 +77,7 @@ export default function page() {
 
   const handleUploadPostClick = () => {
     dispatch(openUploadPostWindow());
-  };
+  }; 
 
   const handlePostModalOpen = (post: Post) => {
     setSelectedPost(post);
@@ -158,7 +90,6 @@ export default function page() {
   };
 
   const handleSubscribersModalOpen = () => {
-    console.log(subscribers);
     console.log(isSubscribersModalOpen);
 
     dispatch(openSubscribersModal());
@@ -173,8 +104,6 @@ export default function page() {
   };
 
   const handleSubscriptionsModalOpen = () => {
-    console.log(subscriptions);
-
     dispatch(openSubscribtionsModal());
   };
 
@@ -183,14 +112,13 @@ export default function page() {
       const res = await axios.post(
         `${API}/subscription`,
         {
-          subscribeToId: viewedUser?.user_id,
+          subscribeToId: fullUserData?.user?.user_id,
           currentDate: new Date(),
         },
         {
           withCredentials: true,
         }
       );
-
       if (res.status === 201) {
         fetchData();
       }
@@ -200,16 +128,13 @@ export default function page() {
   };
 
   const handleUnsubscribe = async () => {
-    console.log("unsub");
-
     try {
       const res = await axios.delete(
-        `${API}/subscription/delete/${viewedUser?.user_id}`,
+        `${API}/subscription/delete/${fullUserData?.user?.user_id}`,
         {
           withCredentials: true,
         }
       );
-
       if (res.status === 200) {
         fetchData();
       }
@@ -221,7 +146,7 @@ export default function page() {
   const handleChatClick = async () => {
     try {
       await axiosInstance.post("chat/new", {
-        user_id: viewedUser?.user_id,
+        user_id: fullUserData?.user?.user_id,
         created_at: new Date(),
       });
     } catch (error) {
@@ -232,39 +157,15 @@ export default function page() {
   };
 
   useEffect(() => {
-    if (username) {
+    if (username && currentUser) {
       fetchData();
     }
-  }, [username]);
+  }, [username, currentUser]);
 
-  if (!viewedUser || !currentUser) {
+  if (!fullUserData) {
     return (
       <div className="min-h-screen bg-[#060606]">
         <p className="text-white">user not found</p>
-      </div>
-    );
-  }
-
-  if (!posts) {
-    return (
-      <div className="min-h-screen bg-[#060606]">
-        <p className="text-white">posts not found</p>
-      </div>
-    );
-  }
-
-  if (!subscriptions) {
-    return (
-      <div className="min-h-screen bg-[#060606]">
-        <p className="text-white">posts not found</p>
-      </div>
-    );
-  }
-
-  if (!subscribers) {
-    return (
-      <div className="min-h-screen bg-[#060606]">
-        <p className="text-white">posts not found</p>
       </div>
     );
   }
@@ -278,15 +179,19 @@ export default function page() {
         <div className="flex items-start gap-6 mb-10">
           <Image
             className="w-28 h-28 rounded-full object-cover"
-            src={`data:image/png;base64,${viewedUser.avatarBase64}`}
+            src={`data:image/png;base64,${fullUserData.user?.avatarBase64}`}
             alt="Avatar"
             width="112"
             height="112"
           />
           <div className="flex flex-col gap-4 flex-1 font-light">
             <div className="flex items-center gap-[15px]">
-              <div className="text-xl font-semibold">{viewedUser.fullname}</div>
-              <div className="text-gray-400">@{viewedUser.username}</div>
+              <div className="text-xl font-semibold">
+                {fullUserData.user?.fullname}
+              </div>
+              <div className="text-gray-400">
+                @{fullUserData.user?.username}
+              </div>
               {!isUserCurrent && (
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
@@ -306,7 +211,9 @@ export default function page() {
             </div>
             <div className="flex gap-8 text-sm text-gray-300 font-light">
               <div>
-                <span className="text-white font-medium">{posts.length}</span>{" "}
+                <span className="text-white font-medium">
+                  {fullUserData.posts.length}
+                </span>{" "}
                 posts
               </div>
               <div
@@ -314,8 +221,8 @@ export default function page() {
                 className="flex  cursor-pointer gap-1"
               >
                 <span className="text-white font-medium">
-                  {subscribers.length > 0 ? (
-                    <p>{subscribers.length}</p>
+                  {fullUserData.subscribers.length > 0 ? (
+                    <p>{fullUserData.subscribers.length}</p>
                   ) : (
                     <p>0</p>
                   )}
@@ -327,8 +234,8 @@ export default function page() {
                 className="flex  cursor-pointer gap-1"
               >
                 <span className="text-white font-medium">
-                  {subscriptions.length > 0 ? (
-                    <p>{subscriptions.length}</p>
+                  {fullUserData.subscriptions.length > 0 ? (
+                    <p>{fullUserData.subscriptions.length}</p>
                   ) : (
                     <p>0</p>
                   )}
@@ -336,7 +243,9 @@ export default function page() {
                 subscriptions
               </div>
             </div>
-            <div className="text-gray-300">{viewedUser.description ?? ""}</div>
+            <div className="text-gray-300">
+              {currentUser?.description ?? ""}
+            </div>
           </div>
         </div>
 
@@ -375,7 +284,7 @@ export default function page() {
                 </div>
               )}
 
-              {posts.map((post, index) => (
+              {fullUserData.posts.map((post, index) => (
                 <Image
                   key={index}
                   src={`data:image/jpg;base64,${post.imageBase64}`}
@@ -387,13 +296,13 @@ export default function page() {
                 />
               ))}
 
-              {posts.length % 3 === 1 && (
+              {fullUserData.posts.length % 3 === 1 && (
                 <>
                   <div className="h-[233px] rounded-lg" />
                   <div className="h-[233px] rounded-lg" />
                 </>
               )}
-              {posts.length % 3 === 2 && (
+              {fullUserData.posts.length % 3 === 2 && (
                 <div className="h-[233px] rounded-lg" />
               )}
             </div>
@@ -420,7 +329,7 @@ export default function page() {
         />
       )}
 
-      <SubscribersModal
+      {/* <SubscribersModal
         subs={subscribers}
         isOpen={isSubscribersModalOpen}
         onClose={handleSubscribersModalclose}
@@ -430,7 +339,7 @@ export default function page() {
         subs={subscriptions}
         isOpen={isSubscriptionsModalOpen}
         onClose={handleSubscriptionsModalClose}
-      />
+      /> */}
     </div>
   );
 }

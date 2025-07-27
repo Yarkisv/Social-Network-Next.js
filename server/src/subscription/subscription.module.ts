@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { SubscriptionService } from "./subscription.service";
 import { SubscriptionController } from "./subscription.controller";
 import { AccessTokenStrategy } from "src/auth/strategies/accessToken.strategy";
@@ -8,10 +8,13 @@ import { Subscription } from "./entities/subscription.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "src/user/user.module";
 import { FileService } from "src/services/file.service";
-import { UserService } from "src/user/user.service";
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([Subscription]), AuthModule],
+  imports: [
+    UserModule,
+    TypeOrmModule.forFeature([Subscription]),
+    forwardRef(() => AuthModule),
+  ],
   controllers: [SubscriptionController],
   providers: [
     SubscriptionService,
@@ -19,5 +22,6 @@ import { UserService } from "src/user/user.service";
     RefreshTokenStrategy,
     FileService,
   ],
+  exports: [SubscriptionService],
 })
 export class SubscriptionModule {}

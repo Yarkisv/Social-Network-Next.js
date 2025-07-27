@@ -59,7 +59,7 @@ export class AuthService {
       const username = payload.username;
       const email = payload.email;
 
-      const user = await this.userService.findById(user_id);
+      const user = await this.userService.findFullDataById(user_id);
       if (!user) throw new ForbiddenException("Access Denied");
 
       const { access_token, refresh_token } = await this.getTokens(

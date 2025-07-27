@@ -15,6 +15,8 @@ const jwt_1 = require("@nestjs/jwt");
 const accessToken_strategy_1 = require("./strategies/accessToken.strategy");
 const refreshToken_strategy_1 = require("./strategies/refreshToken.strategy");
 const auth_guard_1 = require("./guards/auth.guard");
+const post_module_1 = require("../post/post.module");
+const subscription_module_1 = require("../subscription/subscription.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -27,7 +29,7 @@ exports.AuthModule = AuthModule = __decorate([
             refreshToken_strategy_1.RefreshTokenStrategy,
             auth_guard_1.AuthGuard,
         ],
-        imports: [user_module_1.UserModule, jwt_1.JwtModule.register({})],
+        imports: [user_module_1.UserModule, jwt_1.JwtModule.register({}), post_module_1.PostModule, subscription_module_1.SubscriptionModule],
         exports: [auth_guard_1.AuthGuard, jwt_1.JwtModule],
     })
 ], AuthModule);

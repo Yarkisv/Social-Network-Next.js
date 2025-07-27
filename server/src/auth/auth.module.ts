@@ -6,6 +6,8 @@ import { JwtModule } from "@nestjs/jwt";
 import { AccessTokenStrategy } from "./strategies/accessToken.strategy";
 import { RefreshTokenStrategy } from "./strategies/refreshToken.strategy";
 import { AuthGuard } from "./guards/auth.guard";
+import { PostModule } from "src/post/post.module";
+import { SubscriptionModule } from "src/subscription/subscription.module";
 
 @Module({
   controllers: [AuthController],
@@ -15,7 +17,7 @@ import { AuthGuard } from "./guards/auth.guard";
     RefreshTokenStrategy,
     AuthGuard,
   ],
-  imports: [UserModule, JwtModule.register({})],
+  imports: [UserModule, JwtModule.register({}), PostModule, SubscriptionModule],
   exports: [AuthGuard, JwtModule],
 })
 export class AuthModule {}

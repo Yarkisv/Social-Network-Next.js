@@ -22,7 +22,7 @@ export class PostService {
     console.log(`User id from service ${user_id}`);
     console.log(`File path from service ${pathTo}`);
 
-    const user = await this.userService.findById(user_id);
+    const user = await this.userService.findFullDataById(user_id);
 
     if (!user) {
       throw new NotFoundException("User not found");
@@ -36,9 +36,9 @@ export class PostService {
   }
 
   async findUserPostsById(user_id: number) {
-    const user = await this.userService.findById(user_id);
+    const user = await this.userService.findFullDataById(user_id);
 
-    console.log(user);
+    // console.log(user);
 
     const posts: Post[] = await this.postRepository.find({
       where: {
@@ -47,7 +47,7 @@ export class PostService {
       relations: ["user"],
     });
 
-    console.log(posts);
+    // console.log(posts);
 
     const modifiedPosts = await Promise.all(
       posts.map(async (post) => ({
@@ -56,7 +56,7 @@ export class PostService {
       }))
     );
 
-    console.log("Modified posts ", modifiedPosts);
+    // console.log("Modified posts ", modifiedPosts);
 
     return modifiedPosts;
   }

@@ -4,8 +4,6 @@ export type User = {
   username: string;
   email: string;
   phone: string;
-  subscribers: number;
-  subscriptions: number;
   description: string;
   avatarBase64: string;
 };

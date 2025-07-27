@@ -109,7 +109,6 @@ export class UserService {
         };
       })
     );
-    
 
     console.log("User by username: ", modifiedUser[0]);
 
@@ -143,7 +142,7 @@ export class UserService {
     return modifiedUsers;
   }
 
-  async findById(id: number) {
+  async findFullDataById(id: number) {
     const user = await this.userRepository.findOne({
       where: {
         user_id: id,
@@ -157,13 +156,7 @@ export class UserService {
         "description",
         "avatarPathTo",
       ],
-      relations: [
-        "chatMemberships",
-        "sentMessages",
-        "posts",
-        "subscribers",
-        "subscriptions",
-      ],
+      relations: ["posts", "subscribers", "subscriptions"],
     });
 
     if (!user) {
@@ -180,7 +173,38 @@ export class UserService {
 
     modifiedUser.avatarBase64 = avatarBase64;
 
-    // console.log(modifiedUser);
+    return modifiedUser;
+  }
+
+  async findBasicDataById(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        user_id: user_id,
+      },
+      select: [
+        "user_id",
+        "fullname",
+        "username",
+        "email",
+        "phone",
+        "description",
+        "avatarPathTo",
+      ],
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const avatarBase64: string = await this.fileServise.getFile(
+      user.avatarPathTo
+    );
+
+    const modifiedUser = JSON.parse(JSON.stringify(user));
+
+    delete modifiedUser.avatarPathTo;
+
+    modifiedUser.avatarBase64 = avatarBase64;
 
     return modifiedUser;
   }

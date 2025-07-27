@@ -37,9 +37,7 @@ export class UserController {
     console.log("username");
 
     return this.userService.findUsersBySymbol(string);
-  }
-
-  
+  }  
 
   // @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor("file"))

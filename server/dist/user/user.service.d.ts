@@ -65,6 +65,7 @@ export declare class UserService {
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
-    findById(id: number): Promise<any>;
+    findFullDataById(id: number): Promise<any>;
+    findBasicDataById(user_id: number): Promise<any>;
     updateUser(id: number, updateUserDto: UpdateUserDto, file: Express.Multer.File): Promise<User>;
 }

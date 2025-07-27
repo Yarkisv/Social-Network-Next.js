@@ -51,7 +51,7 @@ let AuthService = class AuthService {
             const user_id = payload.user_id;
             const username = payload.username;
             const email = payload.email;
-            const user = await this.userService.findById(user_id);
+            const user = await this.userService.findFullDataById(user_id);
             if (!user)
                 throw new common_1.ForbiddenException("Access Denied");
             const { access_token, refresh_token } = await this.getTokens(user_id, username, email);

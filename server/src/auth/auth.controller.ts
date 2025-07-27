@@ -9,6 +9,7 @@ import {
   Request,
   Res,
   UnauthorizedException,
+  Param,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/create-auth.dto";
@@ -16,12 +17,16 @@ import { AuthGuard } from "./guards/auth.guard";
 import { UserService } from "src/user/user.service";
 import { RefreshTokenGuard } from "./guards/refreshToken.guard";
 import { Response } from "express";
+import { PostService } from "src/post/post.service";
+import { SubscriptionService } from "src/subscription/subscription.service";
 
 @Controller("auth")
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userServise: UserService
+    private readonly userService: UserService,
+    private readonly postService: PostService,
+    private readonly subscriptionService: SubscriptionService
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -51,13 +56,27 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get("profile")
-  profile(@Request() req) {
+  @Get("me")
+  async me(@Request() req) {
     const id: number = req.user.user_id;
 
-    console.log(id);
+    console.log("User id: ", id);
 
-    return this.userServise.findById(id);
+    const user = await this.userService.findBasicDataById(id);
+
+    console.log(user);
+
+    return user;
+  }
+
+  @Get("get-full/:username")
+  async getFullUserData(@Param("username") username: string) {
+    const user = await this.userService.findByUsername(username);
+    const posts = await this.postService.findUserPostsById(user.user_id);
+    const { subscriptions, subscribers } =
+      await this.subscriptionService.findAllById(user.user_id);
+
+    return { user, posts, subscriptions, subscribers };
   }
 
   @UseGuards(AuthGuard)
@@ -108,6 +127,10 @@ export class AuthController {
 
     const { access_token, refresh_token } =
       await this.authService.refreshTokens(refreshToken);
+
+    console.log(
+      `New access token: [${access_token}]\n New refresh token : [${refresh_token}]`
+    );
 
     response.cookie("access_token", access_token, {
       httpOnly: true,

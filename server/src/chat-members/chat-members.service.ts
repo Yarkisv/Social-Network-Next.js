@@ -69,7 +69,7 @@ export class ChatMembersService {
 
         if (!member) return null;
 
-        const user = await this.userService.findById(member?.user_id);
+        const user = await this.userService.findFullDataById(member?.user_id);
 
         return {
           ...chat,
@@ -156,7 +156,7 @@ export class ChatMembersService {
 
     if (!notCurrentMember) return null;
 
-    const notCurrentUser = await this.userService.findById(
+    const notCurrentUser = await this.userService.findFullDataById(
       notCurrentMember?.user_id
     );
 
