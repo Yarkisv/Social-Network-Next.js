@@ -20,6 +20,8 @@ import { Post } from "@/app/types/post.type";
 import { redirect, useParams } from "next/navigation";
 import { FullUser } from "@/app/types/full-user.type";
 import axiosInstance from "@/lib/axios";
+import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
+import SubscribersModal from "@/app/components/modals/SubscribersModal";
 
 export default function page() {
   const dispatch = useAppDispatch();
@@ -77,7 +79,7 @@ export default function page() {
 
   const handleUploadPostClick = () => {
     dispatch(openUploadPostWindow());
-  }; 
+  };
 
   const handlePostModalOpen = (post: Post) => {
     setSelectedPost(post);
@@ -329,17 +331,17 @@ export default function page() {
         />
       )}
 
-      {/* <SubscribersModal
-        subs={subscribers}
+      <SubscribersModal
+        subs={fullUserData.subscribers}
         isOpen={isSubscribersModalOpen}
         onClose={handleSubscribersModalclose}
       />
 
       <SubscriptionsModal
-        subs={subscriptions}
+        subs={fullUserData.subscriptions}
         isOpen={isSubscriptionsModalOpen}
         onClose={handleSubscriptionsModalClose}
-      /> */}
+      />
     </div>
   );
 }

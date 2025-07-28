@@ -17,47 +17,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const [loading, setLoading] = useState<boolean>(true);
-
-  // const checkThatAuth = async () => {
-  //   try {
-  //     const response = await axiosInstance.get("/auth/check-token");
-
-  //     if (response.status !== 200) {
-  //       redirect("/login");
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //   } catch (error: any) {
-  //     if (error.response.status === 401) {
-  //       redirect("/login");
-  //     } else {
-  //       console.log("Unexpected error:", error);
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   checkThatAuth();
-  // }, []);
-
-  // if (loading)
-  //   return (
-  //     <html lang="en">
-  //       <body>
-  //         <p>Loading</p>
-  //       </body>
-  //     </html>
-  //   );
-
   const user = await getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <html lang="en">
       <body>
         <ReduxProvider>
           <HydrateUser user={user} />
-          <Header />
+          <Header user={user} />
           {children}
           <UploadPostModal />
         </ReduxProvider>

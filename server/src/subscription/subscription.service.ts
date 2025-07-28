@@ -71,13 +71,6 @@ export class SubscriptionService {
       })
     );
 
-    console.log(
-      "User subscriptions: \n",
-      subscriptions,
-      "\nUser subscribers: \n",
-      subscribers
-    );
-
     return { subscriptions, subscribers };
   }
 
@@ -94,8 +87,6 @@ export class SubscriptionService {
         isSubscribed = true;
       }
     }
-
-    console.log(isSubscribed);
 
     return isSubscribed;
   }

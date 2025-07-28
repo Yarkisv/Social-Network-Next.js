@@ -18,6 +18,7 @@ const user_service_1 = require("./user.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const platform_express_1 = require("@nestjs/platform-express");
+const auth_guard_1 = require("../auth/guards/auth.guard");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -33,8 +34,9 @@ let UserController = class UserController {
         console.log("username");
         return this.userService.findUsersBySymbol(string);
     }
-    async updateUser(id, updateUserDto, file) {
-        console.log(file);
+    async updateUser(updateUserDto, file, req) {
+        const id = req.user.user_id;
+        console.log(`User id: [${id}] trying to update data`);
         return this.userService.updateUser(id, updateUserDto, file);
     }
 };
@@ -62,13 +64,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findByString", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
-    (0, common_1.Patch)("update/:id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.UploadedFile)()),
+    (0, common_1.Patch)("update"),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, update_user_dto_1.UpdateUserDto, Object]),
+    __metadata("design:paramtypes", [update_user_dto_1.UpdateUserDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
 exports.UserController = UserController = __decorate([

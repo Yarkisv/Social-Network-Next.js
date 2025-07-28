@@ -9,12 +9,16 @@ export function HydrateUser({ user }: { user: any }) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user) {
-      dispatch(initialUser(user));
-    } else {
+    console.log(user);
+
+    if (user.statusCode === 401) {
+      console.log("Sending request to refresh");
+
       axiosInstance.get("/auth/me").then((res) => {
         dispatch(initialUser(res.data));
       });
+    } else {
+      dispatch(initialUser(user));
     }
   }, [user]);
 

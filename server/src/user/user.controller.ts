@@ -10,12 +10,13 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Request,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { AccessTokenGuard } from "src/auth/guards/accessToken.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { AuthGuard } from "src/auth/guards/auth.guard";
 
 @Controller("user")
 export class UserController {
@@ -37,17 +38,19 @@ export class UserController {
     console.log("username");
 
     return this.userService.findUsersBySymbol(string);
-  }  
+  }
 
-  // @UseGuards(AccessTokenGuard)
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("file"))
-  @Patch("update/:id")
+  @Patch("update")
   async updateUser(
-    @Param("id") id: number,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req
   ) {
-    console.log(file);
+    const id = req.user.user_id;
+
+    console.log(`User id: [${id}] trying to update data`);
 
     return this.userService.updateUser(id, updateUserDto, file);
   }

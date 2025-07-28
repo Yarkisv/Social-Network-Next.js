@@ -26,30 +26,66 @@ export default function AsideInfo() {
           className="flex gap-[5px]  mt-[20px] cursor-pointer"
           onClick={handleChatsClick}
         >
-          <Image alt="profile" src={AsideChats} width={19} height={19} />
+          <Image
+            alt="profile"
+            src={AsideChats}
+            width={19}
+            height={19}
+            style={{ width: "19px", height: "19px" }}
+          />
           <p>Chats</p>
         </div>
         <div className="flex gap-[5px] cursor-pointer">
-          <Image alt="profile" src={AsidePosts} width={19} height={19} />
+          <Image
+            alt="profile"
+            src={AsidePosts}
+            width={19}
+            height={19}
+            style={{ width: "19px", height: "19px" }}
+          />
           <p>Posts</p>
         </div>
         <div className="flex gap-[5px] cursor-pointer">
-          <Image alt="profile" src={AsideFriends} width={19} height={19} />
+          <Image
+            alt="profile"
+            src={AsideFriends}
+            width={19}
+            height={19}
+            style={{ width: "19px", height: "19px" }}
+          />
           <p>Friends</p>
         </div>
         <div className="flex gap-[5px] cursor-pointer">
-          <Image alt="profile" src={AsideMusic} width={19} height={19} />
+          <Image
+            alt="profile"
+            src={AsideMusic}
+            width={19}
+            height={19}
+            style={{ width: "19px", height: "19px" }}
+          />
           <p>Music</p>
         </div>
         <div className="flex gap-[5px] cursor-pointer">
-          <Image alt="profile" src={AsideVideo} width={19} height={19} />
+          <Image
+            alt="profile"
+            src={AsideVideo}
+            width={19}
+            height={19}
+            style={{ width: "19px", height: "19px" }}
+          />
           <p>Video</p>
         </div>
         <div
           className="flex gap-[5px] cursor-pointer"
           onClick={handleSettingsNavigate}
         >
-          <Image alt="profile" src={AsideSettings} width={19} height={19} />
+          <Image
+            alt="profile"
+            src={AsideSettings}
+            width={19}
+            height={19}
+            style={{ width: "19px", height: "19px" }}
+          />
           <p>Settings</p>
         </div>
       </div>

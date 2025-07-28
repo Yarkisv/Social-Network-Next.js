@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UserModule } from "src/user/user.module";
@@ -17,7 +17,12 @@ import { SubscriptionModule } from "src/subscription/subscription.module";
     RefreshTokenStrategy,
     AuthGuard,
   ],
-  imports: [UserModule, JwtModule.register({}), PostModule, SubscriptionModule],
+  imports: [
+    forwardRef(() => UserModule),
+    JwtModule.register({}),
+    forwardRef(() => PostModule),
+    SubscriptionModule,
+  ],
   exports: [AuthGuard, JwtModule],
 })
 export class AuthModule {}

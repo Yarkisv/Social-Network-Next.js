@@ -11,8 +11,8 @@ import { FileService } from "src/services/file.service";
 
 @Module({
   imports: [
-    UserModule,
     TypeOrmModule.forFeature([Subscription]),
+    forwardRef(() => UserModule),
     forwardRef(() => AuthModule),
   ],
   controllers: [SubscriptionController],

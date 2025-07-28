@@ -110,8 +110,6 @@ export class UserService {
       })
     );
 
-    console.log("User by username: ", modifiedUser[0]);
-
     return modifiedUser[0];
   }
 
@@ -136,8 +134,6 @@ export class UserService {
         };
       })
     );
-
-    console.log(modifiedUsers);
 
     return modifiedUsers;
   }
@@ -224,15 +220,10 @@ export class UserService {
         "username",
         "email",
         "phone",
-        "subscribers",
-        "subscriptions",
         "description",
         "avatarPathTo",
       ],
-      relations: ["chatMemberships", "sentMessages", "posts", "comments"],
     });
-
-    console.log(user);
 
     if (!user) {
       throw new NotFoundException();

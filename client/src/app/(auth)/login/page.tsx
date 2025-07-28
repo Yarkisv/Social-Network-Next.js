@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import logoAuth from "../../images/logoAuth.svg";
 import facebok from "../../images/facebok.svg";
 import google from "../../images/google.svg";
 import Image from "next/image";
@@ -49,7 +48,7 @@ export default function LoginPage() {
           maxAngle={125}
           radius={4}
           borderStyle="1px solid #fff"
-          faceColor="#060010"
+          faceColor="#000000ff"
           rippleColor="fff"
           rippleSpeed={2}
           autoAnimate={true}

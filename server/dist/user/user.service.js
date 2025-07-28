@@ -100,7 +100,6 @@ let UserService = class UserService {
                 avatarBase64,
             };
         }));
-        console.log("User by username: ", modifiedUser[0]);
         return modifiedUser[0];
     }
     async findUsersBySymbol(string) {
@@ -119,7 +118,6 @@ let UserService = class UserService {
                 avatarBase64,
             };
         }));
-        console.log(modifiedUsers);
         return modifiedUsers;
     }
     async findFullDataById(id) {
@@ -182,14 +180,10 @@ let UserService = class UserService {
                 "username",
                 "email",
                 "phone",
-                "subscribers",
-                "subscriptions",
                 "description",
                 "avatarPathTo",
             ],
-            relations: ["chatMemberships", "sentMessages", "posts", "comments"],
         });
-        console.log(user);
         if (!user) {
             throw new common_1.NotFoundException();
         }

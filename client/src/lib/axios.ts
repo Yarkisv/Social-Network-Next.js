@@ -16,11 +16,13 @@ axiosInstance.interceptors.response.use(
       originalRequest.url !== "/auth/refresh"
     ) {
       originalRequest._retry = true;
+
       try {
         await axiosInstance.get("/auth/refresh");
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.log("Token refresh failed:", refreshError);
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

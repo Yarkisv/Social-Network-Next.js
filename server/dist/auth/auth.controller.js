@@ -50,9 +50,7 @@ let AuthController = class AuthController {
     }
     async me(req) {
         const id = req.user.user_id;
-        console.log("User id: ", id);
         const user = await this.userService.findBasicDataById(id);
-        console.log(user);
         return user;
     }
     async getFullUserData(username) {

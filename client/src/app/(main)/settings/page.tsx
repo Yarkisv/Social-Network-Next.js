@@ -3,21 +3,13 @@
 import axios from "axios";
 import Image from "next/image";
 import AsideInfo from "../../components/asideInfo";
-import React, { useEffect, useState } from "react";
-import { User } from "@/app/types/user.type";
+import React, { useState } from "react";
+import { useAppSelector } from "@/app/hooks";
+import axiosInstance from "@/lib/axios";
 
 export default function page() {
-  // type User = {
-  //   user_id: number;
-  //   fullname: string;
-  //   username: string;
-  //   email: string;
-  //   phone: string;
-  //   subscribers: number;
-  //   subscriptions: number;
-  //   description: string;
-  //   avatarPathTo: string;
-  // };
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  const user = useAppSelector((state) => state.user.user);
 
   type UpdatedUser = {
     fullname: string | undefined;
@@ -28,9 +20,6 @@ export default function page() {
     file: File | undefined;
   };
 
-  const API = process.env.NEXT_PUBLIC_API_URL;
-  const [user, setUser] = useState<User>();
-
   const [changedUser, setChangedUser] = useState<UpdatedUser>({
     fullname: undefined,
     username: undefined,
@@ -39,20 +28,6 @@ export default function page() {
     description: undefined,
     file: undefined,
   });
-
-  const checkToken = async () => {
-    try {
-      const res = await axios.get(`${API}/auth/profile`, {
-        withCredentials: true,
-      });
-
-      if (res.status === 200) {
-        setUser(res.data);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,29 +43,15 @@ export default function page() {
     }
   };
 
-  useEffect(() => {
-    checkToken();
-  }, []);
-
-  useEffect(() => {
-    console.log(changedUser);
-  }, [changedUser]);
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
-      const id = user?.user_id;
-
-      console.log("Submitting update for user:", id, changedUser);
-
-      const res = await axios.patch(`${API}/user/update/${id}`, changedUser, {
+      await axiosInstance.patch("/user/update", changedUser, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      console.log("Response:", res.data);
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -124,6 +85,8 @@ export default function page() {
           >
             Upload
           </label>
+
+          
         </div>
 
         <form

@@ -43,5 +43,5 @@ export declare class UserController {
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
     }[]>;
-    updateUser(id: number, updateUserDto: UpdateUserDto, file: Express.Multer.File): Promise<import("./entities/user.entity").User>;
+    updateUser(updateUserDto: UpdateUserDto, file: Express.Multer.File, req: any): Promise<import("./entities/user.entity").User>;
 }

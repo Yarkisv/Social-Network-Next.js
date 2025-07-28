@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import profileEmpty from "../images/profileEmpty.png";
 import LogOut from "../images/LogOut.svg";
 import SearchIcon from "../images/SearchIcon.svg";
 import Image from "next/image";
@@ -10,16 +9,13 @@ import { openModal, setSearchQuery } from "../store/slices/modalSlice";
 import SearchUsersPanel from "../components/Panels/SearchUsersPanel";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { User } from "../types/user.type";
 
-export default function Header() {
-  const router = useRouter();
-
-  const [inputText, setInputText] = useState<string>("");
-
-  const user = useAppSelector((state) => state.user.user);
-
-  const isOpen = useAppSelector((state) => state.modal.isOpen);
+export default function Header({ user }: { user: User }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const isOpen = useAppSelector((state) => state.modal.isOpen);
+  const [inputText, setInputText] = useState<string>("");
 
   const handleInputClick = () => {
     if (!isOpen) dispatch(openModal());
@@ -57,14 +53,15 @@ export default function Header() {
         <div className="flex items-center h-full pl-[20px] w-[200px] border-r-[2px]  border-[#0D0D0D]">
           <Image
             alt="profile"
-            src={profileEmpty}
+            src={`data:image/png;base64,${user?.avatarBase64}`}
             width={30}
             height={30}
             className="rounded-full"
             onClick={handleProfileClick}
+            style={{ width: "30px", height: "30px", cursor: "pointer" }}
           />
           <p
-            className="text-white ml-[10px] text-[18px]"
+            className="text-white ml-[10px] text-[18px] cursor-pointer"
             onClick={handleProfileClick}
           >
             Profile
@@ -87,7 +84,13 @@ export default function Header() {
         <div className="w-[300px] relative">
           <div className="w-full h-[30px] bg-[#2E2E2E] rounded-[2px] flex items-center overflow-hidden focus-within:ring-2 focus-within:ring-purple-600">
             <div className="flex items-center px-2 border-r-[2px] border-black ">
-              <Image alt="search" src={SearchIcon} width={18} height={18} />
+              <Image
+                alt="search"
+                src={SearchIcon}
+                width={18}
+                height={18}
+                style={{ width: "18px", height: "18px" }}
+              />
             </div>
             <input
               type="text"
