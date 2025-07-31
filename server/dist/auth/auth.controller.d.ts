@@ -31,9 +31,10 @@ export declare class AuthController {
             comments: import("../comment/entities/comment.entity").Comment[];
         };
         posts: {
+            userAvatar: any;
+            username: any;
             imageBase64: string;
             post_id: number;
-            contentPathTo: string;
             post_title: string;
             likes: number;
             comments: import("../comment/entities/comment.entity").Comment[];

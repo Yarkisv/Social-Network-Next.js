@@ -3,7 +3,7 @@ import { User } from "src/user/entities/user.entity";
 import {
   Column,
   Entity,
-  ManyToMany,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -16,9 +16,11 @@ export class Comment {
   @Column()
   content: string;
 
-  @ManyToMany(() => Post, (post) => post.comments)
+  @ManyToOne(() => Post, (post) => post.comments)
+  @JoinColumn({ name: "post_id" })
   post: Post;
 
   @ManyToOne(() => User, (user) => user.comments)
+  @JoinColumn({ name: "user_id" })
   user: User;
 }

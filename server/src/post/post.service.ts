@@ -38,25 +38,25 @@ export class PostService {
   async findUserPostsById(user_id: number) {
     const user = await this.userService.findFullDataById(user_id);
 
-    // console.log(user);
-
     const posts: Post[] = await this.postRepository.find({
       where: {
         user: { user_id: user.user_id },
       },
-      relations: ["user"],
     });
 
-    // console.log(posts);
-
     const modifiedPosts = await Promise.all(
-      posts.map(async (post) => ({
-        ...post,
-        imageBase64: await this.fileService.getFile(post.contentPathTo),
-      }))
-    );
+      posts.map(async (post) => {
+        const { contentPathTo, ...rest } = post;
+        const imageBase64 = await this.fileService.getFile(post.contentPathTo);
 
-    // console.log("Modified posts ", modifiedPosts);
+        return {
+          ...rest,
+          userAvatar: user.avatarBase64,
+          username: user.username,
+          imageBase64,
+        };
+      })
+    );
 
     return modifiedPosts;
   }

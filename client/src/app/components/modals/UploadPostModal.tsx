@@ -8,34 +8,36 @@ import cancel_upload from "../../images/cancel_upload.svg";
 import createPostImg from "../../images/createPostImg.svg";
 import Image from "next/image";
 
-export default function UploadPostModal() {
+export default function UploadPostModal({
+  onPostCreated,
+}: {
+  onPostCreated: () => void;
+}) {
+  const dispatch = useAppDispatch();
+
   const isUploadWindowOpen = useAppSelector(
     (state) => state.modal.isUploadWindowOpen
   );
+
+  const currentUser = useAppSelector((state) => state.user.user);
+
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   type Post = {
     user_id: number | undefined;
     folder: string | undefined;
     post_title: string | undefined;
-    likes: number | undefined;
     file: File | undefined;
   };
 
-  const API = process.env.NEXT_PUBLIC_API_URL;
-
-  const user_id = useAppSelector((state) => state.user.user_id);
-  const user_username = useAppSelector((state) => state.user.username);
   const [preview, setPreview] = useState<string>("");
 
   const [newPost, setNewPost] = useState<Post>({
-    user_id: user_id,
-    folder: user_username,
+    user_id: currentUser?.user_id,
+    folder: currentUser?.username,
     post_title: undefined,
-    likes: undefined,
     file: undefined,
   });
-
-  const dispatch = useAppDispatch();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,8 +69,15 @@ export default function UploadPostModal() {
 
       if (res.status === 200) {
         setTimeout(() => {
+          onPostCreated();
           dispatch(closeUploadPostWindow());
-        }, 1000);
+          setNewPost({
+            user_id: currentUser?.user_id,
+            folder: currentUser?.username,
+            post_title: undefined,
+            file: undefined,
+          });
+        }, 500);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -105,6 +114,7 @@ export default function UploadPostModal() {
               width={60}
               height={60}
               className="object-cover w-[60px] h-[60px] mb-[15px]"
+              style={{ width: "60px", height: "60px" }}
             />
             <p className="font-light text-[#BABABA] mb-[89px]">
               add files to create a post
@@ -129,14 +139,21 @@ export default function UploadPostModal() {
 
             <div className="flex items-center justify-between w-full mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-[28px] h-[28px] rounded-full bg-gray-500" />
+                <Image
+                  className="rounded-full"
+                  src={`data:image/jpg;base64,${currentUser?.avatarBase64}`}
+                  alt="avatar"
+                  height={28}
+                  width={28}
+                  style={{ width: "28px", height: "28px" }}
+                />
                 <span className="text-white text-sm font-medium">
-                  @username
+                  {currentUser?.username}
                 </span>
               </div>
               <button
                 onClick={uploadNewPost}
-                className="bg-[#5020A1] hover:bg-purple-700 transition text-white px-4 py-1.5 rounded text-sm"
+                className="bg-[#5020A1] hover:bg-purple-700 transition text-white px-4 py-1.5 rounded text-sm cursor-pointer"
               >
                 Upload post
               </button>

@@ -22,6 +22,7 @@ import { FullUser } from "@/app/types/full-user.type";
 import axiosInstance from "@/lib/axios";
 import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
 import SubscribersModal from "@/app/components/modals/SubscribersModal";
+import UploadPostModal from "@/app/components/modals/UploadPostModal";
 
 export default function page() {
   const dispatch = useAppDispatch();
@@ -286,14 +287,15 @@ export default function page() {
                 </div>
               )}
 
-              {fullUserData.posts.map((post, index) => (
+              {fullUserData.posts.map((post) => (
                 <Image
-                  key={index}
+                  key={post.post_id}
                   src={`data:image/jpg;base64,${post.imageBase64}`}
                   alt="post"
                   width={233}
                   height={233}
-                  className="w-full h-[233px] object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
+                  style={{ width: "233px", height: "233px" }}
+                  className="w-[233px] h-[233px] object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
                   onClick={() => handlePostModalOpen(post)}
                 />
               ))}
@@ -323,13 +325,11 @@ export default function page() {
         </div>
       </div>
 
-      {isUserCurrent && (
-        <PostModal
+      <PostModal
           post={selectedPost}
           onClose={handlePostModalClose}
           isOpen={isPostModalOpen}
         />
-      )}
 
       <SubscribersModal
         subs={fullUserData.subscribers}
@@ -342,6 +342,8 @@ export default function page() {
         isOpen={isSubscriptionsModalOpen}
         onClose={handleSubscriptionsModalClose}
       />
+
+      <UploadPostModal onPostCreated={fetchData} />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export class Post {
   @Column()
   contentPathTo: string;
 
-  @Column()
+  @Column({ default: "" })
   post_title: string;
 
   @Column({ default: 0 })

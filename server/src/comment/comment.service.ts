@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Comment } from "./entities/comment.entity";
+import { Repository } from "typeorm";
+import { FileService } from "src/services/file.service";
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+    private readonly fileService: FileService
+  ) {}
+
+  async create(id: number, createCommentDto: CreateCommentDto) {
+    const comment = await this.commentRepository.save({
+      content: createCommentDto.content,
+      post: { post_id: createCommentDto.post_id },
+      user: { user_id: id },
+    });
+
+    return comment;
   }
 
-  findAll() {
-    return `This action returns all comment`;
-  }
+  async findAllByPostId(id: number) {
+    const comments = await this.commentRepository.find({
+      where: {
+        post: { post_id: id },
+      },
+      relations: ["user"],
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
+    const modifiedComments = await Promise.all(
+      comments.map(async (comment) => {
+        const { user, post, ...rest } = comment;
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
+        const senderUsername = user.username;
+        const senderAvatarBase64 = await this.fileService.getFile(
+          user.avatarPathTo
+        );
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+        return { senderUsername, senderAvatarBase64, ...rest };
+      })
+    );
+
+    console.log(modifiedComments);
+
+    return modifiedComments;
   }
 }

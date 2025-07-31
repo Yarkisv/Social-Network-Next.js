@@ -1,11 +1,16 @@
+"use client";
+
 import { Post } from "@/app/types/post.type";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import postLike from "../../images/postLike.svg";
 import justLike from "../../images/justLike.svg";
 import repost from "../../images/repost.svg";
 import save from "../../images/save.svg";
 
 import Image from "next/image";
+import axiosInstance from "@/lib/axios";
+import axios from "axios";
+import { Comment } from "@/app/types/comment.type";
 
 type PostModalProps = {
   post: Post | undefined | null;
@@ -14,6 +19,47 @@ type PostModalProps = {
 };
 
 export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  const [content, setContent] = useState<string>("");
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  const fetchAllComments = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/comment/get/all/${post?.post_id}`
+      );
+
+      if (response.status === 200) {
+        console.log(response.data);
+        setComments(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSendComment = async () => {
+    console.log("click");
+
+    try {
+      const response = await axiosInstance.post("comment/new", {
+        content: content,
+        post_id: post?.post_id,
+      });
+
+      if (response.status === 200) {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (post) {
+      fetchAllComments();
+    }
+  }, [post?.post_id]);
+
   if (!isOpen || !post) {
     return null;
   }
@@ -40,46 +86,71 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
 
         <div className="flex flex-col flex-1 overflow-hidden p-2 ">
           <div className="flex items-center gap-2 mb-[5px]">
-            <div className="w-[28px] h-[28px] rounded-full bg-gray-500" />
-            <span className="text-white text-sm font-medium">@username</span>
+            <Image
+              src={`data:image/png;base64,${post.userAvatar}`}
+              alt="userAvatar"
+              height={28}
+              width={28}
+              className="rounded-full"
+            />
+            <span className="text-white text-sm font-medium">
+              {post.username}
+            </span>
           </div>
-          {/* <div className="mb-2">
-            <h2 className="text-lg font-semibold text-white">
-              {post.post_title}
-            </h2>
-            <p className="text-sm text-gray-300">Likes: {post.likes}</p>
-          </div> */}
+          <div className="mb-2">
+            {post.post_title ? (
+              <h2 className="text-lg font-semibold text-white">
+                {post.post_title}
+              </h2>
+            ) : (
+              <div></div>
+            )}
+          </div>
 
           <div className="flex-1 overflow-y-auto pr-2 space-y-[10px] max-h-[270px] hide-scrollbar">
-            {[1, 2, 3, 4, 5, 6, 7].map((id) => (
-              <div
-                key={id}
-                className="flex items-center justify-between gap-3 "
-              >
-                <div className="w-[28px] h-[28px] rounded-full bg-gray-500 flex-shrink-0" />
+            {comments.length > 0 ? (
+              <div>
+                {comments.map((comment) => (
+                  <div
+                    key={comment.comment_id}
+                    className="flex items-center justify-between gap-3 "
+                  >
+                    <Image
+                      alt="avatar"
+                      src={`data:image/png;base64,${comment.senderAvatarBase64}`}
+                      width={28}
+                      height={28}
+                      className="object-cover rounded"
+                    />
 
-                <div className="flex flex-col text-[12px] text-white flex-1">
-                  <p className="text-white font-medium mb-1">
-                    @username{id}:{" "}
-                    <span className="font-normal text-gray-300">
-                      Sample comment content goes here.
-                    </span>
-                  </p>
-                  <span className="text-xs text-gray-400">2h ago</span>
-                </div>
+                    <div className="flex flex-col text-[12px] text-white flex-1">
+                      <p className="text-white font-medium mb-1">
+                        {comment.senderUsername}
+                        <span className="font-normal text-gray-300">
+                          {comment.content}
+                        </span>
+                      </p>
+                      <span className="text-xs text-gray-400">2h ago</span>
+                    </div>
 
-                <div className="flex flex-col items-center text-xs text-gray-400">
-                  <Image
-                    alt="like"
-                    src={postLike}
-                    width={10}
-                    height={10}
-                    className="w-full h-full object-cover rounded"
-                  />
-                  <span>12</span>
-                </div>
+                    <div className="flex flex-col items-center text-xs text-gray-400">
+                      <Image
+                        alt="like"
+                        src={postLike}
+                        width={10}
+                        height={10}
+                        className="w-full h-full object-cover rounded"
+                      />
+                      <span>12</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div>
+                <p>No comments yet</p>
+              </div>
+            )}
           </div>
           <div className="pt-2 border-t border-gray-700 mt-2 flex flex-col gap-2">
             <div className="flex items-center justify-between px-1">
@@ -94,7 +165,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                   />
                   <p className="mt-[-2px]">{post.likes}</p>
                 </div>
-                <div className="flex flex-col items-center">
+                {/* <div className="flex flex-col items-center">
                   <Image
                     alt="like"
                     src={repost}
@@ -103,24 +174,28 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                     className="w-full h-full rounded"
                   />
                   <p className="mt-[-2px]">11</p>
-                </div>
+                </div> */}
               </div>
-              <div className="flex flex-col items-center">
+              {/* <div className="flex flex-col items-center">
                 <Image
                   alt="like"
                   src={save}
                   className="w-[13px] h-[19px] object-cover rounded"
                 />
                 <p className="mt-[-2px]">11</p>
-              </div>
+              </div> */}
             </div>
             <div className="flex items-center gap-2 px-1">
               <input
                 type="text"
                 placeholder="Add a comment..."
                 className="flex-1 text-sm text-white placeholder-gray-400 outline-none h-[30px] bg-transparent border-none"
+                onChange={(e) => setContent(e.target.value)}
               />
-              <span className="text-sm text-blue-400 cursor-pointer">
+              <span
+                className="text-sm text-blue-400 cursor-pointer"
+                onClick={handleSendComment}
+              >
                 Publish
               </span>
             </div>
