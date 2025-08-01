@@ -2,6 +2,7 @@ import { Post } from "src/post/entities/post.entity";
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -15,6 +16,12 @@ export class Comment {
 
   @Column()
   content: string;
+
+  @Column({ default: 0 })
+  likes: number;
+
+  @CreateDateColumn()
+  sent_at: Date;
 
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn({ name: "post_id" })

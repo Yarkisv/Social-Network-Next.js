@@ -295,7 +295,7 @@ export default function page() {
                   width={233}
                   height={233}
                   style={{ width: "233px", height: "233px" }}
-                  className="w-[233px] h-[233px] object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
+                  className="object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
                   onClick={() => handlePostModalOpen(post)}
                 />
               ))}
@@ -326,10 +326,10 @@ export default function page() {
       </div>
 
       <PostModal
-          post={selectedPost}
-          onClose={handlePostModalClose}
-          isOpen={isPostModalOpen}
-        />
+        post={selectedPost}
+        onClose={handlePostModalClose}
+        isOpen={isPostModalOpen}
+      />
 
       <SubscribersModal
         subs={fullUserData.subscribers}

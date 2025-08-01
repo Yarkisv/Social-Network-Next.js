@@ -4,8 +4,6 @@ import { Post } from "@/app/types/post.type";
 import React, { useEffect, useState } from "react";
 import postLike from "../../images/postLike.svg";
 import justLike from "../../images/justLike.svg";
-import repost from "../../images/repost.svg";
-import save from "../../images/save.svg";
 
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
@@ -30,7 +28,6 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
         setComments(response.data);
       }
     } catch (error) {
@@ -39,19 +36,36 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   };
 
   const handleSendComment = async () => {
-    console.log("click");
-
     try {
       const response = await axiosInstance.post("comment/new", {
         content: content,
         post_id: post?.post_id,
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        fetchAllComments();
+        setContent("");
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const getRelativeTime = (date: Date) => {
+    const now = new Date();
+    const commentDate = new Date(date);
+
+    const diffInMilliseconds = now.getTime() - commentDate.getTime();
+
+    const diffInSeconds = diffInMilliseconds / 1000;
+    const diffInMinutes = diffInMilliseconds / (1000 * 60);
+    const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+    const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+
+    if (diffInSeconds < 60) return "Sent just now";
+    if (diffInMinutes < 60) return `Sent ${Math.round(diffInMinutes)} min. ago`;
+    if (diffInHours < 24) return `Sent ${Math.round(diffInHours)} h. ago`;
+    return `Sent ${Math.round(diffInDays)} days ago`;
   };
 
   useEffect(() => {
@@ -130,7 +144,11 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                           {comment.content}
                         </span>
                       </p>
-                      <span className="text-xs text-gray-400">2h ago</span>
+                      <span className="text-xs text-gray-400">
+                        {comment.sent_at
+                          ? getRelativeTime(comment.sent_at)
+                          : "error"}
+                      </span>
                     </div>
 
                     <div className="flex flex-col items-center text-xs text-gray-400">
@@ -141,7 +159,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                         height={10}
                         className="w-full h-full object-cover rounded"
                       />
-                      <span>12</span>
+                      <span>{comment.likes}</span>
                     </div>
                   </div>
                 ))}
@@ -190,7 +208,14 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                 type="text"
                 placeholder="Add a comment..."
                 className="flex-1 text-sm text-white placeholder-gray-400 outline-none h-[30px] bg-transparent border-none"
+                value={content}
                 onChange={(e) => setContent(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSendComment();
+                  }
+                }}
               />
               <span
                 className="text-sm text-blue-400 cursor-pointer"

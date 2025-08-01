@@ -14,10 +14,13 @@ export class CommentService {
   ) {}
 
   async create(id: number, createCommentDto: CreateCommentDto) {
+    const now = new Date();
+
     const comment = await this.commentRepository.save({
       content: createCommentDto.content,
       post: { post_id: createCommentDto.post_id },
       user: { user_id: id },
+      send_at: now,
     });
 
     return comment;
