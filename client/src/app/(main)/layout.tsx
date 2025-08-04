@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ReduxProvider } from "./providers";
 import { getUser } from "@/lib/getUser";
 import { HydrateUser } from "../components/hydrate/HydrateUser";
+import { SocketProviderContext } from "../contexts/SocketProviderContext";
 
 export default async function RootLayout({
   children,
@@ -19,11 +20,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReduxProvider>
-          <HydrateUser user={user} />
-          <Header user={user} />
-          {children}
-        </ReduxProvider>
+        <SocketProviderContext>
+          <ReduxProvider>
+            <HydrateUser user={user} />
+            <Header user={user} />
+            {children}
+          </ReduxProvider>
+        </SocketProviderContext>
       </body>
     </html>
   );

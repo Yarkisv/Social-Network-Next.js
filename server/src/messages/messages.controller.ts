@@ -17,7 +17,7 @@ export class MessagesController {
 
   @Get("get/:id")
   async fetchAllMessagesByChatId(@Param("id") id: number) {
-    console.log("Chat id: ", id);
+    // console.log("Chat id: ", id);
 
     return await this.messagesService.findAllByChatId(id);
   }

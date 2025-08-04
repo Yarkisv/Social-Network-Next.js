@@ -13,8 +13,16 @@ export class SocketApi {
       console.log("Connected");
     });
 
-    this.socket.on("disconnect", (e) => {
+    this.socket.on("disconnect", () => {
       console.log("Disconnected");
     });
+  }
+
+  static disconnect() {
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
+      this.socket = null; 
+    }
   }
 }

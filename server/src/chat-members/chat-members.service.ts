@@ -24,7 +24,7 @@ export class ChatMembersService {
       user_id,
     }));
 
-    console.log(chatMembers);
+    // console.log(chatMembers);
 
     await this.chatMembersRepository.save(chatMembers);
   }
@@ -95,7 +95,7 @@ export class ChatMembersService {
       where: { user: { user_id: user2_id } },
     });
 
-    console.log("Chats user 1: ", user1Chats, "\nChats user 2: ", user2Chats);
+    // console.log("Chats user 1: ", user1Chats, "\nChats user 2: ", user2Chats);
 
     let isChatExists: boolean = false;
 
@@ -108,7 +108,7 @@ export class ChatMembersService {
       }
     }
 
-    console.log(isChatExists);
+    // console.log(isChatExists);
 
     return false;
   }
@@ -132,7 +132,7 @@ export class ChatMembersService {
       throw new NotFoundException();
     }
 
-    console.log(`Is user can read chat: ${isUserCanReadChat}`);
+    // console.log(`Is user can read chat: ${isUserCanReadChat}`);
 
     if (!chatMemberships) {
       throw new NotFoundException();

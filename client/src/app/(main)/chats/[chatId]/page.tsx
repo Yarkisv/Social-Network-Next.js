@@ -4,15 +4,12 @@ import AsideInfo from "@/app/components/asideInfo";
 import Image from "next/image";
 import likeChat from "../../../images/likeChat.svg";
 import NoChats from "../../../images/NoChats.svg";
-
 import AddFiile from "../../../images/AddFiile.svg";
 import sendMessageButton from "../../../images/sendMessageButton.svg";
-
 import React, { useEffect, useState } from "react";
 import { redirect, useParams } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { Chat } from "@/app/types/chat.type";
-import { useConnectSocket } from "@/hooks/useConnectSocket";
 import { SocketApi } from "@/api/socket-api";
 import { Message } from "@/app/types/message.type";
 import axios from "axios";
@@ -25,8 +22,6 @@ export default function page() {
   const params = useParams();
 
   const chat_id = params.chatId;
-
-  useConnectSocket();
 
   const fetchChatInfo = async () => {
     try {
@@ -66,7 +61,7 @@ export default function page() {
         });
 
         setMessages(modifiedMessages);
-        console.log(modifiedMessages);
+        // console.log(modifiedMessages);
       }
     } catch (error) {
       console.log(error);
@@ -104,7 +99,7 @@ export default function page() {
       content: message,
     };
 
-    if (message.length > 0) {
+    if (message.length > 0 && SocketApi.socket?.connected) {
       SocketApi.socket?.emit("message", payload);
     }
 
