@@ -37,32 +37,28 @@ export default function page() {
   }, []);
 
   return (
-    <div className="h-[95%] bg-[#060606] text-white flex justify-center px-4">
-      <div className="w-[198px] bg-[#15121F]">
-        <AsideInfo />
-      </div>
-      <div className="w-full max-w-[730px] bg-[#120921] flex pt-[20px] px-[20px] font-[Manrope]">
-        <div className="w-full flex flex-col gap-[20px]">
-          {chats?.length > 0 ? (
-            <div>
-              {chats.map((chat) => (
-                <div
-                  className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200 border-1"
-                  key={chat.chat_id}
-                  onClick={() => navigateToChat(chat.chat_id)}
-                >
-                  <Image
-                    src={`data:image/png;base64,${chat.avatarBase64}`}
-                    alt="Saved post"
-                    width={46}
-                    height={46}
-                    className=" h-[46px] w-[46px] object-cover rounded-full"
-                  />
-                  <div className="ml-[5px] font-[Space_Grotesk] font-[200] ">
-                    <p>{chat.chatName}</p>
-                    <p>message</p>
-                  </div>
-                  {/* <div className="ml-auto mr-[20px] flex flex-col gap-[4px]  items-center ">
+    <div className="h-[calc(100vh-46px)] text-white flex justify-center w-full max-w-[730px] bg-[#120921] flex pt-[20px] px-[20px] font-[Manrope]">
+      <div className="w-full flex flex-col gap-[20px]">
+        {chats?.length > 0 ? (
+          <div>
+            {chats.map((chat) => (
+              <div
+                className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200 border-1"
+                key={chat.chat_id}
+                onClick={() => navigateToChat(chat.chat_id)}
+              >
+                <Image
+                  src={`data:image/png;base64,${chat.avatarBase64}`}
+                  alt="Saved post"
+                  width={46}
+                  height={46}
+                  className=" h-[46px] w-[46px] object-cover rounded-full"
+                />
+                <div className="ml-[5px] font-[Space_Grotesk] font-[200] ">
+                  <p>{chat.chatName}</p>
+                  <p>message</p>
+                </div>
+                {/* <div className="ml-auto mr-[20px] flex flex-col gap-[4px]  items-center ">
                     <p className="font-[Space_Grotesk] font-[200] text-[14px]">
                       3:05
                     </p>
@@ -70,24 +66,24 @@ export default function page() {
                       322
                     </p>
                   </div> */}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center mt-20 text-center text-white/70">
-              <Image
-                src={NoChats}
-                alt="Saved post"
-                className=" h-[40px] w-[40px] object-cover mb-[5px]"
-              />
-              <p className="text-lg font-semibold">No chats yet</p>
-              <p className="text-sm text-white/50">
-                Start a conversation to see it here.
-              </p>
-            </div>
-          )}
-        </div>
-        {/* <div className="w-[170px] flex flex-col gap-[10px] border-l-2 border-[#120921] pl-[5px]">
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center mt-20 text-center text-white/70">
+            <Image
+              src={NoChats}
+              alt="Saved post"
+              className=" h-[40px] w-[40px] object-cover mb-[5px]"
+            />
+            <p className="text-lg font-semibold">No chats yet</p>
+            <p className="text-sm text-white/50">
+              Start a conversation to see it here.
+            </p>
+          </div>
+        )}
+      </div>
+      {/* <div className="w-[170px] flex flex-col gap-[10px] border-l-2 border-[#120921] pl-[5px]">
           <p className="font-[Space_Grotesk] font-[200] text-[14px] text-nowrap ">
             Уou may be familiar with
           </p>
@@ -125,7 +121,6 @@ export default function page() {
             </div>
           </div>
         </div> */}
-      </div>
     </div>
   );
 }

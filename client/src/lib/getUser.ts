@@ -18,7 +18,7 @@ export async function getUser() {
       credentials: "include",
     });
 
-    if (!response) return null;
+    if (!response.ok) return null;
 
     return await response.json();
   } catch (error) {

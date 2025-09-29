@@ -5,6 +5,7 @@ import { ReduxProvider } from "./providers";
 import { getUser } from "@/lib/getUser";
 import { HydrateUser } from "../components/hydrate/HydrateUser";
 import { SocketProviderContext } from "../contexts/SocketProviderContext";
+import AsideInfo from "../components/asideInfo";
 
 export default async function RootLayout({
   children,
@@ -13,7 +14,7 @@ export default async function RootLayout({
 }>) {
   const user = await getUser();
 
-  if (user.statusCode === 404) {
+  if (!user) {
     redirect("/login");
   }
 
@@ -24,7 +25,12 @@ export default async function RootLayout({
           <ReduxProvider>
             <HydrateUser user={user} />
             <Header user={user} />
-            {children}
+            <div className="flex flex-1 bg-[#060606] text-white flex justify-center px-4 ">
+              <div className="w-[200px] bg-[#15121F] ">
+                <AsideInfo />
+              </div>
+              <div className="w-full max-w-[730px]">{children}</div>
+            </div>
           </ReduxProvider>
         </SocketProviderContext>
       </body>
