@@ -5,6 +5,7 @@ import { Post } from "src/post/entities/post.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comment } from "src/comment/entities/comment.entity";
 import { Subscription } from "src/subscription/entities/subscription.entity";
+import { Like } from "src/like/entities/like.entity";
 
 @Entity("Users")
 export class User {
@@ -52,4 +53,7 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => Like, (like) => like.user)
+  Likes: Like[];
 }

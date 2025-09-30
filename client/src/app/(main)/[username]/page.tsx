@@ -159,6 +159,8 @@ export default function page() {
     redirect("/chats");
   };
 
+  const handleLikePost = async () => {};
+
   useEffect(() => {
     if (username && currentUser) {
       fetchData();

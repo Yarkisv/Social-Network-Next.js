@@ -31,6 +31,7 @@ export declare class UserService {
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
+        Likes: import("../like/entities/like.entity").Like[];
     }[]>;
     findOriginalById(id: number): Promise<{
         user: User | null;
@@ -49,6 +50,7 @@ export declare class UserService {
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
+        Likes: import("../like/entities/like.entity").Like[];
     }>;
     findUsersBySymbol(string: string): Promise<{
         avatarBase64: string;
@@ -64,6 +66,7 @@ export declare class UserService {
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
+        Likes: import("../like/entities/like.entity").Like[];
     }[]>;
     findFullDataById(id: number): Promise<any>;
     findBasicDataById(user_id: number): Promise<any>;

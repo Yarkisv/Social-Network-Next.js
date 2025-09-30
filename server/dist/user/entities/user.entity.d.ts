@@ -3,6 +3,7 @@ import { Message } from "src/messages/entities/message.entity";
 import { Post } from "src/post/entities/post.entity";
 import { Comment } from "src/comment/entities/comment.entity";
 import { Subscription } from "src/subscription/entities/subscription.entity";
+import { Like } from "src/like/entities/like.entity";
 export declare class User {
     user_id: number;
     fullname: string;
@@ -18,4 +19,5 @@ export declare class User {
     sentMessages: Message[];
     posts: Post[];
     comments: Comment[];
+    Likes: Like[];
 }

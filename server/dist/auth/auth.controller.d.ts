@@ -29,6 +29,7 @@ export declare class AuthController {
             sentMessages: import("../messages/entities/message.entity").Message[];
             posts: import("../post/entities/post.entity").Post[];
             comments: import("../comment/entities/comment.entity").Comment[];
+            Likes: import("../like/entities/like.entity").Like[];
         };
         posts: {
             userAvatar: any;
@@ -36,9 +37,9 @@ export declare class AuthController {
             imageBase64: string;
             post_id: number;
             post_title: string;
-            likes: number;
             comments: import("../comment/entities/comment.entity").Comment[];
             user: import("../user/entities/user.entity").User;
+            likes: import("../like/entities/like.entity").Like[];
         }[];
         subscriptions: {
             user_id: number;

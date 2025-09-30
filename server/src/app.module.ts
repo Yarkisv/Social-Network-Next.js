@@ -9,6 +9,7 @@ import { MessagesModule } from "./messages/messages.module";
 import { PostModule } from "./post/post.module";
 import { CommentModule } from "./comment/comment.module";
 import { SubscriptionModule } from "./subscription/subscription.module";
+import { LikeModule } from "./like/like.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SubscriptionModule } from "./subscription/subscription.module";
     PostModule,
     CommentModule,
     SubscriptionModule,
+    LikeModule,
   ],
 })
 export class AppModule {}

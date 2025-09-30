@@ -27,6 +27,7 @@ export declare class UserController {
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
+        Likes: import("../like/entities/like.entity").Like[];
     }>;
     findByString(string: string): Promise<{
         avatarBase64: string;
@@ -42,6 +43,7 @@ export declare class UserController {
         sentMessages: import("../messages/entities/message.entity").Message[];
         posts: import("../post/entities/post.entity").Post[];
         comments: import("../comment/entities/comment.entity").Comment[];
+        Likes: import("../like/entities/like.entity").Like[];
     }[]>;
     updateUser(updateUserDto: UpdateUserDto, file: Express.Multer.File, req: any): Promise<import("./entities/user.entity").User>;
 }

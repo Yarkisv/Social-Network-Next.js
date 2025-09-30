@@ -7,12 +7,13 @@ import {
   UploadedFile,
   Get,
   Param,
-  Query,
+  Patch,
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { FileService } from "src/services/file.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { UpdatePostDto } from "./dto/update-post.dto";
 
 @Controller("post")
 export class PostController {
@@ -51,5 +52,13 @@ export class PostController {
   @Get("get/:id")
   async getPostsById(@Param("id") id: number) {
     return this.postService.findUserPostsById(id);
+  }
+
+  @Patch("increase-like/id")
+  async increaseLike(
+    @Param("id") id: number,
+    @Body() updatePostDto: UpdatePostDto
+  ) {
+
   }
 }

@@ -18,6 +18,7 @@ const messages_module_1 = require("./messages/messages.module");
 const post_module_1 = require("./post/post.module");
 const comment_module_1 = require("./comment/comment.module");
 const subscription_module_1 = require("./subscription/subscription.module");
+const like_module_1 = require("./like/like.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -47,6 +48,7 @@ exports.AppModule = AppModule = __decorate([
             post_module_1.PostModule,
             comment_module_1.CommentModule,
             subscription_module_1.SubscriptionModule,
+            like_module_1.LikeModule,
         ],
     })
 ], AppModule);

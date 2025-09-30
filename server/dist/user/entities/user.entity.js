@@ -17,6 +17,7 @@ const post_entity_1 = require("../../post/entities/post.entity");
 const typeorm_1 = require("typeorm");
 const comment_entity_1 = require("../../comment/entities/comment.entity");
 const subscription_entity_1 = require("../../subscription/entities/subscription.entity");
+const like_entity_1 = require("../../like/entities/like.entity");
 let User = class User {
     user_id;
     fullname;
@@ -32,6 +33,7 @@ let User = class User {
     sentMessages;
     posts;
     comments;
+    Likes;
 };
 exports.User = User;
 __decorate([
@@ -91,6 +93,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => comment_entity_1.Comment, (comment) => comment.user),
     __metadata("design:type", Array)
 ], User.prototype, "comments", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => like_entity_1.Like, (like) => like.user),
+    __metadata("design:type", Array)
+], User.prototype, "Likes", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)("Users")
 ], User);

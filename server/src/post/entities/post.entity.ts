@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Comment } from "src/comment/entities/comment.entity";
+import { Like } from "src/like/entities/like.entity";
 
 @Entity("posts")
 export class Post {
@@ -19,12 +20,15 @@ export class Post {
   @Column({ default: "" })
   post_title: string;
 
-  @Column({ default: 0 })
-  likes: number;
+  // @Column({ default: 0 })
+  // likes: number;
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 
   @ManyToOne(() => User, (user) => user.posts)
   user: User;
+
+  @OneToMany(() => Like, (like) => like.post)
+  likes: Like[];
 }

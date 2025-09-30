@@ -1,5 +1,7 @@
-import AsideInfo from "../components/asideInfo";
-
 export default function Home() {
-  return <h1 className="text-white">Main page</h1>;
+  return (
+    <div className="h-[calc(100vh-46px)]">
+      <h1 className="text-white">Main page</h1>
+    </div>
+  );
 }
