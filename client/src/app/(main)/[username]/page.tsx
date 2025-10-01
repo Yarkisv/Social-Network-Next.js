@@ -84,6 +84,9 @@ export default function page() {
 
   const handlePostModalOpen = (post: Post) => {
     setSelectedPost(post);
+
+    console.log(post);
+
     dispatch(openPostModalWindow());
   };
 
@@ -158,8 +161,6 @@ export default function page() {
 
     redirect("/chats");
   };
-
-  const handleLikePost = async () => {};
 
   useEffect(() => {
     if (username && currentUser) {

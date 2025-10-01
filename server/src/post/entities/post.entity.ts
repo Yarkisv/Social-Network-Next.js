@@ -20,9 +20,6 @@ export class Post {
   @Column({ default: "" })
   post_title: string;
 
-  // @Column({ default: 0 })
-  // likes: number;
-
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 

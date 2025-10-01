@@ -68,6 +68,18 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     return `Sent ${Math.round(diffInDays)} days ago`;
   };
 
+  const handleLikePost = async () => {
+    console.log("Like clicked");
+
+    try {
+      const response = await axiosInstance.post("like/create", {
+        post_id: post?.post_id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (post) {
       fetchAllComments();
@@ -173,7 +185,10 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
           <div className="pt-2 border-t border-gray-700 mt-2 flex flex-col gap-2">
             <div className="flex items-center justify-between px-1">
               <div className="flex gap-4">
-                <div className="flex flex-col items-center">
+                <div
+                  className="flex flex-col items-center"
+                  onClick={handleLikePost}
+                >
                   <Image
                     alt="like"
                     src={justLike}
@@ -181,7 +196,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                     height={20}
                     className="w-full h-full  rounded"
                   />
-                  <p className="mt-[-2px]">{post.likes}</p>
+                  <p className="mt-[-2px]">{post.likes?.length}</p>
                 </div>
                 {/* <div className="flex flex-col items-center">
                   <Image

@@ -35,11 +35,16 @@ export declare class AuthController {
             userAvatar: any;
             username: any;
             imageBase64: string;
+            likes: {
+                likedByUserAvatarBase64: string;
+                likedByUserUsername: string;
+                like_id: number;
+                post: import("../post/entities/post.entity").Post;
+            }[];
             post_id: number;
             post_title: string;
             comments: import("../comment/entities/comment.entity").Comment[];
             user: import("../user/entities/user.entity").User;
-            likes: import("../like/entities/like.entity").Like[];
         }[];
         subscriptions: {
             user_id: number;

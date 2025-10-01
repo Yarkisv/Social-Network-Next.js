@@ -5,13 +5,15 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserService } from "src/user/user.service";
 import { FileService } from "src/services/file.service";
+import { LikeService } from "src/like/like.service";
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     private readonly userService: UserService,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
+    private readonly likeService: LikeService
   ) {}
 
   async create(createPostDto: CreatePostDto) {
@@ -44,19 +46,25 @@ export class PostService {
       },
     });
 
+    console.log(posts);
+
     const modifiedPosts = await Promise.all(
       posts.map(async (post) => {
         const { contentPathTo, ...rest } = post;
         const imageBase64 = await this.fileService.getFile(post.contentPathTo);
+        const likes = await this.likeService.findAllLikesByPost(post.post_id);
 
         return {
           ...rest,
           userAvatar: user.avatarBase64,
           username: user.username,
           imageBase64,
+          likes,
         };
       })
     );
+
+    console.log(JSON.stringify(modifiedPosts, null, 2));
 
     return modifiedPosts;
   }

@@ -8,6 +8,7 @@ import { RefreshTokenStrategy } from "./strategies/refreshToken.strategy";
 import { AuthGuard } from "./guards/auth.guard";
 import { PostModule } from "src/post/post.module";
 import { SubscriptionModule } from "src/subscription/subscription.module";
+import { LikeModule } from "src/like/like.module";
 
 @Module({
   controllers: [AuthController],

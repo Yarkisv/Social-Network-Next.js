@@ -5,9 +5,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Post } from "./entities/post.entity";
 import { FileService } from "src/services/file.service";
 import { UserModule } from "src/user/user.module";
+import { LikeModule } from "src/like/like.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), forwardRef(() => UserModule)],
+  imports: [
+    TypeOrmModule.forFeature([Post]),
+    forwardRef(() => UserModule),
+    forwardRef(() => LikeModule),
+  ],
   controllers: [PostController],
   providers: [PostService, FileService],
   exports: [PostService],

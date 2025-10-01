@@ -12,6 +12,10 @@ export class LikeController {
   create(@Body() createLikeDto: CreateLikeDto, @Request() req) {
     const user_id = req.user.user_id;
 
-    return this.likeService.create(createLikeDto, user_id);
+    console.log(
+      `User with id ${user_id} trying like post with id ${createLikeDto.post_id}`
+    );
+
+    return this.likeService.likePost(createLikeDto, user_id);
   }
 }
