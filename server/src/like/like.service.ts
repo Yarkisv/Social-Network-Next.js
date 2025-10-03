@@ -87,4 +87,16 @@ export class LikeService {
 
     return modifiedLikes;
   }
+
+  async isAlreadyLikedByUser(user_id: number, post_id: number) {
+    const like = await this.likeRepository.findOne({
+      where: {
+        user: { user_id: user_id },
+        post: { post_id: post_id },
+      },
+      relations: ["user", "post"],
+    });
+
+    return !!like;
+  }
 }

@@ -7,7 +7,7 @@ import justLike from "../../images/justLike.svg";
 
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Comment } from "@/app/types/comment.type";
 
 type PostModalProps = {
@@ -18,8 +18,28 @@ type PostModalProps = {
 
 export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   const API = process.env.NEXT_PUBLIC_API_URL;
+
+  const [currentPost, setCurrentpost] = useState<Post>();
   const [content, setContent] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isPostLikedByUser, setIsPostLikedByUser] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isLiked = async () => {
+      try {
+        const response = await axiosInstance.post("comment/new", {
+          content: content,
+          post_id: post?.post_id,
+        });
+
+        if (response.data) {
+          setIsPostLikedByUser(response.data);
+        }
+      } catch (error) {}
+    };
+
+    isLiked();
+  }, []);
 
   const fetchAllComments = async () => {
     try {
@@ -69,14 +89,18 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   };
 
   const handleLikePost = async () => {
-    console.log("Like clicked");
-
     try {
-      const response = await axiosInstance.post("like/create", {
-        post_id: post?.post_id,
-      });
+      if (!isPostLikedByUser) {
+        const response = await axiosInstance.post("like/create", {
+          post_id: post?.post_id,
+        });
+      }
     } catch (error) {
-      console.log(error);
+      const err = error as AxiosError;
+
+      if (err.response?.status === 409) {
+        console.log("Already liked");
+      }
     }
   };
 

@@ -64,7 +64,7 @@ export class PostService {
       })
     );
 
-    console.log(JSON.stringify(modifiedPosts, null, 2));
+    // console.log(JSON.stringify(modifiedPosts, null, 2));
 
     return modifiedPosts;
   }
