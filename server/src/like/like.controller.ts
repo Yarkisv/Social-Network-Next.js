@@ -6,6 +6,7 @@ import {
   UseGuards,
   Request,
   Param,
+  Delete,
 } from "@nestjs/common";
 import { LikeService } from "./like.service";
 import { CreateLikeDto } from "./dto/create-like.dto";
@@ -35,8 +36,18 @@ export class LikeController {
   ) {
     const user_id = req.user.user_id;
 
-    console.log(user_id, post_id);
+    console.log("checking");
 
     return this.likeService.isAlreadyLikedByUser(user_id, post_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete("delete/:post_id")
+  async deleteLike(@Param("post_id") post_id: number, @Request() req) {
+    const user_id = req.user.user_id;
+
+    const { like_id } = await this.likeService.deleteLike(user_id, post_id);
+    console.log(like_id);
+    return like_id;
   }
 }

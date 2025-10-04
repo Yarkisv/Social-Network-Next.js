@@ -82,9 +82,6 @@ export class LikeService {
       })
     );
 
-    // console.log(`Likes of post ${post_id}: ${JSON.stringify(likes, null, 2)}`);
-    // console.log(`Modified likes: ${JSON.stringify(modifiedLikes, null, 2)}`);
-
     return modifiedLikes;
   }
 
@@ -98,5 +95,25 @@ export class LikeService {
     });
 
     return !!like;
+  }
+
+  async deleteLike(user_id: number, post_id: number) {
+    const like = await this.likeRepository.findOne({
+      where: {
+        user: { user_id: user_id },
+        post: { post_id: post_id },
+      },
+    });
+
+    if (!like) {
+      throw new NotFoundException("Like not found");
+    }
+
+    const likeId = like.like_id;
+    console.log("Deleting like:", likeId);
+
+    await this.likeRepository.remove(like);
+
+    return { like_id: likeId };
   }
 }

@@ -47,8 +47,6 @@ export class CommentService {
       })
     );
 
-    console.log(modifiedComments);
-
     return modifiedComments;
   }
 }

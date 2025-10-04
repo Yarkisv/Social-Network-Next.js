@@ -33,8 +33,6 @@ export class FileService {
   async getFile(pathTo: string, username?: string) {
     let filePath: string = "";
 
-    // console.log(pathTo);
-
     if (!username) {
       filePath = join(process.cwd(), `/static/${pathTo}`);
     } else {

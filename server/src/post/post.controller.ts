@@ -53,12 +53,4 @@ export class PostController {
   async getPostsById(@Param("id") id: number) {
     return this.postService.findUserPostsById(id);
   }
-
-  @Patch("increase-like/id")
-  async increaseLike(
-    @Param("id") id: number,
-    @Body() updatePostDto: UpdatePostDto
-  ) {
-
-  }
 }

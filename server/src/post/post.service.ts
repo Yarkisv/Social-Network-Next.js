@@ -46,8 +46,6 @@ export class PostService {
       },
     });
 
-    console.log(posts);
-
     const modifiedPosts = await Promise.all(
       posts.map(async (post) => {
         const { contentPathTo, ...rest } = post;
@@ -63,8 +61,6 @@ export class PostService {
         };
       })
     );
-
-    // console.log(JSON.stringify(modifiedPosts, null, 2));
 
     return modifiedPosts;
   }

@@ -4,6 +4,7 @@ import { Post } from "@/app/types/post.type";
 import React, { useEffect, useState } from "react";
 import postLike from "../../images/postLike.svg";
 import justLike from "../../images/justLike.svg";
+import redLike from "../../images/RedLike.svg";
 
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
@@ -19,27 +20,80 @@ type PostModalProps = {
 export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  const [currentPost, setCurrentpost] = useState<Post>();
+  const [currentPost, setCurrentPost] = useState<Post | null>();
   const [content, setContent] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [isPostLikedByUser, setIsPostLikedByUser] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!post) {
+      return;
+    }
+
+    setCurrentPost(post);
+
     const isLiked = async () => {
       try {
-        const response = await axiosInstance.post("comment/new", {
-          content: content,
-          post_id: post?.post_id,
-        });
+        const response = await axiosInstance.get(
+          `/like/check-is-already-liked/${post?.post_id}`
+        );
 
-        if (response.data) {
-          setIsPostLikedByUser(response.data);
-        }
-      } catch (error) {}
+        setIsPostLikedByUser(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     isLiked();
-  }, []);
+  }, [post?.post_id]);
+
+  const handleLikePost = async () => {
+    try {
+      if (!isPostLikedByUser) {
+        const response = await axiosInstance.post("like/create", {
+          post_id: post?.post_id,
+        });
+
+        const newLike = response.data;
+
+        setCurrentPost((prev) => {
+          if (!prev) return prev;
+
+          return {
+            ...prev,
+            likes: [...(prev.likes || []), newLike],
+          };
+        });
+
+        setIsPostLikedByUser(true);
+      } else {
+        const response = await axiosInstance.delete(
+          `like/delete/${post?.post_id}`
+        );
+
+        const deletedLike_id = response.data;
+
+        setCurrentPost((prev) => {
+          if (!prev) return prev;
+
+          return {
+            ...prev,
+            likes: prev.likes?.filter(
+              (like) => like.like_id !== deletedLike_id
+            ),
+          };
+        });
+
+        setIsPostLikedByUser(false);
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+
+      if (err.response?.status === 409) {
+        console.log("Already liked");
+      }
+    }
+  };
 
   const fetchAllComments = async () => {
     try {
@@ -88,22 +142,6 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     return `Sent ${Math.round(diffInDays)} days ago`;
   };
 
-  const handleLikePost = async () => {
-    try {
-      if (!isPostLikedByUser) {
-        const response = await axiosInstance.post("like/create", {
-          post_id: post?.post_id,
-        });
-      }
-    } catch (error) {
-      const err = error as AxiosError;
-
-      if (err.response?.status === 409) {
-        console.log("Already liked");
-      }
-    }
-  };
-
   useEffect(() => {
     if (post) {
       fetchAllComments();
@@ -127,7 +165,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         <div className="h-full w-[365px] flex-shrink-0">
           <Image
             alt="post"
-            src={`data:image/png;base64,${post.imageBase64}`}
+            src={`data:image/png;base64,${currentPost?.imageBase64}`}
             width={365}
             height={365}
             className="w-full h-full object-cover rounded"
@@ -137,20 +175,20 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         <div className="flex flex-col flex-1 overflow-hidden p-2 ">
           <div className="flex items-center gap-2 mb-[5px]">
             <Image
-              src={`data:image/png;base64,${post.userAvatar}`}
+              src={`data:image/png;base64,${currentPost?.userAvatar}`}
               alt="userAvatar"
               height={28}
               width={28}
               className="rounded-full"
             />
             <span className="text-white text-sm font-medium">
-              {post.username}
+              {currentPost?.username}
             </span>
           </div>
           <div className="mb-2">
-            {post.post_title ? (
+            {currentPost?.post_title ? (
               <h2 className="text-lg font-semibold text-white">
-                {post.post_title}
+                {currentPost?.post_title}
               </h2>
             ) : (
               <div></div>
@@ -215,12 +253,12 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                 >
                   <Image
                     alt="like"
-                    src={justLike}
+                    src={isPostLikedByUser ? redLike : justLike}
                     width={20}
                     height={20}
-                    className="w-full h-full  rounded"
+                    className="w-full h-full rounded cursor-pointer"
                   />
-                  <p className="mt-[-2px]">{post.likes?.length}</p>
+                  <p className="mt-[-2px]">{currentPost?.likes?.length}</p>
                 </div>
                 {/* <div className="flex flex-col items-center">
                   <Image

@@ -20,15 +20,11 @@ export class CommentController {
   create(@Body() createCommentDto: CreateCommentDto, @Request() req) {
     const id = req.user.user_id;
 
-    console.log(`User with id: [${id}] saves comment`);
-
     return this.commentService.create(id, createCommentDto);
   }
 
   @Get("/get/all/:id")
   async getCommentsByPostId(@Param("id") id: number) {
-    console.log(id);
-
     return await this.commentService.findAllByPostId(id);
   }
 }
