@@ -58,9 +58,15 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get("me")
   async me(@Request() req) {
+    console.log("Request for /auth/me");
+
     const id: number = req.user.user_id;
 
     const user = await this.userService.findBasicDataById(id);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
 
     return user;
   }
@@ -112,11 +118,13 @@ export class AuthController {
   }
 
   @UseGuards(RefreshTokenGuard)
-  @Get("refresh")
+  @Post("refresh")
   async refreshTokens(
     @Request() req,
     @Res({ passthrough: true }) response: Response
   ) {
+    console.log("/auth/refresh called");
+
     const refreshToken = req.user.token;
 
     console.log("Refresh token from request: ", refreshToken);
@@ -131,15 +139,24 @@ export class AuthController {
     response.cookie("access_token", access_token, {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 60 * 60 * 1000,
+      path: "/",
     });
 
     response.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
+
+    console.log("Tokens refreshed successfuly");
+
+    return {
+      access_token,
+      refreshToken,
+    };
   }
 }
