@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
@@ -16,35 +17,30 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    try {
-      const email = loginDto.email;
-      const password = loginDto.password;
+    const email = loginDto.email;
+    const password = loginDto.password;
 
-      const user = await this.userService.findOne(email);
+    const user = await this.userService.findOne(email);
 
-      console.log("User:", user);
+    console.log("User:", user);
 
-      if (!user) {
-        throw new UnauthorizedException("User not found");
-      }
-
-      const isPassMatch = await argon2.verify(user.password, password);
-
-      if (!isPassMatch) {
-        throw new UnauthorizedException("Invalid password");
-      }
-
-      const tokens = await this.getTokens(
-        user.user_id,
-        user.username,
-        user.email
-      );
-
-      return tokens;
-    } catch (err) {
-      console.error("Login error:", err);
-      throw new UnauthorizedException("Login failed");
+    if (!user) {
+      throw new NotFoundException("User not found");
     }
+
+    const isPassMatch = await argon2.verify(user.password, password);
+
+    if (!isPassMatch) {
+      throw new UnauthorizedException("Invalid password");
+    }
+
+    const tokens = await this.getTokens(
+      user.user_id,
+      user.username,
+      user.email
+    );
+
+    return tokens;
   }
 
   async refreshTokens(refreshToken: string) {
