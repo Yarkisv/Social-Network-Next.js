@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
@@ -10,24 +9,13 @@ import { PostModule } from "./post/post.module";
 import { CommentModule } from "./comment/comment.module";
 import { SubscriptionModule } from "./subscription/subscription.module";
 import { LikeModule } from "./like/like.module";
+import { dataSourceOptions } from "db/data-source";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configServise: ConfigService) => ({
-        type: "mysql",
-        host: configServise.get("DB_HOST"),
-        port: configServise.get("DB_PORT"),
-        username: configServise.get("DB_USER"),
-        password: configServise.get("DB_PASSWORD"),
-        database: configServise.get("DB_NAME"),
-        entities: [__dirname + "/**/*.entity{.js, .ts}"],
-        synchronize: false,
-      }),
-      inject: [ConfigService],
-    }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }),
+    TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
     AuthModule,
     ChatModule,
