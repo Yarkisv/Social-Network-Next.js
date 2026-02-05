@@ -10,12 +10,14 @@ import { Like, Repository } from "typeorm";
 import * as argon2 from "argon2";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { FileService } from "src/services/file.service";
+import { SubscriptionService } from "src/subscription/subscription.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly fileServise: FileService
+    private readonly fileServise: FileService,
+    private readonly subscriptionService: SubscriptionService
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -264,5 +266,19 @@ export class UserService {
     console.log(updatedUser);
 
     return updatedUser;
+  }
+
+  async getStattistics(user_id: number) {
+    const { subscriptions, subscribers } =
+      await this.subscriptionService.findAllById(user_id);
+
+    const localDate = new Date().toLocaleDateString();
+
+    const subscribersSinceToday = subscribers.filter(
+      (sub) =>
+        new Date(sub.subscriptionSince).toLocaleDateString() === localDate
+    );
+
+    console.log(subscribersSinceToday);
   }
 }

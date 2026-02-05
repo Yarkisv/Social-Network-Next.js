@@ -44,13 +44,15 @@ export class AuthController {
       sameSite: "strict",
       maxAge: 60 * 60 * 1000,
     });
-  
+
     response.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: false,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    console.log("Login successful");
 
     return { message: "Login successful" };
   }

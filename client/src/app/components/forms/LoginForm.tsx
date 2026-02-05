@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
@@ -27,6 +27,8 @@ export default function LoginForm() {
 
   const API = process.env.NEXT_PUBLIC_API_URL;
 
+  const router = useRouter();
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
@@ -42,16 +44,22 @@ export default function LoginForm() {
         withCredentials: true,
       });
       if (response.status === 200) {
-        redirect("/");
+        router.push("/");
       }
     } catch (error: any) {
-      switch (error.response.status) {
-        case 401:
-          setErrorMessage("Invalid password");
-          break;
-        case 404:
-          setErrorMessage("User not found");
-          break;
+      if (axios.isAxiosError(error)) {
+        console.log(error);
+        const status = error.response?.status;
+        switch (status) {
+          case 401:
+            setErrorMessage("Invalid password");
+            break;
+          case 404:
+            setErrorMessage("User not found");
+            break;
+        }
+      } else {
+        setErrorMessage("Unexpected error");
       }
     }
   };

@@ -54,4 +54,14 @@ export class UserController {
 
     return this.userService.updateUser(id, updateUserDto, file);
   }
+
+  @UseGuards(AuthGuard)
+  @Get("statistics")
+  async getUserStatistics(@Request() req) {
+    const user_id = req.user.user_id;
+
+    console.log(`User with id: [${user_id}] trying to get his statistics`);
+
+    return this.userService.getStattistics(user_id)
+  }
 }

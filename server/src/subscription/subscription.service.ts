@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CreateSubscriptionDto } from "./dto/create-subscription.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Subscription } from "./entities/subscription.entity";
@@ -12,6 +12,7 @@ export class SubscriptionService {
     @InjectRepository(Subscription)
     private readonly subscriptionRepository: Repository<Subscription>,
     private readonly fileService: FileService,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService
   ) {}
 
@@ -64,10 +65,11 @@ export class SubscriptionService {
     const subscribers = await Promise.all(
       userSubscribers.map(async (sub) => {
         const { user_id, username, fullname } = sub.subscriber;
+        const subscriptionSince = sub.subscriptionSince;
         const imageBase64 = await this.fileService.getFile(
           sub.subscriber.avatarPathTo
         );
-        return { user_id, username, fullname, imageBase64 };
+        return { user_id, username, fullname, imageBase64, subscriptionSince };
       })
     );
 
