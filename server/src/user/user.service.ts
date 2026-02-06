@@ -11,6 +11,7 @@ import * as argon2 from "argon2";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { FileService } from "src/services/file.service";
 import { SubscriptionService } from "src/subscription/subscription.service";
+import { EPeriods } from "src/enums/statistics-period.enum";
 
 @Injectable()
 export class UserService {
@@ -268,17 +269,52 @@ export class UserService {
     return updatedUser;
   }
 
-  async getStattistics(user_id: number) {
+  async getStatistics(user_id: number, period: EPeriods) {
     const { subscriptions, subscribers } =
       await this.subscriptionService.findAllById(user_id);
 
-    const localDate = new Date().toLocaleDateString();
+    const localDate = new Date();
 
-    const subscribersSinceToday = subscribers.filter(
-      (sub) =>
-        new Date(sub.subscriptionSince).toLocaleDateString() === localDate
-    );
+    switch (period) {
+      case EPeriods.DAY:
+        const subscribersSinceToday = subscribers.filter(
+          (sub) => new Date(sub.subscriptionSince) == localDate
+        );
 
-    console.log(subscribersSinceToday);
+        console.log(subscribersSinceToday);
+
+        return {
+          subsSinceToday: subscribersSinceToday,
+          subsSinceTodayCount: subscribersSinceToday.length,
+        };
+      case EPeriods.WEEK:
+        const weekAgo = new Date();
+        weekAgo.setDate(new Date().getDate() - 7);
+
+        const subscribersSinceLastWeek = subscribers.filter(
+          (sub) => new Date(sub.subscriptionSince) >= weekAgo
+        );
+
+        console.log(subscribersSinceLastWeek);
+
+        return {
+          subsSinceLastWeek: subscribersSinceLastWeek,
+          subsSinceLastWeekCount: subscribersSinceLastWeek.length,
+        };
+      case EPeriods.MONTH:
+        const monthAgo = new Date();
+        monthAgo.setDate(new Date().getDate() - 30);
+
+        const subscribersSinceLastMonth = subscribers.filter(
+          (sub) => new Date(sub.subscriptionSince) >= monthAgo
+        );
+
+        console.log(subscribersSinceLastMonth);
+
+        return {
+          subsSinceLastMonth: subscribersSinceLastMonth,
+          subsSinceLastMontthCount: subscribersSinceLastMonth.length,
+        };
+    }
   }
 }

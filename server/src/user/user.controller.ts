@@ -11,12 +11,14 @@ import {
   UseInterceptors,
   UploadedFile,
   Request,
+  Query,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { AuthGuard } from "src/auth/guards/auth.guard";
+import { EPeriods } from "src/enums/statistics-period.enum";
 
 @Controller("user")
 export class UserController {
@@ -57,11 +59,13 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get("statistics")
-  async getUserStatistics(@Request() req) {
+  async getUserStatistics(@Request() req, @Query("period") period: EPeriods) {
     const user_id = req.user.user_id;
 
-    console.log(`User with id: [${user_id}] trying to get his statistics`);
+    console.log(
+      `User with id: [${user_id}] trying to get his statistics by [${period}]`
+    );
 
-    return this.userService.getStattistics(user_id)
+    return this.userService.getStatistics(user_id, period);
   }
 }
