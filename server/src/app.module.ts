@@ -11,6 +11,7 @@ import { SubscriptionModule } from "./subscription/subscription.module";
 import { LikeModule } from "./like/like.module";
 import { dataSourceOptions } from "db/data-source";
 import { ConfigModule } from "@nestjs/config";
+import { PostImageModule } from "./post-image/post-image.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ConfigModule } from "@nestjs/config";
     CommentModule,
     SubscriptionModule,
     LikeModule,
+    PostImageModule,
   ],
 })
 export class AppModule {}

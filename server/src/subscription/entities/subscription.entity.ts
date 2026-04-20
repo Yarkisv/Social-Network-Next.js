@@ -9,24 +9,24 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-@Entity()
+@Entity("subscriptions")
 export class Subscription {
   @PrimaryGeneratedColumn()
-  subscription_id: number;
+  subscription_id!: number;
 
   //Подписчик - пользователь который подписан на другого пользователя - много к одному
   @ManyToOne(() => User, (user) => user.subscriptions)
   @JoinColumn({ name: "subscriber_id" })
-  subscriber: User;
+  subscriber!: User;
 
   //Пользователь на которого подписался другой пользователь - много к одному
   @ManyToOne(() => User, (user) => user.subscribers)
   @JoinColumn({ name: "subscribed_to_id" })
-  subscribedTo: User;
+  subscribedTo!: User;
 
   @Column({ default: false })
-  isSubscriptionMutual: boolean;
+  isSubscriptionMutual!: boolean;
 
   @Column()
-  subscriptionSince: Date;
+  subscriptionSince!: Date;
 }

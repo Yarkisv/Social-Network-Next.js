@@ -9,25 +9,25 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-@Entity()
+@Entity("comments")
 export class Comment {
   @PrimaryGeneratedColumn()
-  comment_id: number;
+  comment_id!: number;
 
   @Column()
-  content: string;
+  content!: string;
 
   @Column({ default: 0 })
-  likes: number;
+  likes!: number;
 
   @CreateDateColumn()
-  sent_at: Date;
+  sent_at!: Date;
 
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn({ name: "post_id" })
-  post: Post;
+  post!: Post;
 
   @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn({ name: "user_id" })
-  user: User;
+  user!: User;
 }

@@ -1,15 +1,15 @@
-import { Injectable } from "@nestjs/common";
-import { CreateMessageDto } from "./dto/create-message.dto";
-import { UpdateMessageDto } from "./dto/update-message.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Message } from "./entities/message.entity";
+import { Injectable } from '@nestjs/common';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Message } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message)
-    private readonly messageRepository: Repository<Message>
+    private readonly messageRepository: Repository<Message>,
   ) {}
 
   async create(createMessageDto: CreateMessageDto, sender_id: number) {

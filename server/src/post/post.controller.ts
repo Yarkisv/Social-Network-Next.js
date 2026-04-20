@@ -7,7 +7,6 @@ import {
   UploadedFile,
   Get,
   Param,
-  Patch,
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { FileService } from "src/services/file.service";
@@ -19,7 +18,7 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 export class PostController {
   constructor(
     private readonly postService: PostService,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
   ) {}
 
   @Post("upload/post")
@@ -28,10 +27,9 @@ export class PostController {
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @Body("folder") folder: string,
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(file);
-    console.log(folder);
+    console.log("File from client side: ", file, "\nUser username: ", folder);
 
     const pathTo = await this.fileService.uploadFile(file, folder);
 
@@ -40,13 +38,6 @@ export class PostController {
     await this.postService.create(createPostDto);
 
     return { message: "Post uploaded successfuly" };
-  }
-
-  @Post("upload/posts")
-  @HttpCode(200)
-  @UseInterceptors(FileInterceptor("file"))
-  async uploadFiles(@UploadedFile() files: Express.Multer.File[]) {
-    console.log(files);
   }
 
   @Get("get/:id")

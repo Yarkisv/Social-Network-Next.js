@@ -1,11 +1,6 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
@@ -16,7 +11,7 @@ export class RefreshTokenGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      console.log("Refresh token undefined");
+      console.log('Refresh token undefined');
       throw new UnauthorizedException();
     }
 
@@ -37,19 +32,19 @@ export class RefreshTokenGuard implements CanActivate {
         token: token,
       };
     } catch (e) {
-      console.error("JWT error:", e);
+      console.error('JWT error:', e);
       throw new UnauthorizedException();
     }
     return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const authHeader = request.headers["authorization"];
+    const authHeader = request.headers['authorization'];
 
-    if (authHeader?.startsWith("Bearer ")) {
-      return authHeader.split(" ")[1];
+    if (authHeader?.startsWith('Bearer ')) {
+      return authHeader.split(' ')[1];
     }
 
-    return request.cookies?.["refresh_token"];
+    return request.cookies?.['refresh_token'];
   }
 }

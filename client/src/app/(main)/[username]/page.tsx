@@ -37,15 +37,15 @@ export default function page() {
   const username = params.username;
 
   const isPostModalOpen = useAppSelector(
-    (state) => state.modal.isPostModalOpen
+    (state) => state.modal.isPostModalOpen,
   );
 
   const isSubscribersModalOpen = useAppSelector(
-    (state) => state.modal.isSubscribersModalOpen
+    (state) => state.modal.isSubscribersModalOpen,
   );
 
   const isSubscriptionsModalOpen = useAppSelector(
-    (state) => state.modal.isSubscriptionsModalOpen
+    (state) => state.modal.isSubscriptionsModalOpen,
   );
 
   const fetchData = async () => {
@@ -67,7 +67,7 @@ export default function page() {
             params: {
               viewed_user_id: response.data?.user?.user_id,
             },
-          }
+          },
         );
         if (isSubscribedRes.status === 200) {
           setIsSubscribed(isSubscribedRes.data);
@@ -123,7 +123,7 @@ export default function page() {
         },
         {
           withCredentials: true,
-        }
+        },
       );
       if (res.status === 201) {
         fetchData();
@@ -139,7 +139,7 @@ export default function page() {
         `${API}/subscription/delete/${fullUserData?.user?.user_id}`,
         {
           withCredentials: true,
-        }
+        },
       );
       if (res.status === 200) {
         fetchData();

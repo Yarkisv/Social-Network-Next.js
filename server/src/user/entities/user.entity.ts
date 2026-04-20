@@ -7,53 +7,53 @@ import { Comment } from "src/comment/entities/comment.entity";
 import { Subscription } from "src/subscription/entities/subscription.entity";
 import { Like } from "src/like/entities/like.entity";
 
-@Entity("Users")
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  user_id!: number;
 
   @Column()
-  fullname: string;
+  fullname!: string;
 
   @Column()
-  username: string;
+  username!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  phone: string;
+  phone!: string;
 
   @IsNotEmpty()
   @Column({ length: 255 })
-  password: string;
+  password!: string;
 
   // Подписки - массив пользователей на которых подписан пользователь
   @OneToMany(() => Subscription, (subscription) => subscription.subscriber)
-  subscriptions: Subscription[];
+  subscriptions!: Subscription[];
 
   // Подписчики - массив пользователей которые подписаны на пользователя
   @OneToMany(() => Subscription, (subscription) => subscription.subscribedTo)
-  subscribers: Subscription[];
+  subscribers!: Subscription[];
 
   @Column({ default: "" })
-  description: string;
+  description!: string;
 
   @Column({ default: "/default-avatar.jpg" })
-  avatarPathTo: string;
+  avatarPathTo!: string;
 
   @OneToMany(() => ChatMember, (member) => member.user)
-  chatMemberships: ChatMember[];
+  chatMemberships!: ChatMember[];
 
   @OneToMany(() => Message, (message) => message.user)
-  sentMessages: Message[];
+  sentMessages!: Message[];
 
   @OneToMany(() => Post, (post) => post.user)
-  posts: Post[];
+  posts!: Post[];
 
   @OneToMany(() => Comment, (comment) => comment.user)
-  comments: Comment[];
+  comments!: Comment[];
 
   @OneToMany(() => Like, (like) => like.user)
-  Likes: Like[];
+  Likes!: Like[];
 }

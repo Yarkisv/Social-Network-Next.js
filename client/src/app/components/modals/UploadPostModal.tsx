@@ -16,7 +16,7 @@ export default function UploadPostModal({
   const dispatch = useAppDispatch();
 
   const isUploadWindowOpen = useAppSelector(
-    (state) => state.modal.isUploadWindowOpen
+    (state) => state.modal.isUploadWindowOpen,
   );
 
   const currentUser = useAppSelector((state) => state.user.user);
@@ -36,7 +36,7 @@ export default function UploadPostModal({
     user_id: currentUser?.user_id,
     folder: currentUser?.username,
     post_title: undefined,
-    file: undefined,
+    file: undefined,  
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ export default function UploadPostModal({
   };
 
   const handleOnChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
     setNewPost({ ...newPost, [name]: value });

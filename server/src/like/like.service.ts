@@ -1,21 +1,17 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { CreateLikeDto } from "./dto/create-like.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Like } from "./entities/like.entity";
-import { Repository } from "typeorm";
-import { Post } from "src/post/entities/post.entity";
-import { FileService } from "src/services/file.service";
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateLikeDto } from './dto/create-like.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Like } from './entities/like.entity';
+import { Repository } from 'typeorm';
+import { Post } from 'src/post/entities/post.entity';
+import { FileService } from 'src/services/file.service';
 
 @Injectable()
 export class LikeService {
   constructor(
     @InjectRepository(Like) private readonly likeRepository: Repository<Like>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
   ) {}
 
   async likePost(createLikeDto: CreateLikeDto, user_id: number) {
@@ -26,9 +22,9 @@ export class LikeService {
     });
 
     if (!post) {
-      console.log("Post not found");
+      console.log('Post not found');
 
-      throw new NotFoundException("Post not found");
+      throw new NotFoundException('Post not found');
     }
 
     const isLikeAlreadyExists = await this.likeRepository.findOne({
@@ -39,11 +35,9 @@ export class LikeService {
     });
 
     if (isLikeAlreadyExists) {
-      console.log("User already liked this post");
+      console.log('User already liked this post');
 
-      throw new ConflictException(
-        `Like already liked by this user: [${user_id}]`
-      );
+      throw new ConflictException(`Like already liked by this user: [${user_id}]`);
     }
 
     const like = await this.likeRepository.save({
@@ -59,27 +53,25 @@ export class LikeService {
       where: {
         post: { post_id: post_id },
       },
-      relations: ["user"],
+      relations: ['user'],
     });
 
     if (!likes) {
-      console.log("Likes not found");
+      console.log('Likes not found');
     }
 
     const modifiedLikes = await Promise.all(
       likes.map(async (like) => {
         const { user, ...rest } = like;
 
-        const likedByAvatarBase64 = await this.fileService.getFile(
-          user.avatarPathTo
-        );
+        const likedByAvatarBase64 = await this.fileService.getFile(user.avatarPathTo);
 
         return {
           ...rest,
           likedByUserAvatarBase64: likedByAvatarBase64,
           likedByUserUsername: user.username,
         };
-      })
+      }),
     );
 
     return modifiedLikes;
@@ -91,7 +83,7 @@ export class LikeService {
         user: { user_id: user_id },
         post: { post_id: post_id },
       },
-      relations: ["user", "post"],
+      relations: ['user', 'post'],
     });
 
     return !!like;
@@ -106,11 +98,11 @@ export class LikeService {
     });
 
     if (!like) {
-      throw new NotFoundException("Like not found");
+      throw new NotFoundException('Like not found');
     }
 
     const likeId = like.like_id;
-    console.log("Deleting like:", likeId);
+    console.log('Deleting like:', likeId);
 
     await this.likeRepository.remove(like);
 

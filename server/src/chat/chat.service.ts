@@ -1,16 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Chat } from "./entities/chat.entity";
-import { Repository } from "typeorm";
-import { CreateChatDto } from "./dto/create-chat.dto";
-import { ChatMembersService } from "src/chat-members/chat-members.service";
-import { CreateChatMemberDto } from "src/chat-members/dto/create-chat-member.dto";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Chat } from './entities/chat.entity';
+import { Repository } from 'typeorm';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { ChatMembersService } from 'src/chat-members/chat-members.service';
+import { CreateChatMemberDto } from 'src/chat-members/dto/create-chat-member.dto';
 
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Chat) private readonly chatRepository: Repository<Chat>,
-    private readonly chatMembersService: ChatMembersService
+    private readonly chatMembersService: ChatMembersService,
   ) {}
 
   async createChat(current_user_id: number, createChatDto: CreateChatDto) {
@@ -30,7 +30,7 @@ export class ChatService {
 
     // console.log(chatMembersDto);
 
-    await this.chatMembersService.create(chatMembersDto);
+    // await this.chatMembersService.create(chatMembersDto);
 
     return { chat };
   }

@@ -8,24 +8,28 @@ import {
 } from "typeorm";
 import { Comment } from "src/comment/entities/comment.entity";
 import { Like } from "src/like/entities/like.entity";
+import { PostImage } from "src/post-image/entities/post-image.entity";
 
 @Entity("posts")
 export class Post {
   @PrimaryGeneratedColumn()
-  post_id: number;
+  post_id!: number;
 
-  @Column()
-  contentPathTo: string;
+  @OneToMany(() => PostImage, (image) => image.post, { cascade: true })
+  images!: PostImage[];
 
   @Column({ default: "" })
-  post_title: string;
+  post_title!: string;
+
+  @Column({ default: "" })
+  hashtag!: string;
 
   @OneToMany(() => Comment, (comment) => comment.post)
-  comments: Comment[];
+  comments!: Comment[];
 
   @ManyToOne(() => User, (user) => user.posts)
-  user: User;
+  user!: User;
 
   @OneToMany(() => Like, (like) => like.post)
-  likes: Like[];
+  likes!: Like[];
 }

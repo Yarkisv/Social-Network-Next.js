@@ -5,11 +5,11 @@ import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 @Entity("likes")
 export class Like {
   @PrimaryGeneratedColumn()
-  like_id: number;
+  like_id!: number;
 
   @ManyToOne(() => Post, (post) => post.post_id, { onDelete: "CASCADE" })
-  post: Post;
+  post!: Post;
 
   @ManyToOne(() => User, (user) => user.user_id, { onDelete: "CASCADE" })
-  user: User;
+  user!: User;
 }

@@ -3,17 +3,17 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-} from "@nestjs/common";
-import { UserService } from "src/user/user.service";
-import { JwtService } from "@nestjs/jwt";
-import * as argon2 from "argon2";
-import { LoginDto } from "./dto/create-auth.dto";
+} from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import * as argon2 from 'argon2';
+import { LoginDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -22,23 +22,19 @@ export class AuthService {
 
     const user = await this.userService.findOne(email);
 
-    console.log("User:", user);
+    console.log('User:', user);
 
     if (!user) {
-      throw new NotFoundException("User not found");
+      throw new NotFoundException('User not found');
     }
 
     const isPassMatch = await argon2.verify(user.password, password);
 
     if (!isPassMatch) {
-      throw new UnauthorizedException("Invalid password");
+      throw new UnauthorizedException('Invalid password');
     }
 
-    const tokens = await this.getTokens(
-      user.user_id,
-      user.username,
-      user.email
-    );
+    const tokens = await this.getTokens(user.user_id, user.username, user.email);
 
     return tokens;
   }
@@ -56,13 +52,9 @@ export class AuthService {
       const email = payload.email;
 
       const user = await this.userService.findFullDataById(user_id);
-      if (!user) throw new ForbiddenException("Access Denied");
+      if (!user) throw new ForbiddenException('Access Denied');
 
-      const { access_token, refresh_token } = await this.getTokens(
-        user_id,
-        username,
-        email
-      );
+      const { access_token, refresh_token } = await this.getTokens(user_id, username, email);
 
       return { access_token, refresh_token };
     } catch (err) {
@@ -83,12 +75,12 @@ export class AuthService {
     const [access_token, refresh_token] = await Promise.all([
       await this.jwtService.signAsync(payload, {
         secret: ACCESS_JWT_SECRET,
-        expiresIn: "1h",
+        expiresIn: '1h',
       }),
 
       await this.jwtService.signAsync(payload, {
         secret: REFRESH_JWT_SECRET,
-        expiresIn: "7d",
+        expiresIn: '7d',
       }),
     ]);
 

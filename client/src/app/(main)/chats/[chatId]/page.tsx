@@ -1,6 +1,5 @@
 "use client";
 
-import AsideInfo from "@/app/components/asideInfo";
 import Image from "next/image";
 import likeChat from "../../../images/likeChat.svg";
 import NoChats from "../../../images/NoChats.svg";
@@ -44,7 +43,7 @@ export default function page() {
   const fetchAllMessages = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/messages/get/${chat_id}`
+        `http://localhost:4000/api/messages/get/${chat_id}`,
       );
 
       if (response.status === 200) {
@@ -74,7 +73,7 @@ export default function page() {
     SocketApi.socket?.on("newMessage", (message) => {
       setMessages((prev) => {
         const alreadyExists = prev.some(
-          (m) => m.message_id === message.message_id
+          (m) => m.message_id === message.message_id,
         );
 
         if (alreadyExists) return prev;
@@ -111,10 +110,7 @@ export default function page() {
   }
 
   return (
-    <div className="h-screen bg-[#060606] text-white flex justify-center">
-      <div className="w-[198px] bg-[#15121F]">
-        <AsideInfo />
-      </div>
+    <div className="h-[calc(100vh-46px)] bg-[#060606] text-white flex justify-center">
       <div className="w-full relative max-w-[730px] flex flex-col flex-1 bg-[#120921] px-[24px] pt-[24px] gap-4 font-[Manrope] rounded-[2px] shadow-lg">
         <header className="flex items-center border-b border-[#2f2f2f] pb-3">
           <Image
@@ -185,7 +181,7 @@ export default function page() {
                         </div>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             ) : (

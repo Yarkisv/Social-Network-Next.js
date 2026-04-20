@@ -1,5 +1,5 @@
 export const enum EPeriods {
-  DAY = "day",
-  WEEK = "week",
-  MONTH = "month",
+  DAY = 'day',
+  WEEK = 'week',
+  MONTH = 'month',
 }

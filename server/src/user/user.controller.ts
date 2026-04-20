@@ -48,7 +48,7 @@ export class UserController {
   async updateUser(
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() file: Express.Multer.File,
-    @Request() req
+    @Request() req,
   ) {
     const id = req.user.user_id;
 
@@ -63,7 +63,7 @@ export class UserController {
     const user_id = req.user.user_id;
 
     console.log(
-      `User with id: [${user_id}] trying to get his statistics by [${period}]`
+      `User with id: [${user_id}] trying to get his statistics by [${period}]`,
     );
 
     return this.userService.getStatistics(user_id, period);

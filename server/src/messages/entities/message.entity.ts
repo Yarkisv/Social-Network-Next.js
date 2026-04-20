@@ -8,24 +8,24 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-@Entity("Messages")
+@Entity("messages")
 export class Message {
   @PrimaryGeneratedColumn()
-  message_id: number;
+  message_id!: number;
 
   @Column()
-  chat_id: number;
+  chat_id!: number;
 
   @Column()
-  sender_id: number;
+  sender_id!: number;
 
   @Column()
-  content: string;
+  content!: string;
 
   @CreateDateColumn()
-  sent_at: Date;
+  sent_at!: Date;
 
   @ManyToOne(() => User, (user) => user.sentMessages)
   @JoinColumn({ name: "sender_id" })
-  user: User;
+  user!: User;
 }

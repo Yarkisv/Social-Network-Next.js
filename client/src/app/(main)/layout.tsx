@@ -21,7 +21,7 @@ export default async function RootLayout({
             <HydrateUser user={user} />
             <Header user={user} />
             <div className="flex flex-1 bg-[#060606] text-white flex justify-center px-4 ">
-              <div className="w-[200px] bg-[#15121F] ">
+              <div className="w-[200px] h-[calc(100vh-46px)] bg-[#15121F] ">
                 <AsideInfo />
               </div>
               <div className="w-full max-w-[730px]">{children}</div>

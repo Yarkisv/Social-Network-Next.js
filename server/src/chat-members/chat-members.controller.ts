@@ -16,6 +16,6 @@ export class ChatMembersController {
 
   @Post()
   create(@Body() createChatMemberDto: CreateChatMemberDto) {
-    return this.chatMembersService.create(createChatMemberDto);
+    // return this.chatMembersService.create(createChatMemberDto);
   }
 }

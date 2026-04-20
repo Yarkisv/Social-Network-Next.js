@@ -18,7 +18,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly fileServise: FileService,
-    private readonly subscriptionService: SubscriptionService
+    private readonly subscriptionService: SubscriptionService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -109,7 +109,7 @@ export class UserService {
           ...rest,
           avatarBase64,
         };
-      })
+      }),
     );
 
     return modifiedUser[0];
@@ -134,7 +134,7 @@ export class UserService {
           ...rest,
           avatarBase64,
         };
-      })
+      }),
     );
 
     return modifiedUsers;
@@ -162,7 +162,7 @@ export class UserService {
     }
 
     const avatarBase64: string = await this.fileServise.getFile(
-      user.avatarPathTo
+      user.avatarPathTo,
     );
 
     const modifiedUser = JSON.parse(JSON.stringify(user));
@@ -195,7 +195,7 @@ export class UserService {
     }
 
     const avatarBase64: string = await this.fileServise.getFile(
-      user.avatarPathTo
+      user.avatarPathTo,
     );
 
     const modifiedUser = JSON.parse(JSON.stringify(user));
@@ -210,7 +210,7 @@ export class UserService {
   async updateUser(
     id: number,
     updateUserDto: UpdateUserDto,
-    file: Express.Multer.File
+    file: Express.Multer.File,
   ) {
     const user = await this.userRepository.findOne({
       where: {
@@ -254,7 +254,7 @@ export class UserService {
     if (file) {
       const pathTo: string = await this.fileServise.uploadFile(
         file,
-        user.username.toString()
+        user.username.toString(),
       );
 
       console.log(pathTo);
@@ -278,7 +278,7 @@ export class UserService {
     switch (period) {
       case EPeriods.DAY:
         const subscribersSinceToday = subscribers.filter(
-          (sub) => new Date(sub.subscriptionSince) == localDate
+          (sub) => new Date(sub.subscriptionSince) == localDate,
         );
 
         console.log(subscribersSinceToday);
@@ -292,7 +292,7 @@ export class UserService {
         weekAgo.setDate(new Date().getDate() - 7);
 
         const subscribersSinceLastWeek = subscribers.filter(
-          (sub) => new Date(sub.subscriptionSince) >= weekAgo
+          (sub) => new Date(sub.subscriptionSince) >= weekAgo,
         );
 
         console.log(subscribersSinceLastWeek);
@@ -306,7 +306,7 @@ export class UserService {
         monthAgo.setDate(new Date().getDate() - 30);
 
         const subscribersSinceLastMonth = subscribers.filter(
-          (sub) => new Date(sub.subscriptionSince) >= monthAgo
+          (sub) => new Date(sub.subscriptionSince) >= monthAgo,
         );
 
         console.log(subscribersSinceLastMonth);

@@ -1,4 +1,4 @@
-import { IsDate, IsNumber } from "class-validator";
+import { IsDate, IsNumber } from 'class-validator';
 
 export class CreateSubscriptionDto {
   @IsNumber()
