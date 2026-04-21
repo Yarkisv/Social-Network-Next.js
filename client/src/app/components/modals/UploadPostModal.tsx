@@ -13,85 +13,89 @@ export default function UploadPostModal({
 }: {
   onPostCreated: () => void;
 }) {
+  const API = process.env.NEXT_PUBLIC_API_URL;
   const dispatch = useAppDispatch();
-
+  const currentUser = useAppSelector((state) => state.user.user);
   const isUploadWindowOpen = useAppSelector(
     (state) => state.modal.isUploadWindowOpen,
   );
-
-  const currentUser = useAppSelector((state) => state.user.user);
-
-  const API = process.env.NEXT_PUBLIC_API_URL;
-
-  type Post = {
-    user_id: number | undefined;
-    folder: string | undefined;
-    post_title: string | undefined;
-    file: File | undefined;
-  };
-
-  const [preview, setPreview] = useState<string>("");
-
-  const [newPost, setNewPost] = useState<Post>({
-    user_id: currentUser?.user_id,
-    folder: currentUser?.username,
-    post_title: undefined,
-    file: undefined,  
-  });
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setNewPost((prev) => ({ ...prev, file }));
-    }
-  };
-
-  const handleOnChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = event.target;
-    setNewPost({ ...newPost, [name]: value });
-  };
-
   const handleOnClose = () => {
     dispatch(closeUploadPostWindow());
   };
 
-  const uploadNewPost = async () => {
-    try {
-      console.log(newPost);
+  const [isFiles, setIsFiles] = useState<boolean>(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [postTitle, setPostTitle] = useState("");
+  const [hashtag, setHashtag] = useState("");
 
-      const res = await axios.post(`${API}/post/upload/post`, newPost, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
 
-      if (res.status === 200) {
-        setTimeout(() => {
-          onPostCreated();
-          dispatch(closeUploadPostWindow());
-          setNewPost({
-            user_id: currentUser?.user_id,
-            folder: currentUser?.username,
-            post_title: undefined,
-            file: undefined,
-          });
-        }, 500);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-    }
+    const selectedFiles = Array.from(e.target.files);
+
+    setFiles((prev) => [...prev, ...selectedFiles]);
+    setIsFiles(true);
   };
 
-  useEffect(() => {
-    if (!newPost.file) {
-      setPreview("");
-    } else {
-      const srcUrl = URL.createObjectURL(newPost.file);
-      setPreview(srcUrl);
+  // const uploadNewPost = async () => {
+  //   try {
+  //     const res = await axios.post(
+  //       `${API}/post/upload/post`,
+  //       {
+  //         user_id: currentUser?.user_id,
+  //         folder: currentUser?.username,
+  //         post_title: postTitle,
+  //         hashtag,
+  //         files,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       },
+  //     );
+
+  //     if (res.status === 200) {
+  //       setTimeout(() => {
+  //         onPostCreated();
+  //         dispatch(closeUploadPostWindow());
+  //       }, 500);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error: ", error);
+  //   }
+  // };
+
+  const uploadNewPost = async () => {
+  try {
+    const formData = new FormData();
+
+    formData.append("user_id", String(currentUser?.user_id));
+    formData.append("folder", currentUser?.username || "");
+    formData.append("post_title", postTitle || "");
+    formData.append("hashtag", hashtag || "");
+
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    const res = await axios.post(
+      `${API}/post/upload/post`,
+      formData
+    );
+
+    if (res.status === 200) {
+      setTimeout(() => {
+        onPostCreated();
+        dispatch(closeUploadPostWindow());
+      }, 500);
     }
-  }, [newPost.file]);
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+};
+
+  useEffect(() => {}, []);
 
   if (!isUploadWindowOpen) return null;
 
@@ -106,7 +110,7 @@ export default function UploadPostModal({
         />
         <h2 className="text-[20px] mb-auto">Creating a publication</h2>
 
-        {!preview && (
+        {!isFiles ? (
           <>
             <Image
               src={createPostImg}
@@ -127,15 +131,30 @@ export default function UploadPostModal({
               Upload
             </label>
           </>
-        )}
-
-        {preview && (
+        ) : (
           <div className="flex flex-col items-center w-full">
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-[200px] h-[200px] object-contain rounded-md mb-4"
-            />
+            <div className="flex gap-2 flex-wrap">
+              {files.map((file, index) => {
+                const url = URL.createObjectURL(file);
+
+                return (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`file-${index}`}
+                    className="w-[100px] h-[100px] object-cover rounded"
+                  />
+                );
+              })}
+            </div>
+
+            <input type="file" id="file" hidden onChange={handleFileChange} />
+            <label
+              htmlFor="file"
+              className="bg-[#5020A1] text-white w-[132px] h-[34px] mb-[49px] flex items-center justify-center rounded-[2px] hover:bg-purple-700 transition cursor-pointer"
+            >
+              Add one more photo
+            </label>
 
             <div className="flex items-center justify-between w-full mb-3">
               <div className="flex items-center gap-2">
@@ -160,12 +179,20 @@ export default function UploadPostModal({
             </div>
 
             <textarea
-              name="post_title"
-              id="post_title"
-              onChange={handleOnChange}
+              onChange={(e) => {
+                setPostTitle(e.target.value);
+              }}
               className="w-full h-[80px] bg-[#1e1e1e] text-white p-2 rounded resize-none text-sm outline-none "
               maxLength={200}
               placeholder="Write a caption..."
+            />
+            <textarea
+              onChange={(e) => {
+                setHashtag(e.target.value);
+              }}
+              className="w-full h-[80px] bg-[#1e1e1e] text-white p-2 rounded resize-none text-sm outline-none "
+              maxLength={200}
+              placeholder="Write a hashtag..."
             />
           </div>
         )}

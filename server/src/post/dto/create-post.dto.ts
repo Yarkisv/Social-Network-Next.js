@@ -1,12 +1,15 @@
-import { Type } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { Type } from "class-transformer";
+import { IsArray, IsString } from "class-validator";
 
 export class CreatePostDto {
   @IsString()
-  contentPathTo!: string;
+  post_title!: string;
 
   @IsString()
-  post_title!: string;
+  hashtag!: string;
+
+  @IsArray()
+  contentPathsTo!: string[];
 
   @Type(() => Number)
   user_id!: number;

@@ -2,7 +2,7 @@ import { Like } from "./like.type";
 
 export type Post = {
   post_id: number | undefined;
-  imageBase64: string | undefined;
+  images: string[];
   post_title: string | undefined;
   username: string | undefined;
   userAvatar: string | undefined;

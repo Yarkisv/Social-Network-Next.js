@@ -18,12 +18,14 @@ type PostModalProps = {
 };
 
 export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
+  console.log(post);
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [currentPost, setCurrentPost] = useState<Post | null>();
   const [content, setContent] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [isPostLikedByUser, setIsPostLikedByUser] = useState<boolean>(false);
+  const [indexOfPostImage, setIndexOfPostImage] = useState<number>(0);
 
   useEffect(() => {
     if (!post) {
@@ -35,7 +37,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     const isLiked = async () => {
       try {
         const response = await axiosInstance.get(
-          `/like/check-is-already-liked/${post?.post_id}`
+          `/like/check-is-already-liked/${post?.post_id}`,
         );
 
         setIsPostLikedByUser(response.data);
@@ -68,7 +70,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         setIsPostLikedByUser(true);
       } else {
         const response = await axiosInstance.delete(
-          `like/delete/${post?.post_id}`
+          `like/delete/${post?.post_id}`,
         );
 
         const deletedLike_id = response.data;
@@ -79,7 +81,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
           return {
             ...prev,
             likes: prev.likes?.filter(
-              (like) => like.like_id !== deletedLike_id
+              (like) => like.like_id !== deletedLike_id,
             ),
           };
         });
@@ -98,7 +100,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   const fetchAllComments = async () => {
     try {
       const response = await axios.get(
-        `${API}/comment/get/all/${post?.post_id}`
+        `${API}/comment/get/all/${post?.post_id}`,
       );
 
       if (response.status === 200) {
@@ -142,6 +144,25 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     return `Sent ${Math.round(diffInDays)} days ago`;
   };
 
+  const handleNextImage = () => {
+    const images = post?.images ?? [];
+    const imagesCount = images.length - 1;
+
+    setIndexOfPostImage((prevIndexOfPostImage) =>
+      prevIndexOfPostImage === imagesCount
+        ? (prevIndexOfPostImage = imagesCount)
+        : prevIndexOfPostImage + 1,
+    );
+  };
+
+  const handlePreviosImage = () => {
+    setIndexOfPostImage((prevIndexOfPostImage) =>
+      prevIndexOfPostImage === 0
+        ? (prevIndexOfPostImage = 0)
+        : prevIndexOfPostImage - 1,
+    );
+  };
+
   useEffect(() => {
     if (post) {
       fetchAllComments();
@@ -163,9 +184,16 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         </button>
 
         <div className="h-full w-[365px] flex-shrink-0">
+          {post?.images?.length > 1 && (
+            <div>
+              <button onClick={handlePreviosImage}>previos</button>{" "}
+              <button onClick={handleNextImage}>next</button>
+            </div>
+          )}
+
           <Image
             alt="post"
-            src={`data:image/png;base64,${currentPost?.imageBase64}`}
+            src={`data:image/png;base64,${currentPost?.images[indexOfPostImage]}`}
             width={365}
             height={365}
             className="w-full h-full object-cover rounded"

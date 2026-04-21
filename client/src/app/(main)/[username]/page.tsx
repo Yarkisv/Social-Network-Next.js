@@ -285,7 +285,7 @@ export default function page() {
             {fullUserData.posts.map((post) => (
               <Image
                 key={post.post_id}
-                src={`data:image/jpg;base64,${post.imageBase64}`}
+                src={`data:image/jpg;base64,${post.images[0]}`}
                 alt="post"
                 width={233}
                 height={233}

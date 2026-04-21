@@ -7,7 +7,7 @@ import { promises as fs } from "fs";
 export class FileService {
   async uploadFile(file: Express.Multer.File, folder: string) {
     const uploadFolder = join(
-      "D:\\Projects\\Social-Network-Next.js\\server\\static\\",
+      "D:\\Projects\\OpenCircle\\server\\static\\",
       folder,
     );
 
@@ -36,16 +36,10 @@ export class FileService {
     return pathTo;
   }
 
-  // async uploadFiles(files: File[]) {}
-
   async getFile(pathTo: string, username?: string) {
-    let filePath: string = "";
-
-    if (!username) {
-      filePath = join(process.cwd(), `/static/${pathTo}`);
-    } else {
-      filePath = join(process.cwd(), `/static/${username}/${pathTo}`);
-    }
+    const filePath = username
+      ? join(process.cwd(), "static", username, pathTo)
+      : join(process.cwd(), "static", pathTo);
 
     const buffer = await readFile(filePath);
 

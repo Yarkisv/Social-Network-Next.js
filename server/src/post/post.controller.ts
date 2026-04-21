@@ -4,15 +4,14 @@ import {
   Body,
   HttpCode,
   UseInterceptors,
-  UploadedFile,
   Get,
   Param,
+  UploadedFiles,
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { FileService } from "src/services/file.service";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { FilesInterceptor } from "@nestjs/platform-express";
 import { CreatePostDto } from "./dto/create-post.dto";
-import { UpdatePostDto } from "./dto/update-post.dto";
 
 @Controller("post")
 export class PostController {
@@ -23,17 +22,19 @@ export class PostController {
 
   @Post("upload/post")
   @HttpCode(200)
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FilesInterceptor("files", 10))
   async uploadFile(
     @Body() createPostDto: CreatePostDto,
     @Body("folder") folder: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log("File from client side: ", file, "\nUser username: ", folder);
+    console.log("Files: ", files, "\nUser username: ", folder);
 
-    const pathTo = await this.fileService.uploadFile(file, folder);
+    const paths = await Promise.all(
+      files.map((file) => this.fileService.uploadFile(file, folder)),
+    );
 
-    createPostDto.contentPathTo = pathTo;
+    createPostDto.contentPathsTo = paths;
 
     await this.postService.create(createPostDto);
 
