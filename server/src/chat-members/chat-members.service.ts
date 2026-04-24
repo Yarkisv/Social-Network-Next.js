@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateChatMemberDto } from './dto/create-chat-member.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ChatMember } from './entities/chat-member.entity';
-import { In, Repository } from 'typeorm';
-import { UserService } from 'src/user/user.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { CreateChatMemberDto } from "./dto/create-chat-member.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ChatMember } from "./entities/chat-member.entity";
+import { In, Repository } from "typeorm";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class ChatMembersService {
@@ -13,146 +13,133 @@ export class ChatMembersService {
     private readonly userService: UserService,
   ) {}
 
-  // async create(createChatMemberDto: CreateChatMemberDto) {
-  //   const { chat_id, users_id } = createChatMemberDto;
+  async create(createChatMemberDto: CreateChatMemberDto) {
+    const { chat_id, users_id } = createChatMemberDto;
 
-  //   console.log('Chat id from members: ', chat_id, ', Users id: ', users_id);
+    const chatMembers = users_id.map((user_id) => ({
+      chat: { chat_id },
+      user: { user_id },
+    }));
 
-  //   const chatMembers = users_id.map((user_id) => ({
-  //     chat_id,
-  //     user_id,
-  //   }));
+    await this.chatMembersRepository.save(chatMembers);
+  }
 
-  //   // console.log(chatMembers);
+  async findAllChatsByUserId(user_id: number) {
+    const chatMemberships = await this.chatMembersRepository.find({
+      where: {
+        user: { user_id: user_id },
+      },
+      relations: ["chat"],
+    });
 
-  //   await this.chatMembersRepository.save(chatMembers);
-  // }
+    const chats = chatMemberships.map((membership) => membership.chat);
+    const chatIds = chats.map((chat) => chat.chat_id);
 
-  // async findAllChatsByUserId(user_id: number) {
-  //   const chatMemberships = await this.chatMembersRepository.find({
-  //     where: {
-  //       user: { user_id: user_id },
-  //     },
-  //     relations: ['chat'],
-  //   });
+    const chatMembers = await this.chatMembersRepository.find({
+      where: { chat: { chat_id: In(chatIds) } },
+      relations: ["user", "chat"],
+    });
 
-  //   const chats = chatMemberships.map((membership) => membership.chat);
-  //   const chatIds = chats.map((chat) => chat.chat_id);
+    const modifiedChats = await Promise.all(
+      chats.map(async (chat) => {
+        const member = chatMembers.find(
+          (chatMember) =>
+            chatMember.chat.chat_id === chat.chat_id &&
+            chatMember.user.user_id !== user_id,
+        );
 
-  //   const chatMembers = await this.chatMembersRepository.find({
-  //     where: { chat_id: In(chatIds) },
-  //   });
+        if (!member) return null;
 
-  //   const modifiedChatMembers = chatMembers.map((chatMember) => chatMember.user_id);
+        const user = await this.userService.findFullDataById(
+          member?.user.user_id,
+        );
 
-  //   const notCurrentUsersId = modifiedChatMembers.filter((member) => member !== user_id);
+        return {
+          ...chat,
+          user_id: user.user_id,
+          username: user.username,
+          chatName: user.fullname,
+          avatarBase64: user.avatarBase64,
+        };
+      }),
+    );
 
-  //   // console.log(
-  //   //   "User with id: ",
-  //   //   user_id,
-  //   //   " has chat with user with id: ",
-  //   //   notCurrentUsersId
-  //   // );
+    return modifiedChats;
+  }
 
-  //   const modifiedChats = await Promise.all(
-  //     chats.map(async (chat) => {
-  //       const member = chatMembers.find(
-  //         (chatMember) => chatMember.chat_id === chat.chat_id && chatMember.user_id !== user_id,
-  //       );
+  async isPrivateChatBetweenTwoUsersExists(user1_id: number, user2_id: number) {
+    const user1Chats = await this.chatMembersRepository.find({
+      where: { user: { user_id: user1_id } },
+      relations: ["chat"],
+    });
 
-  //       if (!member) return null;
+    const user2Chats = await this.chatMembersRepository.find({
+      where: { user: { user_id: user2_id } },
+      relations: ["chat"],
+    });
 
-  //       const user = await this.userService.findFullDataById(member?.user_id);
+      let isChatExists: boolean = false;
 
-  //       return {
-  //         ...chat,
-  //         user_id: user.user_id,
-  //         username: user.username,
-  //         chatName: user.fullname,
-  //         avatarBase64: user.avatarBase64,
-  //       };
-  //     }),
-  //   );
+    for (let i = 0; i < user1Chats.length; i++) {
+      for (let j = 0; j < user2Chats.length; j++) {
+        if (user1Chats[i].chat.chat_id === user2Chats[j].chat.chat_id) {
+          isChatExists = true;
+          return true;
+        }
+      }
+    }
 
-  //   // console.log(modifiedChats);
+    return false;
+  }
 
-  //   return modifiedChats;
-  // }
+  async findChatByUserId(user_id: number, chat_id: number) {
+    const chatMemberships = await this.chatMembersRepository.find({
+      where: {
+        chat: { chat_id: chat_id },
+      },
+      relations: ["chat", "user"],
+    });
 
-  // async isPrivateChatBetweenTwoUsersExists(user1_id: number, user2_id: number) {
-  //   const user1Chats = await this.chatMembersRepository.find({
-  //     where: { user: { user_id: user1_id } },
-  //   });
+    // Проверка что id пользователя из токена есть в участниках чата
+    const isUserCanReadChat = chatMemberships.some(
+      (chatMember) => chatMember.user.user_id === user_id,
+    );
 
-  //   const user2Chats = await this.chatMembersRepository.find({
-  //     where: { user: { user_id: user2_id } },
-  //   });
+    if (!isUserCanReadChat) {
+      console.log(`Is user can read chat: ${isUserCanReadChat}`);
 
-  //   // console.log("Chats user 1: ", user1Chats, "\nChats user 2: ", user2Chats);
+      throw new NotFoundException();
+    }
 
-  //   let isChatExists: boolean = false;
+    if (!chatMemberships) {
+      throw new NotFoundException();
+    }
 
-  //   for (let i = 0; i < user1Chats.length; i++) {
-  //     for (let j = 0; j < user2Chats.length; j++) {
-  //       if (user1Chats[i].chat_id === user2Chats[j].chat_id) {
-  //         isChatExists = true;
-  //         return true;
-  //       }
-  //     }
-  //   }
+    const chat = chatMemberships[0].chat;
 
-  //   // console.log(isChatExists);
+    const chatMembers = await this.chatMembersRepository.find({
+      where: {
+        chat: { chat_id: chat_id },
+      },
+      relations: ["chat", "user"],
+    });
 
-  //   return false;
-  // }
+    const notCurrentMember = chatMembers.find(
+      (chatMember) => chatMember.user.user_id !== user_id,
+    );
 
-  // async findChatByUserId(user_id: number, chat_id: number) {
-  //   const chatMemberships = await this.chatMembersRepository.find({
-  //     where: {
-  //       chat: { chat_id: chat_id },
-  //     },
-  //     relations: ['chat'],
-  //   });
+    if (!notCurrentMember) return null;
 
-  //   // Проверка что id пользователя из токена есть в участниках чата
-  //   const isUserCanReadChat = chatMemberships.some((chatMember) => chatMember.user_id === user_id);
+    const notCurrentUser = await this.userService.findFullDataById(
+      notCurrentMember?.user.user_id,
+    );
 
-  //   if (!isUserCanReadChat) {
-  //     console.log(`Is user can read chat: ${isUserCanReadChat}`);
-
-  //     throw new NotFoundException();
-  //   }
-
-  //   // console.log(`Is user can read chat: ${isUserCanReadChat}`);
-
-  //   if (!chatMemberships) {
-  //     throw new NotFoundException();
-  //   }
-
-  //   const chat = chatMemberships[0].chat;
-
-  //   // console.log(chat);
-
-  //   const chatMembers = await this.chatMembersRepository.find({
-  //     where: {
-  //       chat: { chat_id: chat_id },
-  //     },
-  //   });
-
-  //   // console.log(chatMembers);
-
-  //   const notCurrentMember = chatMembers.find((chatMember) => chatMember.user_id !== user_id);
-
-  //   if (!notCurrentMember) return null;
-
-  //   const notCurrentUser = await this.userService.findFullDataById(notCurrentMember?.user_id);
-
-  //   return {
-  //     ...chat,
-  //     user_id: notCurrentUser.user_id,
-  //     username: notCurrentUser.username,
-  //     chatName: notCurrentUser.fullname,
-  //     avatarBase64: notCurrentUser.avatarBase64,
-  //   };
-  // }
+    return {
+      ...chat,
+      user_id: notCurrentUser.user_id,
+      username: notCurrentUser.username,
+      chatName: notCurrentUser.fullname,
+      avatarBase64: notCurrentUser.avatarBase64,
+    };
+  }
 }

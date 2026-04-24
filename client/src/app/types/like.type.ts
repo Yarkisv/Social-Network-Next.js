@@ -1,5 +1,5 @@
 export type Like = {
-  like_id: number | undefined;
-  likedByUserAvatarBase64: string | undefined;
-  likedByUserUsername: string | undefined;
+  like_id?: number;
+  likedByUserAvatarBase64?: string;
+  likedByUserUsername?: string;
 };

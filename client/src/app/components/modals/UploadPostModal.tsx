@@ -37,35 +37,6 @@ export default function UploadPostModal({
     setIsFiles(true);
   };
 
-  // const uploadNewPost = async () => {
-  //   try {
-  //     const res = await axios.post(
-  //       `${API}/post/upload/post`,
-  //       {
-  //         user_id: currentUser?.user_id,
-  //         folder: currentUser?.username,
-  //         post_title: postTitle,
-  //         hashtag,
-  //         files,
-  //       },
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       },
-  //     );
-
-  //     if (res.status === 200) {
-  //       setTimeout(() => {
-  //         onPostCreated();
-  //         dispatch(closeUploadPostWindow());
-  //       }, 500);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error: ", error);
-  //   }
-  // };
-
   const uploadNewPost = async () => {
   try {
     const formData = new FormData();

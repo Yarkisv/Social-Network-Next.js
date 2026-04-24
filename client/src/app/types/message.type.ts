@@ -1,7 +1,7 @@
 export type Message = {
-  message_id: number | undefined;
-  chat_id: number | undefined;
-  sender_id: number | undefined;
-  content: string | undefined;
-  time: Date | undefined;
+  message_id?: number;
+  chat_id?: number;
+  user_id?: number;
+  content?: string;
+  time: string;
 };

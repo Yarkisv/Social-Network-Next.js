@@ -12,14 +12,14 @@ import { Chat } from "@/app/types/chat.type";
 import { SocketApi } from "@/api/socket-api";
 import { Message } from "@/app/types/message.type";
 import axios from "axios";
+import { useAppSelector } from "@/app/hooks";
 
 export default function page() {
+  const currentUser = useAppSelector((state) => state.user.user);
   const [chat, setChat] = useState<Chat>();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-
   const params = useParams();
-
   const chat_id = params.chatId;
 
   const fetchChatInfo = async () => {
@@ -28,8 +28,6 @@ export default function page() {
 
       if (response.status === 200) {
         setChat(response.data);
-
-        fetchAllMessages();
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -47,65 +45,59 @@ export default function page() {
       );
 
       if (response.status === 200) {
-        const modifiedMessages = response.data.map((message: any) => {
-          const date = new Date(message.sent_at);
-
-          const hours = String(date.getHours()).padStart(2, "0");
-          const minutes = String(date.getMinutes()).padStart(2, "0");
-
-          return {
-            ...message,
-            time: `${hours}:${minutes}`,
-          };
-        });
-
-        setMessages(modifiedMessages);
-        // console.log(modifiedMessages);
+        console.log(response.data);
+        setMessages(response.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchChatInfo();
-
-    SocketApi.socket?.on("newMessage", (message) => {
-      setMessages((prev) => {
-        const alreadyExists = prev.some(
-          (m) => m.message_id === message.message_id,
-        );
-
-        if (alreadyExists) return prev;
-
-        const date = new Date(message.sent_at);
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-
-        const modifiedMessage = {
-          ...message,
-          time: `${hours}:${minutes}`,
-        };
-
-        return [...prev, modifiedMessage];
-      });
-    });
-  }, [chat_id]);
-
   const sendMessage = () => {
     const payload = {
-      chat_id: chat_id,
+      chat_id: Number(chat_id),
       content: message,
     };
 
-    if (message.length > 0 && SocketApi.socket?.connected) {
+    const text = message.trim();
+
+    if (text && SocketApi.socket?.connected) {
       SocketApi.socket?.emit("message", payload);
     }
 
     setMessage("");
   };
 
-  if (!chat) {
+  useEffect(() => {
+    fetchChatInfo();
+    fetchAllMessages();
+  }, []);
+
+  SocketApi.socket?.on("newMessage", (message) => {
+    setMessages((prev) => {
+      const exists = prev.some(
+        (m) => Number(m.message_id) === Number(message.message_id),
+      );
+      if (exists) return prev;
+      const normalized: Message = {
+        message_id: message.message_id,
+        content: message.content,
+        user_id: message.user_id,
+        chat_id: message.chat_id,
+        time: message.time,
+      };
+      return [...prev, normalized];
+    });
+  });
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  if (!chat || !currentUser) {
     return null;
   }
 
@@ -130,8 +122,11 @@ export default function page() {
           >
             {messages.length > 0 ? (
               <div className="flex flex-col gap-2 justify-end">
-                {messages.map((message) =>
-                  message.sender_id !== chat.user_id ? (
+                {messages.map((message) => {
+                  const isMine =
+                    currentUser && message.user_id === currentUser.user_id;
+
+                  return isMine ? (
                     <div
                       className="self-end ml-auto my-[6px] bg-green-600 rounded-[6px] rounded-br-[0px] max-w-[70%] flex flex-col py-2 px-3"
                       key={message.message_id}
@@ -139,13 +134,15 @@ export default function page() {
                       <div className="flex justify-between items-center gap-[10px] mb-1">
                         <p className="text-sm font-medium text-white">You</p>
                         <span className="text-xs text-gray-300">
-                          {message.time?.toString()}
+                          {formatTime(new Date(message.time))}
                         </span>
                       </div>
+
                       <div className="flex justify-between gap-2 mt-1">
                         <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
                           {message.content}
                         </p>
+
                         <div className="flex items-end flex-shrink-0">
                           <Image
                             src={likeChat}
@@ -162,16 +159,18 @@ export default function page() {
                     >
                       <div className="flex justify-between items-center gap-[20px] mb-1">
                         <p className="text-sm font-medium text-white">
-                          {chat.chatName}
+                          {chat?.chatName}
                         </p>
                         <span className="text-xs text-gray-300">
-                          {message.time?.toString()}
+                          {formatTime(new Date(message.time))}
                         </span>
                       </div>
+
                       <div className="flex justify-between gap-2 mt-1">
                         <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
                           {message.content}
                         </p>
+
                         <div className="flex items-end flex-shrink-0">
                           <Image
                             src={likeChat}
@@ -181,8 +180,8 @@ export default function page() {
                         </div>
                       </div>
                     </div>
-                  ),
-                )}
+                  );
+                })}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center mt-20 text-center text-white/70">

@@ -1,3 +1,4 @@
+import { Chat } from "src/chat/entities/chat.entity";
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
@@ -14,12 +15,6 @@ export class Message {
   message_id!: number;
 
   @Column()
-  chat_id!: number;
-
-  @Column()
-  sender_id!: number;
-
-  @Column()
   content!: string;
 
   @CreateDateColumn()
@@ -28,4 +23,10 @@ export class Message {
   @ManyToOne(() => User, (user) => user.sentMessages)
   @JoinColumn({ name: "sender_id" })
   user!: User;
+
+  @ManyToOne(() => Chat, (chat) => chat.messages, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "chat_id" })
+  chat!: Chat;
 }

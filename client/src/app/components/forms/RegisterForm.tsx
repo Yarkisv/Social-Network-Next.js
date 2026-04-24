@@ -345,7 +345,6 @@ export default function RegisterForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log(user);
     const response = await axios.post(`${API}/user/register`, user);
     if (response.status === 201) {
       setUser({

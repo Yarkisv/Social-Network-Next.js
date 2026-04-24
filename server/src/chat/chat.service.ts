@@ -17,8 +17,6 @@ export class ChatService {
     const date = createChatDto.created_at;
     const user_id = createChatDto.user_id;
 
-    // console.log(date);
-
     const chat = await this.chatRepository.save({
       createdAt: date,
     });
@@ -28,9 +26,7 @@ export class ChatService {
       users_id: [current_user_id, Number(user_id)],
     };
 
-    // console.log(chatMembersDto);
-
-    // await this.chatMembersService.create(chatMembersDto);
+    await this.chatMembersService.create(chatMembersDto);
 
     return { chat };
   }

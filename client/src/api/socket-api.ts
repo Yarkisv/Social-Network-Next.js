@@ -13,8 +13,19 @@ export class SocketApi {
       console.log("Connected");
     });
 
-    this.socket.on("disconnect", () => {
-      console.log("Disconnected");
+    this.socket.on("disconnect", (e) => {
+      console.log("Disconnected: ", e);
+    });
+
+    this.socket.on("newMessage", (data) => {
+      console.log("Raw socket data:", data);
+      console.log("Data types:", {
+        message_id: typeof data.message_id,
+        content: typeof data.content,
+        user_id: typeof data.user_id,
+        chat_id: typeof data.chat_id,
+        time: typeof data.time,
+      });
     });
   }
 
@@ -22,7 +33,7 @@ export class SocketApi {
     if (this.socket) {
       this.socket.removeAllListeners();
       this.socket.disconnect();
-      this.socket = null; 
+      this.socket = null;
     }
   }
 }

@@ -1,8 +1,8 @@
 export type Chat = {
-  chat_id: number | undefined;
-  created_ad: Date | undefined;
-  user_id: number | undefined;
-  chatName: string | undefined;
-  username: string | undefined;
-  avatarBase64: string | undefined;
+  chat_id?: number;
+  created_ad?: Date;
+  user_id?: number;
+  chatName?: string;
+  username?: string;
+  avatarBase64?: string;
 };

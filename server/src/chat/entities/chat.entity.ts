@@ -1,4 +1,5 @@
 import { ChatMember } from "src/chat-members/entities/chat-member.entity";
+import { Message } from "src/messages/entities/message.entity";
 import {
   CreateDateColumn,
   Entity,
@@ -16,4 +17,7 @@ export class Chat {
 
   @OneToMany(() => ChatMember, (member) => member.chat)
   members!: ChatMember[];
+
+  @OneToMany(() => Message, (message) => message.chat)
+  messages!: Message[];
 }

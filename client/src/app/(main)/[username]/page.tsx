@@ -57,6 +57,8 @@ export default function page() {
 
         const isCurrent = currentUser?.username === response.data.user.username;
 
+        console.log("Is user current?: ", isCurrent)
+
         setIsUserCurrent(isCurrent);
       }
 

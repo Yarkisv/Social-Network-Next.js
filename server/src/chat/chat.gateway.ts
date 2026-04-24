@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from "@nestjs/common";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,23 +6,25 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from '@nestjs/websockets';
+} from "@nestjs/websockets";
 
-import { Server } from 'socket.io';
-import { WsAuthGuard } from 'src/guards/wsAuth.guard';
-import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
-import { MessagesService } from 'src/messages/messages.service';
+import { Server } from "socket.io";
+import { WsAuthGuard } from "src/guards/wsAuth.guard";
+import { CreateMessageDto } from "src/messages/dto/create-message.dto";
+import { MessagesService } from "src/messages/messages.service";
 
 @WebSocketGateway()
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   private readonly logger = new Logger(ChatGateway.name);
 
   constructor(private readonly messageService: MessagesService) {}
 
-  @WebSocketServer() io: Server;
+  @WebSocketServer() io!: Server;
 
   afterInit() {
-    this.logger.log('Initialized');
+    this.logger.log("Initialized");
   }
 
   handleConnection(client: any) {
@@ -37,17 +39,26 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @UseGuards(WsAuthGuard)
-  @SubscribeMessage('message')
+  @SubscribeMessage("message")
   async handleMessage(client: any, payload: CreateMessageDto) {
+    console.log("SOCKET HANDLER TRIGGERED");
     this.logger.log(`Message received from client id: ${client.id}`);
     this.logger.debug(`Payload: ${JSON.stringify(payload)}`);
 
     const user = client.data.user;
 
-    console.log('Sender id: ', user.user_id);
+    console.log("Sender id: ", user.user_id);
 
     const message = await this.messageService.create(payload, user.user_id);
 
-    this.io.emit('newMessage', message);
+    console.log("new message:", "\n", JSON.stringify(message, null, 2));
+
+    this.io.emit("newMessage", {
+      message_id: message.message_id,
+      content: message.content,
+      user_id: message.user_id,
+      chat_id: message.chat_id,
+      time: message.time.toISOString(),
+    });
   }
 }
