@@ -1,10 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { UpdateMessageDto } from "./dto/update-message.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Message } from "./entities/message.entity";
 import { time } from "console";
+import { DeleteMessageDto } from "./dto/delete-message.dto";
 
 @Injectable()
 export class MessagesService {
@@ -38,8 +39,6 @@ export class MessagesService {
       relations: ["user", "chat"],
     });
 
-    console.log(messages);
-
     const modifiedMessages = messages.map((message) => {
       const { chat, user, sent_at, ...rest } = message;
 
@@ -49,8 +48,49 @@ export class MessagesService {
       return { ...rest, user_id, chat_id, time: sent_at.toISOString() };
     });
 
-    console.log(modifiedMessages);
-
     return modifiedMessages;
+  }
+
+  async deleteMessage(deleteMessageDto: DeleteMessageDto, user_id: number) {
+    const { chat_id, message_id } = deleteMessageDto;
+
+    const message = await this.messageRepository.findOne({
+      where: {
+        chat: { chat_id: chat_id },
+        user: { user_id: user_id },
+        message_id: message_id,
+      },
+    });
+
+    if (!message) {
+      throw new NotFoundException("Message not found");
+    }
+
+    const removedMessageId = message.message_id;
+
+    await this.messageRepository.remove(message);
+
+    return removedMessageId;
+  }
+
+  async editMessage(updateMessageDto: UpdateMessageDto, user_id: number) {
+    const { chat_id, message_id, new_content } = updateMessageDto;
+
+    const result = await this.messageRepository.update(
+      {
+        message_id,
+        user: { user_id },
+        chat: { chat_id },
+      },
+      {
+        content: new_content,
+      },
+    );
+
+    if (result.affected === 0) {
+      throw new NotFoundException("Message not found");
+    }
+
+    return { message_id, new_content };
   }
 }

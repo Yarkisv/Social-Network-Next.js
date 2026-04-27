@@ -6,7 +6,9 @@ interface IModalState {
   isPostModalOpen: boolean;
   isSubscribersModalOpen: boolean;
   isSubscriptionsModalOpen: boolean;
+  isMessageSettingsModalOpen: boolean;
   searchQuery: string;
+  selectedMessageId: number | undefined;
 }
 
 const initialState: IModalState = {
@@ -15,7 +17,9 @@ const initialState: IModalState = {
   isPostModalOpen: false,
   isSubscribersModalOpen: false,
   isSubscriptionsModalOpen: false,
+  isMessageSettingsModalOpen: false,
   searchQuery: "",
+  selectedMessageId: undefined,
 };
 
 export const modalSlice = createSlice({
@@ -56,6 +60,18 @@ export const modalSlice = createSlice({
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
+    openMessageSettingsModal: (state) => {
+      state.isMessageSettingsModalOpen = true;
+    },
+    closeMessageSettingsModal: (state) => {
+      state.isMessageSettingsModalOpen = false;
+    },
+    setSelectedMessageId: (
+      state,
+      action: PayloadAction<number | undefined>,
+    ) => {
+      state.selectedMessageId = action.payload;
+    },
   },
 });
 
@@ -70,6 +86,9 @@ export const {
   closeSubscribersModal,
   openSubscribtionsModal,
   closeSubscribtionsModal,
+  openMessageSettingsModal,
+  closeMessageSettingsModal,
   setSearchQuery,
+  setSelectedMessageId,
 } = modalSlice.actions;
 export default modalSlice.reducer;

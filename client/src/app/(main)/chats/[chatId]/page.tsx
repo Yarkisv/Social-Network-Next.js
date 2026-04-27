@@ -12,13 +12,30 @@ import { Chat } from "@/app/types/chat.type";
 import { SocketApi } from "@/api/socket-api";
 import { Message } from "@/app/types/message.type";
 import axios from "axios";
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector, useAppDispatch } from "@/app/hooks";
+import {
+  openMessageSettingsModal,
+  closeMessageSettingsModal,
+  setSelectedMessageId,
+} from "@/app/store/slices/modalSlice";
 
 export default function page() {
+  const dispatch = useAppDispatch();
+
   const currentUser = useAppSelector((state) => state.user.user);
+  const isMessageSettingOpen = useAppSelector(
+    (state) => state.modal.isMessageSettingsModalOpen,
+  );
+  const selectedMessageId = useAppSelector(
+    (state) => state.modal.selectedMessageId,
+  );
+
   const [chat, setChat] = useState<Chat>();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editText, setEditText] = useState<string | undefined>("");
+
   const params = useParams();
   const chat_id = params.chatId;
 
@@ -68,6 +85,38 @@ export default function page() {
     setMessage("");
   };
 
+  const deleteMessage = (message_id?: number) => {
+    const payload = {
+      chat_id: Number(chat_id),
+      message_id: message_id,
+    };
+
+    if (SocketApi.socket?.connected) {
+      SocketApi.socket?.emit("deleteMessage", payload);
+    }
+  };
+
+  const editMessage = (message_id?: number, new_content?: string) => {
+    const payload = {
+      chat_id: Number(chat_id),
+      message_id: message_id,
+      new_content,
+    };
+
+    if (SocketApi.socket?.connected) {
+      SocketApi.socket?.emit("editMessage", payload);
+    }
+  };
+
+  const handleEditClick = () => {
+    const message = messages.find((m) => m.message_id === selectedMessageId);
+
+    if (message) {
+      setEditText(message.content);
+      setIsEditing(true);
+    }
+  };
+
   useEffect(() => {
     fetchChatInfo();
     fetchAllMessages();
@@ -90,11 +139,38 @@ export default function page() {
     });
   });
 
+  SocketApi.socket?.on("deletedMessage", (message_id) => {
+    setMessages((prev) =>
+      prev.filter((message) => message.message_id !== message_id),
+    );
+  });
+
+  SocketApi.socket?.on("editedMessage", (data) => {
+    const { message_id, new_content } = data;
+
+    setMessages((prev) =>
+      prev.map((message) =>
+        message.message_id === message_id
+          ? { ...message, content: new_content }
+          : message,
+      ),
+    );
+  });
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleOpenMessageSettingsModal = (messageId?: number) => {
+    dispatch(openMessageSettingsModal());
+    dispatch(setSelectedMessageId(messageId));
+  };
+
+  const handleCloseMessageSettingsModal = () => {
+    dispatch(closeMessageSettingsModal());
   };
 
   if (!chat || !currentUser) {
@@ -128,9 +204,17 @@ export default function page() {
 
                   return isMine ? (
                     <div
-                      className="self-end ml-auto my-[6px] bg-green-600 rounded-[6px] rounded-br-[0px] max-w-[70%] flex flex-col py-2 px-3"
+                      className="group relative self-end ml-auto my-[6px] bg-green-600 rounded-[6px] rounded-br-[0px] max-w-[70%] flex flex-col py-2 px-3"
                       key={message.message_id}
                     >
+                      <button
+                        onClick={() => {
+                          handleOpenMessageSettingsModal(message.message_id);
+                        }}
+                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs"
+                      >
+                        ⋮
+                      </button>
                       <div className="flex justify-between items-center gap-[10px] mb-1">
                         <p className="text-sm font-medium text-white">You</p>
                         <span className="text-xs text-gray-300">
@@ -226,6 +310,78 @@ export default function page() {
           </button>
         </footer>
       </div>
+
+      {isMessageSettingOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={handleCloseMessageSettingsModal}
+        >
+          <div
+            className="bg-white rounded-lg p-4 w-[300px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold mb-4 text-black">
+              Message settings
+            </h2>
+
+            {isEditing ? (
+              <>
+                <textarea
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  className="w-full border rounded p-2 text-black mb-3"
+                  rows={3}
+                />
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="px-3 py-1 bg-gray-300 rounded"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      editMessage(selectedMessageId, editText);
+                      handleCloseMessageSettingsModal();
+                    }}
+                    className="px-3 py-1 bg-green-600 text-white rounded disabled:opacity-50"
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    deleteMessage(selectedMessageId);
+                    handleCloseMessageSettingsModal();
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-red-100 text-black rounded"
+                >
+                  Delete message
+                </button>
+
+                <button
+                  onClick={handleEditClick}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-black rounded"
+                >
+                  Edit message
+                </button>
+
+                <button
+                  onClick={handleCloseMessageSettingsModal}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-black rounded mt-2"
+                >
+                  Close
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
