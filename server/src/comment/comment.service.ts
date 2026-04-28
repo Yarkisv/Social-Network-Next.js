@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Comment } from './entities/comment.entity';
-import { Repository } from 'typeorm';
-import { FileService } from 'src/services/file.service';
+import { Injectable } from "@nestjs/common";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Comment } from "./entities/comment.entity";
+import { Repository } from "typeorm";
+import { FileService } from "src/services/file.service";
 
 @Injectable()
 export class CommentService {
@@ -31,7 +31,7 @@ export class CommentService {
       where: {
         post: { post_id: id },
       },
-      relations: ['user'],
+      relations: ["user"],
     });
 
     const modifiedComments = await Promise.all(
@@ -39,9 +39,12 @@ export class CommentService {
         const { user, post, ...rest } = comment;
 
         const senderUsername = user.username;
-        const senderAvatarBase64 = await this.fileService.getFile(user.avatarPathTo);
 
-        return { senderUsername, senderAvatarBase64, ...rest };
+        return {
+          senderUsername,
+          senderAvatarPathTo: user.avatarPathTo,
+          ...rest,
+        };
       }),
     );
 

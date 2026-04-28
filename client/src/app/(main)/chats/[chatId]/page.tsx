@@ -20,6 +20,7 @@ import {
 } from "@/app/store/slices/modalSlice";
 
 export default function page() {
+  const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
   const dispatch = useAppDispatch();
 
   const currentUser = useAppSelector((state) => state.user.user);
@@ -182,10 +183,11 @@ export default function page() {
       <div className="w-full relative max-w-[730px] flex flex-col flex-1 bg-[#120921] px-[24px] pt-[24px] gap-4 font-[Manrope] rounded-[2px] shadow-lg">
         <header className="flex items-center border-b border-[#2f2f2f] pb-3">
           <Image
-            src={`data:image/png;base64,${chat.avatarBase64}`}
+            src={`${STATIC_API}/${chat.avatarPathTo}`}
             alt="Chat avatar"
             height={10}
             width={10}
+            priority
             className="w-10 h-10 rounded-full mr-3 object-cover"
           />
           <h2 className="text-xl font-semibold text-white">{chat?.chatName}</h2>

@@ -34,6 +34,8 @@ export default function page() {
   const [selectedPost, setSelectedPost] = useState<Post | null>();
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
   const API = process.env.NEXT_PUBLIC_API_URL;
+  const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
+
   const username = params.username;
 
   const isPostModalOpen = useAppSelector(
@@ -56,8 +58,6 @@ export default function page() {
         setFullUserData(response.data);
 
         const isCurrent = currentUser?.username === response.data.user.username;
-
-        console.log("Is user current?: ", isCurrent)
 
         setIsUserCurrent(isCurrent);
       }
@@ -183,7 +183,7 @@ export default function page() {
       <div className="flex items-start gap-6 mb-10">
         <Image
           className="w-28 h-28 rounded-full object-cover"
-          src={`data:image/png;base64,${fullUserData.user?.avatarBase64}`}
+          src={`${STATIC_API}/${fullUserData.user?.avatarPathTo}`}
           alt="Avatar"
           width="112"
           height="112"
@@ -287,11 +287,11 @@ export default function page() {
             {fullUserData.posts.map((post) => (
               <Image
                 key={post.post_id}
-                src={`data:image/jpg;base64,${post.images[0]}`}
+                src={`${STATIC_API}/${post.images[0].path_to}`}
                 alt="post"
                 width={233}
                 height={233}
-                style={{ width: "233px", height: "233px" }}
+                priority
                 className="object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
                 onClick={() => handlePostModalOpen(post)}
               />

@@ -15,6 +15,8 @@ export default function SearchUsersPanel() {
   const panelRef = useRef<HTMLDivElement>(null);
 
   const API = process.env.NEXT_PUBLIC_API_URL;
+  const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -84,7 +86,7 @@ export default function SearchUsersPanel() {
               >
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-[#333] flex items-center justify-center">
                   <Image
-                    src={`data:image/jpg;base64,${user.avatarBase64}`}
+                    src={`${STATIC_API}/${user.avatarPathTo}`}
                     alt="Avatar"
                     width={40}
                     height={40}

@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { User } from "../types/user.type";
 
 export default function Header({ user }: { user: User }) {
+  const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
+
   const dispatch = useAppDispatch();
   const router = useRouter();
   const isOpen = useAppSelector((state) => state.modal.isOpen);
@@ -53,7 +55,7 @@ export default function Header({ user }: { user: User }) {
         <div className="flex items-center h-full pl-[20px] w-[200px] border-r-[2px]  border-[#0D0D0D]">
           <Image
             alt="profile"
-            src={`data:image/png;base64,${user?.avatarBase64}`}
+            src={`${STATIC_API}/${user?.avatarPathTo}`}
             width={30}
             height={30}
             className="rounded-full"

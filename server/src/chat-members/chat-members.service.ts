@@ -59,10 +59,12 @@ export class ChatMembersService {
           user_id: user.user_id,
           username: user.username,
           chatName: user.fullname,
-          avatarBase64: user.avatarBase64,
+          avatarPathTo: user.avatarPathTo,
         };
       }),
     );
+
+    console.log(modifiedChats);
 
     return modifiedChats;
   }
@@ -78,7 +80,7 @@ export class ChatMembersService {
       relations: ["chat"],
     });
 
-      let isChatExists: boolean = false;
+    let isChatExists: boolean = false;
 
     for (let i = 0; i < user1Chats.length; i++) {
       for (let j = 0; j < user2Chats.length; j++) {
@@ -139,7 +141,7 @@ export class ChatMembersService {
       user_id: notCurrentUser.user_id,
       username: notCurrentUser.username,
       chatName: notCurrentUser.fullname,
-      avatarBase64: notCurrentUser.avatarBase64,
+      avatarPathTo: notCurrentUser.avatarPathTo,
     };
   }
 }

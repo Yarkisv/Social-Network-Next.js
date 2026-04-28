@@ -1,9 +1,7 @@
 "use client";
 
-import AsideInfo from "@/app/components/asideInfo";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ProfilePost from "../../images/ProfilePost.png";
 import NoChats from "../../images/NoChats.svg";
 
 import axiosInstance from "@/lib/axios";
@@ -11,6 +9,8 @@ import { Chat } from "@/app/types/chat.type";
 import { useRouter } from "next/navigation";
 
 export default function page() {
+  const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
+
   const [chats, setChats] = useState<Chat[]>([]);
 
   const router = useRouter();
@@ -20,7 +20,6 @@ export default function page() {
       const response = await axiosInstance.get("/chat/get/all");
 
       if (response.status === 200) {
-        console.log("Chats: ", response.data);
         setChats(response.data);
       }
     } catch (error) {
@@ -48,7 +47,7 @@ export default function page() {
                 onClick={() => navigateToChat(chat.chat_id)}
               >
                 <Image
-                  src={`data:image/png;base64,${chat.avatarBase64}`}
+                  src={`${STATIC_API}/${chat.avatarPathTo}`}
                   alt="Saved post"
                   width={46}
                   height={46}

@@ -28,21 +28,11 @@ export class FileService {
 
       const filePath = join(uploadFolder, file.originalname);
       await fs.writeFile(filePath, file.buffer);
-      pathTo = `\\${folder}\\${file.originalname}`;
+      pathTo = `${folder}/${file.originalname}`;
     } catch (error) {
       console.error(`Error writing file ${file.originalname}:`, error);
     }
 
     return pathTo;
-  }
-
-  async getFile(pathTo: string, username?: string) {
-    const filePath = username
-      ? join(process.cwd(), "static", username, pathTo)
-      : join(process.cwd(), "static", pathTo);
-
-    const buffer = await readFile(filePath);
-
-    return buffer.toString("base64");
   }
 }

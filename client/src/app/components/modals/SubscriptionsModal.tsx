@@ -16,6 +16,8 @@ export default function SubscriptionsModal({
   isOpen,
   onClose,
 }: SubsModalProps) {
+  const API_STATIC = process.env.NEXT_PUBLIC_STATIC_URL;
+
   const handleNavigateToProfile = (username: string) => {
     onClose();
     redirect(`/${username}`);
@@ -45,7 +47,7 @@ export default function SubscriptionsModal({
               <div className="flex items-center gap-4 flex-1">
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-[#333] flex items-center justify-center">
                   <Image
-                    src={`data:image/png;base64,${sub.imageBase64}`}
+                    src={`${API_STATIC}/${sub.avatarPathTo}`}
                     alt="avatar"
                     height={48}
                     width={48}

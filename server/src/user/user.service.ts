@@ -102,15 +102,26 @@ export class UserService {
     }
 
     const modifiedUser = await Promise.all(
-      user.map(async ({ password, avatarPathTo, ...rest }) => {
-        const avatarBase64 = await this.fileServise.getFile(avatarPathTo);
-
-        return {
-          ...rest,
-          avatarBase64,
-        };
-      }),
+      user.map(
+        async ({
+          password,
+          subscriptions,
+          subscribers,
+          posts,
+          chatMemberships,
+          sentMessages,
+          comments,
+          Likes,
+          ...rest
+        }) => {
+          return {
+            ...rest,
+          };
+        },
+      ),
     );
+
+    console.log(modifiedUser);
 
     return modifiedUser[0];
   }
@@ -127,14 +138,23 @@ export class UserService {
     }
 
     const modifiedUsers = await Promise.all(
-      users.map(async ({ password, avatarPathTo, ...rest }) => {
-        const avatarBase64 = await this.fileServise.getFile(avatarPathTo);
-
-        return {
-          ...rest,
-          avatarBase64,
-        };
-      }),
+      users.map(
+        async ({
+          password,
+          subscriptions,
+          subscribers,
+          chatMemberships,
+          sentMessages,
+          posts,
+          comments,
+          Likes,
+          ...rest
+        }) => {
+          return {
+            ...rest,
+          };
+        },
+      ),
     );
 
     return modifiedUsers;
@@ -161,17 +181,17 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    const avatarBase64: string = await this.fileServise.getFile(
-      user.avatarPathTo,
-    );
+    // const avatarBase64: string = await this.fileServise.getFile(
+    //   user.avatarPathTo,
+    // );
 
-    const modifiedUser = JSON.parse(JSON.stringify(user));
+    // const modifiedUser = JSON.parse(JSON.stringify(user));
 
-    delete modifiedUser.avatarPathTo;
+    // delete modifiedUser.avatarPathTo;
 
-    modifiedUser.avatarBase64 = avatarBase64;
+    // modifiedUser.avatarBase64 = avatarBase64;
 
-    return modifiedUser;
+    return user;
   }
 
   async findBasicDataById(user_id: number) {
@@ -194,17 +214,7 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    const avatarBase64: string = await this.fileServise.getFile(
-      user.avatarPathTo,
-    );
-
-    const modifiedUser = JSON.parse(JSON.stringify(user));
-
-    delete modifiedUser.avatarPathTo;
-
-    modifiedUser.avatarBase64 = avatarBase64;
-
-    return modifiedUser;
+    return user;
   }
 
   async updateUser(

@@ -4,5 +4,5 @@ export type Chat = {
   user_id?: number;
   chatName?: string;
   username?: string;
-  avatarBase64?: string;
+  avatarPathTo?: string;
 };

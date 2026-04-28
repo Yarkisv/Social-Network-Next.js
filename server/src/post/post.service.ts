@@ -28,7 +28,7 @@ export class PostService {
     const post = await this.postRepository.save({
       post_title,
       hashtag,
-      user,
+      user: { user_id: user.user_id },
       images: contentPathsTo.map((path) => ({
         path_to: path,
       })),
@@ -46,25 +46,19 @@ export class PostService {
 
     const modifiedPosts = await Promise.all(
       posts.map(async (post) => {
-        const { images, ...rest } = post;
-
-        const modifiedImages = await Promise.all(
-          images.map(async (image) => {
-            return await this.fileService.getFile(image.path_to);
-          }),
-        );
-
         const likes = await this.likeService.findAllLikesByPost(post.post_id);
 
         return {
-          ...rest,
-          userAvatar: user.avatarBase64,
+          ...post,
+          userAvatar: user.avatarPathTo,
           username: user.username,
-          images: modifiedImages,
           likes,
         };
       }),
     );
+
+    console.log(JSON.stringify(modifiedPosts, null, 2));
+
     return modifiedPosts;
   }
 }

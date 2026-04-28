@@ -1,8 +1,6 @@
 "use client";
 
-import axios from "axios";
 import Image from "next/image";
-import AsideInfo from "../../components/asideInfo";
 import React, { useState } from "react";
 import { useAppSelector } from "@/app/hooks";
 import axiosInstance from "@/lib/axios";
@@ -66,7 +64,7 @@ export default function page() {
       <div className="flex items-center rounded-[2px] bg-[#292929] w-full h-[104px] py-[17px] px-4 font-[Manrope]">
         <Image
           className="w-[70px] h-[70px] rounded-full object-cover"
-          src={`data:image/png;base64,${user.avatarBase64}`}
+          src={`data:image/png;base64,${user.avatarPathTo}`}
           alt="Avatar"
           width={70}
           height={70}

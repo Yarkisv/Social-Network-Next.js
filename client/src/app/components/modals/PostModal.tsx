@@ -18,8 +18,8 @@ type PostModalProps = {
 };
 
 export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
-  console.log(post);
   const API = process.env.NEXT_PUBLIC_API_URL;
+  const API_STATIC = process.env.NEXT_PUBLIC_STATIC_URL;
 
   const [currentPost, setCurrentPost] = useState<Post | null>();
   const [content, setContent] = useState<string>("");
@@ -193,7 +193,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
 
           <Image
             alt="post"
-            src={`data:image/png;base64,${currentPost?.images[indexOfPostImage]}`}
+            src={`${API_STATIC}/${currentPost?.images[indexOfPostImage].path_to}`}
             width={365}
             height={365}
             className="w-full h-full object-cover rounded"
@@ -203,7 +203,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         <div className="flex flex-col flex-1 overflow-hidden p-2 ">
           <div className="flex items-center gap-2 mb-[5px]">
             <Image
-              src={`data:image/png;base64,${currentPost?.userAvatar}`}
+              src={`${API_STATIC}/${currentPost?.userAvatar}`}
               alt="userAvatar"
               height={28}
               width={28}
@@ -233,7 +233,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                   >
                     <Image
                       alt="avatar"
-                      src={`data:image/png;base64,${comment.senderAvatarBase64}`}
+                      src={`${API_STATIC}/${comment.senderAvatarPathTo}`}
                       width={28}
                       height={28}
                       className="object-cover rounded"
