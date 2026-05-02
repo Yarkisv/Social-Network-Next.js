@@ -7,6 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import { OnEvent } from "@nestjs/event-emitter";
 
 import { Server } from "socket.io";
 import { WsAuthGuard } from "src/guards/wsAuth.guard";
@@ -58,6 +59,8 @@ export class ChatGateway
     this.io.emit("newMessage", {
       message_id: message.message_id,
       content: message.content,
+      media_path: message.media_path,
+      type: message.type,
       user_id: message.user_id,
       chat_id: message.chat_id,
       time: message.time.toISOString(),
@@ -104,6 +107,21 @@ export class ChatGateway
     this.io.emit("editedMessage", {
       message_id,
       new_content,
+    });
+  }
+
+  @OnEvent("message.created")
+  handleMessageCreated(message: any) {
+    console.log("Message from ws, ", message);
+
+    this.io.emit("newMessage", {
+      message_id: message.message_id,
+      content: message.content,
+      media_path: message.media_path,
+      type: message.type,
+      user_id: message.user_id,
+      chat_id: message.chat_id,
+      time: message.time,
     });
   }
 }

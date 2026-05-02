@@ -14,8 +14,14 @@ export class Message {
   @PrimaryGeneratedColumn()
   message_id!: number;
 
-  @Column()
+  @Column({ nullable: true })
   content!: string;
+
+  @Column({ nullable: true })
+  media_path!: string
+
+  @Column({ default: "text" })
+  type!: "text" | "image" | "video" | "file";
 
   @CreateDateColumn()
   sent_at!: Date;

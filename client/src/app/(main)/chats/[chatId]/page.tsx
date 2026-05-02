@@ -19,8 +19,11 @@ import {
   setSelectedMessageId,
 } from "@/app/store/slices/modalSlice";
 
+import { useRef } from "react";
 export default function page() {
   const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
   const dispatch = useAppDispatch();
 
   const currentUser = useAppSelector((state) => state.user.user);
@@ -36,6 +39,8 @@ export default function page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editText, setEditText] = useState<string | undefined>("");
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const params = useParams();
   const chat_id = params.chatId;
@@ -58,9 +63,7 @@ export default function page() {
 
   const fetchAllMessages = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:4000/api/messages/get/${chat_id}`,
-      );
+      const response = await axios.get(`${API}/messages/get/${chat_id}`);
 
       if (response.status === 200) {
         console.log(response.data);
@@ -84,6 +87,36 @@ export default function page() {
     }
 
     setMessage("");
+  };
+
+  const sendFileMessage = async (
+    file: File,
+    chat_id: number,
+    content?: string,
+  ) => {
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("chat_id", String(chat_id));
+
+    if (content) {
+      formData.append("content", content);
+    }
+
+    await axios.post(`${API}/messages/file`, formData, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+
+  const handleAction = () => {
+    if (message.trim()) {
+      sendMessage();
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   const deleteMessage = (message_id?: number) => {
@@ -132,6 +165,8 @@ export default function page() {
       const normalized: Message = {
         message_id: message.message_id,
         content: message.content,
+        type: message.type,
+        media_path: message.media_path,
         user_id: message.user_id,
         chat_id: message.chat_id,
         time: message.time,
@@ -177,6 +212,45 @@ export default function page() {
   if (!chat || !currentUser) {
     return null;
   }
+
+  const renderMessageContent = (message: any) => {
+    switch (message.type) {
+      case "image":
+        return (
+          <Image
+            src={`${STATIC_API}/${message.media_path}`}
+            alt="image"
+            width={400}
+            height={400}
+          />
+        );
+
+      case "video":
+        return (
+          <video controls className="max-w-full rounded-[6px] mt-2">
+            <source src={`${STATIC_API}/${message.media_path}`} />
+          </video>
+        );
+
+      case "file":
+        return (
+          <a
+            href={`${STATIC_API}/${message.media_path}`}
+            className="text-blue-400 underline mt-2 block"
+            target="_blank"
+          >
+            Download file
+          </a>
+        );
+
+      default:
+        return (
+          <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
+            {message.content}
+          </p>
+        );
+    }
+  };
 
   return (
     <div className="h-[calc(100vh-46px)] bg-[#060606] text-white flex justify-center">
@@ -225,9 +299,7 @@ export default function page() {
                       </div>
 
                       <div className="flex justify-between gap-2 mt-1">
-                        <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
-                          {message.content}
-                        </p>
+                        {renderMessageContent(message)}
 
                         <div className="flex items-end flex-shrink-0">
                           <Image
@@ -253,9 +325,7 @@ export default function page() {
                       </div>
 
                       <div className="flex justify-between gap-2 mt-1">
-                        <p className="text-sm text-white break-words whitespace-pre-wrap w-[95%]">
-                          {message.content}
-                        </p>
+                        {renderMessageContent(message)}
 
                         <div className="flex items-end flex-shrink-0">
                           <Image
@@ -300,14 +370,26 @@ export default function page() {
             className="flex-1 px-4 py-3 rounded-lg bg-[#1a1a1a] text-white border border-[#333] outline-none"
           />
 
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              sendFileMessage(file, Number(chat_id));
+            }}
+          />
+
           <button
             className="cursor-pointer w-[50px] h-[50px] rounded-lg transition-all duration-200 shadow-md hover:shadow-lg bg-[#9333EA] hover:bg-[#7e22ce] flex items-center justify-center"
-            onClick={sendMessage}
+            onClick={handleAction}
           >
             <Image
               src={message.trim() ? sendMessageButton : AddFiile}
               alt="Action icon"
-              className="h-[20px] w-[20px] cursor-pointer object-contain"
+              className="h-[20px] w-[20px] object-contain"
             />
           </button>
         </footer>

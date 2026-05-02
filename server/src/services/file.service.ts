@@ -1,38 +1,29 @@
 import { Injectable } from "@nestjs/common";
-import { join } from "path";
+import { extname, join } from "path";
 import { readFile } from "fs/promises";
 import { promises as fs } from "fs";
 
 @Injectable()
 export class FileService {
   async uploadFile(file: Express.Multer.File, folder: string) {
-    const uploadFolder = join(
-      "D:\\Projects\\OpenCircle\\server\\static\\",
-      folder,
-    );
-
-    console.log(uploadFolder);
-
-    console.log(folder);
-
-    let pathTo: string = "";
+    const uploadFolder = join(process.cwd(), "static", folder);
 
     try {
-      await fs.access(uploadFolder).catch(async () => {
-        await fs.mkdir(uploadFolder, { recursive: true });
-      });
+      await fs.mkdir(uploadFolder, { recursive: true });
+
+      const uniqueName = Date.now() + extname(file.originalname);
+      const filePath = join(uploadFolder, uniqueName);
 
       if (!file.buffer) {
         throw new Error("File buffer is undefined");
       }
 
-      const filePath = join(uploadFolder, file.originalname);
       await fs.writeFile(filePath, file.buffer);
-      pathTo = `${folder}/${file.originalname}`;
+
+      return `${folder}/${uniqueName}`;
     } catch (error) {
       console.error(`Error writing file ${file.originalname}:`, error);
+      throw error;
     }
-
-    return pathTo;
   }
 }
