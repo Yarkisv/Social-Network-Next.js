@@ -80,7 +80,7 @@ export default function Header({ user }: { user: User }) {
         </div>
 
         <h1 className="text-2xl font-bold text-[#C084FC] text-center flex-1">
-          Social Network
+          Open Circle
         </h1>
 
         <div className="w-[300px] relative">

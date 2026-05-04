@@ -41,7 +41,7 @@ export class PostService {
       where: {
         user: { user_id: user.user_id },
       },
-      relations: ["images"],
+      relations: ["images", "comments"],
     });
 
     const modifiedPosts = await Promise.all(

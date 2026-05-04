@@ -277,7 +277,7 @@ export default function page() {
           <div className="grid grid-cols-3 gap-[5px]">
             {isUserCurrent && (
               <div
-                className="h-[233px] bg-[#1E1C29] flex items-center justify-center border border-[#2F2B3A] rounded-lg cursor-pointer hover:bg-[#2A2735] transition-colors duration-200"
+                className="h-[226px] bg-[#1E1C29] flex items-center justify-center border border-[#2F2B3A] rounded-lg cursor-pointer hover:bg-[#2A2735] transition-colors duration-200"
                 onClick={handleUploadPostClick}
               >
                 <span className="text-white text-5xl font-light">+</span>
@@ -285,27 +285,19 @@ export default function page() {
             )}
 
             {fullUserData.posts.map((post) => (
-              <Image
+              <div
                 key={post.post_id}
-                src={`${STATIC_API}/${post.images[0].path_to}`}
-                alt="post"
-                width={233}
-                height={233}
-                priority
-                className="object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
+                className="relative w-full aspect-square cursor-pointer"
                 onClick={() => handlePostModalOpen(post)}
-              />
+              >
+                <Image
+                  src={`${STATIC_API}/${post.images[0].path_to}`}
+                  alt="post"
+                  fill
+                  className="object-cover rounded-lg hover:opacity-90 transition-opacity duration-200"
+                />
+              </div>
             ))}
-
-            {fullUserData.posts.length % 3 === 1 && (
-              <>
-                <div className="h-[233px] rounded-lg" />
-                <div className="h-[233px] rounded-lg" />
-              </>
-            )}
-            {fullUserData.posts.length % 3 === 2 && (
-              <div className="h-[233px] rounded-lg" />
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-[5px]">

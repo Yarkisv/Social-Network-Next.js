@@ -14,6 +14,7 @@ export default function UploadPostModal({
   onPostCreated: () => void;
 }) {
   const API = process.env.NEXT_PUBLIC_API_URL;
+  const API_STATIC = process.env.NEXT_PUBLIC_STATIC_URL;
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user.user);
   const isUploadWindowOpen = useAppSelector(
@@ -38,33 +39,32 @@ export default function UploadPostModal({
   };
 
   const uploadNewPost = async () => {
-  try {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    formData.append("user_id", String(currentUser?.user_id));
-    formData.append("folder", currentUser?.username || "");
-    formData.append("post_title", postTitle || "");
-    formData.append("hashtag", hashtag || "");
+      formData.append("user_id", String(currentUser?.user_id));
+      formData.append("folder", currentUser?.username || "");
+      formData.append("post_title", postTitle || "");
+      formData.append("hashtag", hashtag || "");
 
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
 
-    const res = await axios.post(
-      `${API}/post/upload/post`,
-      formData
-    );
+      const res = await axios.post(`${API}/post/upload/post`, formData);
 
-    if (res.status === 200) {
-      setTimeout(() => {
-        onPostCreated();
-        dispatch(closeUploadPostWindow());
-      }, 500);
+      if (res.status === 200) {
+        setTimeout(() => {
+          setIsFiles(false);
+          setFiles([]);
+          onPostCreated();
+          dispatch(closeUploadPostWindow());
+        }, 500);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
     }
-  } catch (error) {
-    console.log("Error: ", error);
-  }
-};
+  };
 
   useEffect(() => {}, []);
 
@@ -131,7 +131,7 @@ export default function UploadPostModal({
               <div className="flex items-center gap-2">
                 <Image
                   className="rounded-full"
-                  src={`data:image/jpg;base64,${currentUser?.avatarBase64}`}
+                  src={`${API_STATIC}/${currentUser?.avatarPathTo}`}
                   alt="avatar"
                   height={28}
                   width={28}

@@ -50,4 +50,29 @@ export class CommentService {
 
     return modifiedComments;
   }
+
+  async findAllByUserId(id: number) {
+    const comments = await this.commentRepository.find({
+      where: { user: { user_id: id } },
+      relations: ["post", "post.images", "user"],
+    });
+
+    const modifiedComments = comments.map((comment) => {
+      return {
+        comment_id: comment.comment_id,
+        content: comment.content,
+        likes: comment.likes,
+        sent_at: comment.sent_at,
+        post: {
+          post_id: comment.post.post_id,
+          post_title: comment.post.post_title,
+          hashtag: comment.post.hashtag,
+          images: comment.post.images,
+        },
+        avatarPathTo: comment.user.avatarPathTo,
+      };
+    });
+
+    return modifiedComments;
+  }
 }

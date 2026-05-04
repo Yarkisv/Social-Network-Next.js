@@ -6,5 +6,6 @@ export type Post = {
   post_title?: string;
   username?: string;
   userAvatar?: string;
+  comments: [];
   likes?: Like[];
 };

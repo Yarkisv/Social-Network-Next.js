@@ -9,6 +9,7 @@ import { Like } from "./entities/like.entity";
 import { Repository } from "typeorm";
 import { Post } from "src/post/entities/post.entity";
 import { FileService } from "src/services/file.service";
+import { User } from "src/user/entities/user.entity";
 
 @Injectable()
 export class LikeService {
@@ -111,4 +112,42 @@ export class LikeService {
 
     return { like_id: likeId };
   }
+
+  async getAllLikesByUserId(user_id) {
+    const likes = await this.likeRepository.find({
+      where: { user: user_id },
+      relations: [
+        "post",
+        "post.images",
+        "post.user",
+        "post.comments",
+        "post.likes",
+      ],
+    });
+
+    const modifiedLikes = likes.map((like) => ({
+      like_id: like.like_id,
+      post: {
+        post_id: like.post.post_id,
+        images: like.post.images,
+        post_title: like.post.post_title,
+        hashtag: like.post.hashtag,
+        username: sanitizeUser(like.post.user).username,
+        userAvatar: sanitizeUser(like.post.user).avatarPathTo,
+        comments: like.post.comments,
+        likes: like.post.likes,
+      },
+    }));
+
+    return modifiedLikes;
+  }
+}
+
+function sanitizeUser(user: User) {
+  return {
+    user_id: user.user_id,
+    username: user.username,
+    fullname: user.fullname,
+    avatarPathTo: user.avatarPathTo,
+  };
 }
