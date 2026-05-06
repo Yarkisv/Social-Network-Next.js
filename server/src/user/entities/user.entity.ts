@@ -56,4 +56,7 @@ export class User {
 
   @OneToMany(() => Like, (like) => like.user)
   Likes!: Like[];
+
+  @Column({ default: false })
+  isPrivate!: boolean;
 }

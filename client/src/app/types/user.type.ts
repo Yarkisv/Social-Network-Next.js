@@ -6,4 +6,5 @@ export type User = {
   phone?: string;
   description?: string;
   avatarPathTo?: string;
+  isPrivate?: boolean;
 };

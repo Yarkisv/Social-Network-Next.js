@@ -13,6 +13,8 @@ import {
   closeSubscribersModal,
   openSubscribtionsModal,
   closeSubscribtionsModal,
+  openPendingSubsModal,
+  closePendingSubsModal,
 } from "@/app/store/slices/modalSlice";
 import PostModal from "@/app/components/modals/PostModal";
 import { Post } from "@/app/types/post.type";
@@ -22,6 +24,7 @@ import axiosInstance from "@/lib/axios";
 import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
 import SubscribersModal from "@/app/components/modals/SubscribersModal";
 import UploadPostModal from "@/app/components/modals/UploadPostModal";
+import PendingSubscribersModal from "@/app/components/modals/PendingSubsModal";
 
 export default function page() {
   const dispatch = useAppDispatch();
@@ -50,30 +53,22 @@ export default function page() {
     (state) => state.modal.isSubscriptionsModalOpen,
   );
 
+  const isPendingModalOpen = useAppSelector(
+    (state) => state.modal.isPendingSubsModalOpen,
+  );
+
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${API}/auth/get-full/${username}`);
+      const response = await axiosInstance.get(`/auth/get-full/${username}`);
 
       if (response.status === 200) {
         setFullUserData(response.data);
 
+        console.log(response.data);
+
         const isCurrent = currentUser?.username === response.data.user.username;
 
         setIsUserCurrent(isCurrent);
-      }
-
-      if (!isUserCurrent) {
-        const isSubscribedRes = await axios.get(
-          `${API}/subscription/is-subscribed/${currentUser?.user_id}`,
-          {
-            params: {
-              viewed_user_id: response.data?.user?.user_id,
-            },
-          },
-        );
-        if (isSubscribedRes.status === 200) {
-          setIsSubscribed(isSubscribedRes.data);
-        }
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -164,6 +159,14 @@ export default function page() {
     redirect("/chats");
   };
 
+  const handlePendingSubsOpen = () => {
+    dispatch(openPendingSubsModal());
+  };
+
+  const handleClosePendingSubsOpen = () => {
+    dispatch(closePendingSubsModal());
+  };
+
   useEffect(() => {
     if (username && currentUser) {
       fetchData();
@@ -231,6 +234,7 @@ export default function page() {
               </span>{" "}
               subscribers
             </div>
+
             <div
               onClick={handleSubscriptionsModalOpen}
               className="flex  cursor-pointer gap-1"
@@ -244,6 +248,15 @@ export default function page() {
               </span>{" "}
               subscriptions
             </div>
+
+            {isUserCurrent && (
+              <button
+                onClick={handlePendingSubsOpen}
+                className="mt-3 text-sm text-[#a78bfa] hover:text-[#c4b5fd] transition-colors underline"
+              >
+                Pending subscriptions
+              </button>
+            )}
           </div>
           <div className="text-gray-300">{currentUser?.description ?? ""}</div>
         </div>
@@ -260,16 +273,19 @@ export default function page() {
         >
           POSTS
         </button>
-        <button
-          onClick={() => setActiveTab("saved")}
-          className={`pb-2 text-sm cursor-pointer font-semibold ${
-            activeTab === "saved"
-              ? "border-b-2 border-white text-white"
-              : "text-gray-500"
-          }`}
-        >
-          SAVED
-        </button>
+
+        {isUserCurrent && (
+          <button
+            onClick={() => setActiveTab("saved")}
+            className={`pb-2 text-sm cursor-pointer font-semibold ${
+              activeTab === "saved"
+                ? "border-b-2 border-white text-white"
+                : "text-gray-500"
+            }`}
+          >
+            SAVED
+          </button>
+        )}
       </div>
 
       <div>
@@ -329,6 +345,11 @@ export default function page() {
         subs={fullUserData.subscriptions}
         isOpen={isSubscriptionsModalOpen}
         onClose={handleSubscriptionsModalClose}
+      />
+
+      <PendingSubscribersModal
+        isOpen={isPendingModalOpen}
+        onClose={handleClosePendingSubsOpen}
       />
 
       <UploadPostModal onPostCreated={fetchData} />

@@ -93,37 +93,27 @@ export class UserService {
   }
 
   async findByUsername(username: string) {
-    const user = await this.userRepository.findBy({
-      username: username,
+    const user = await this.userRepository.findOne({
+      where: { username: username },
     });
 
-    if (user.length === 0) {
+    if (!user) {
       throw new NotFoundException("User not found 404");
     }
 
-    const modifiedUser = await Promise.all(
-      user.map(
-        async ({
-          password,
-          subscriptions,
-          subscribers,
-          posts,
-          chatMemberships,
-          sentMessages,
-          comments,
-          Likes,
-          ...rest
-        }) => {
-          return {
-            ...rest,
-          };
-        },
-      ),
-    );
+    const {
+      password,
+      subscriptions,
+      subscribers,
+      posts,
+      chatMemberships,
+      sentMessages,
+      comments,
+      Likes,
+      ...modifiedUser
+    } = user;
 
-    console.log(modifiedUser);
-
-    return modifiedUser[0];
+    return modifiedUser;
   }
 
   async findUsersBySymbol(string: string) {
@@ -173,6 +163,7 @@ export class UserService {
         "phone",
         "description",
         "avatarPathTo",
+        "isPrivate",
       ],
       relations: ["posts", "subscribers", "subscriptions"],
     });
@@ -180,17 +171,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException("User not found");
     }
-
-    // const avatarBase64: string = await this.fileServise.getFile(
-    //   user.avatarPathTo,
-    // );
-
-    // const modifiedUser = JSON.parse(JSON.stringify(user));
-
-    // delete modifiedUser.avatarPathTo;
-
-    // modifiedUser.avatarBase64 = avatarBase64;
-
     return user;
   }
 
@@ -326,5 +306,35 @@ export class UserService {
           subsSinceLastMontthCount: subscribersSinceLastMonth.length,
         };
     }
+  }
+
+  async togglePrivacy(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id: user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    user.isPrivate = !user.isPrivate;
+
+    await this.userRepository.save(user);
+
+    return {
+      isPrivate: user.isPrivate,
+    };
+  }
+
+  async getUserPrivacy(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id: user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return user.isPrivate;
   }
 }

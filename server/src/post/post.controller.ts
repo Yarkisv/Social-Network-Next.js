@@ -52,13 +52,9 @@ export class PostController {
   @UseGuards(AuthGuard)
   @Get("get-all")
   async getAllPosts(@Request() req) {
-    console.log(1234);
-
     const id = req.user.user_id;
 
     const posts = await this.postService.findUserPostsById(id);
-
-    console.log(posts);
 
     return posts;
   }

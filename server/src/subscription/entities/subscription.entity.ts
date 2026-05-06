@@ -3,9 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -29,4 +27,7 @@ export class Subscription {
 
   @Column()
   subscriptionSince!: Date;
+
+  @Column({ default: "accepted" })
+  status!: "pending" | "accepted";
 }

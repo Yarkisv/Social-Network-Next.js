@@ -7,6 +7,8 @@ interface IModalState {
   isSubscribersModalOpen: boolean;
   isSubscriptionsModalOpen: boolean;
   isMessageSettingsModalOpen: boolean;
+  isPendingSubsModalOpen: boolean;
+
   searchQuery: string;
   selectedMessageId: number | undefined;
 }
@@ -18,6 +20,7 @@ const initialState: IModalState = {
   isSubscribersModalOpen: false,
   isSubscriptionsModalOpen: false,
   isMessageSettingsModalOpen: false,
+  isPendingSubsModalOpen: false,
   searchQuery: "",
   selectedMessageId: undefined,
 };
@@ -72,6 +75,12 @@ export const modalSlice = createSlice({
     ) => {
       state.selectedMessageId = action.payload;
     },
+    openPendingSubsModal: (state) => {
+      state.isPendingSubsModalOpen = true;
+    },
+    closePendingSubsModal: (state) => {
+      state.isPendingSubsModalOpen = false;
+    },
   },
 });
 
@@ -88,6 +97,8 @@ export const {
   closeSubscribtionsModal,
   openMessageSettingsModal,
   closeMessageSettingsModal,
+  openPendingSubsModal,
+  closePendingSubsModal,
   setSearchQuery,
   setSelectedMessageId,
 } = modalSlice.actions;
