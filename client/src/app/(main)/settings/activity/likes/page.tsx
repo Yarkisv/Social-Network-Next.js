@@ -1,44 +1,22 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+
 import { Like } from "@/app/types/like.type";
 import { Post } from "@/app/types/post.type";
 import axiosInstance from "@/lib/axios";
-import Image from "next/image";
+
 import { useEffect, useState } from "react";
-import {
-  closePostModalWindow,
-  openPostModalWindow,
-} from "@/app/store/slices/modalSlice";
-import PostModal from "@/app/components/modals/PostModal";
+
+import PostGrid from "@/app/components/PostGrid";
 
 export default function LikesPage() {
-  const dispatch = useAppDispatch();
-  const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
-  const [likes, setLikes] = useState<Like[]>([]);
-  const [selectedPost, setSelectedPost] = useState<Post | null>();
-  const isPostModalOpen = useAppSelector(
-    (state) => state.modal.isPostModalOpen,
-  );
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchAllUserLikes = async () => {
     const response = await axiosInstance.get("like/get-all");
 
-    console.log(response.data);
+    const posts = response.data.map((like: Like) => like.post);
 
-    setLikes(response.data);
-  };
-
-  const handlePostModalOpen = (post: Post) => {
-    setSelectedPost(post);
-
-    console.log(post);
-
-    dispatch(openPostModalWindow());
-  };
-
-  const handlePostModalClose = () => {
-    dispatch(closePostModalWindow());
-    setSelectedPost(null);
+    setPosts(posts);
   };
 
   useEffect(() => {
@@ -52,30 +30,12 @@ export default function LikesPage() {
       </div>
 
       <div className="bg-[#292929] rounded-[2px] px-[15px] py-[15px] flex flex-col gap-[15px]">
-        {likes.length > 0 ? (
-          <div className="grid grid-cols-3 gap-[5px]">
-            {likes.map((like) => (
-              <Image
-                key={like.post.post_id}
-                src={`${STATIC_API}/${like.post.images[0].path_to}`}
-                alt="post"
-                width={233}
-                height={233}
-                priority
-                onClick={() => handlePostModalOpen(like.post)}
-                className="object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity duration-200"
-              />
-            ))}
-          </div>
+        {posts.length > 0 ? (
+          <PostGrid posts={posts} />
         ) : (
           <div className="text-gray-400 text-sm">Немає лайкнутих постів</div>
         )}
       </div>
-      <PostModal
-        post={selectedPost}
-        onClose={handlePostModalClose}
-        isOpen={isPostModalOpen}
-      />
     </div>
   );
 }

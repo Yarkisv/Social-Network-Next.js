@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import postLike from "../../images/postLike.svg";
 import justLike from "../../images/justLike.svg";
 import redLike from "../../images/RedLike.svg";
+import save from "../../images/save.svg";
 
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
@@ -163,6 +164,16 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     );
   };
 
+  const handleSavePost = async () => {
+    try {
+      const response = await axiosInstance.post("saved-posts/new", {
+        post_id: post?.post_id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (post) {
       fetchAllComments();
@@ -299,14 +310,14 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                   <p className="mt-[-2px]">11</p>
                 </div> */}
               </div>
-              {/* <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center">
                 <Image
                   alt="like"
                   src={save}
                   className="w-[13px] h-[19px] object-cover rounded"
+                  onClick={handleSavePost}
                 />
-                <p className="mt-[-2px]">11</p>
-              </div> */}
+              </div>
             </div>
             <div className="flex items-center gap-2 px-1">
               <input

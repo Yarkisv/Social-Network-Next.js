@@ -11,7 +11,6 @@ import {
   UnauthorizedException,
   Param,
   NotFoundException,
-  Patch,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/create-auth.dto";
@@ -21,14 +20,16 @@ import { RefreshTokenGuard } from "./guards/refreshToken.guard";
 import { Response } from "express";
 import { PostService } from "src/post/post.service";
 import { SubscriptionService } from "src/subscription/subscription.service";
+import { SavedPostsService } from "../saved-posts/saved-posts.service";
 
 @Controller("auth")
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly postService: PostService,
-    private readonly subscriptionService: SubscriptionService,
+    // private readonly postService: PostService,
+    // private readonly subscriptionService: SubscriptionService,
+    // private readonly savedPostsService: SavedPostsService,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -73,58 +74,62 @@ export class AuthController {
     return user;
   }
 
-  @UseGuards(AuthGuard)
-  @Get("get-full/:username")
-  async getFullUserData(@Param("username") username: string, @Request() req) {
-    const currnet_user_id = req.user.user_id;
+  // @UseGuards(AuthGuard)
+  // @Get("get-full/:username")
+  // async getFullUserData(@Param("username") username: string, @Request() req) {
+  //   const currnet_user_id = req.user.user_id;
 
-    const user = await this.userService.findByUsername(username);
+  //   const user = await this.userService.findByUsername(username);
 
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
+  //   if (!user) {
+  //     throw new NotFoundException("User not found");
+  //   }
 
-    const isOwner = currnet_user_id === user.user_id;
+  //   const isOwner = currnet_user_id === user.user_id;
 
-    let subscription;
+  //   let subscription;
 
-    if (currnet_user_id) {
-      subscription = await this.subscriptionService.findOneSubscription(
-        currnet_user_id,
-        user.user_id,
-      );
-    }
+  //   if (currnet_user_id) {
+  //     subscription = await this.subscriptionService.findOneSubscription(
+  //       currnet_user_id,
+  //       user.user_id,
+  //     );
+  //   }
 
-    const isSubscribed = subscription?.status === "accepted";
-    const isPending = subscription?.status === "pending";
+  //   const isSubscribed = subscription?.status === "accepted";
+  //   const isPending = subscription?.status === "pending";
 
-    const canViewPosts = !user.isPrivate || isOwner || isSubscribed;
+  //   const canViewPosts = !user.isPrivate || isOwner || isSubscribed;
 
-    const posts = canViewPosts
-      ? await this.postService.findUserPostsById(user.user_id)
-      : [];
+  //   const posts = canViewPosts
+  //     ? await this.postService.findUserPostsById(user.user_id)
+  //     : [];
 
-    const showSubsInfo = !user.isPrivate || isOwner || isSubscribed;
+  //   const savedPosts = isOwner
+  //     ? await this.savedPostsService.getAllSavedPostsByUser(currnet_user_id)
+  //     : [];
 
-    const { subscriptions, subscribers } = showSubsInfo
-      ? await this.subscriptionService.findAllById(user.user_id)
-      : {
-          subscriptions: [],
-          subscribers: [],
-        };
+  //   const showSubsInfo = !user.isPrivate || isOwner || isSubscribed;
 
-    const data = {
-      user,
-      posts,
-      subscriptions,
-      subscribers,
-      isPrivate: user.isPrivate,
-      isSubscribed,
-      isPending,
-    };
+  //   const { subscriptions, subscribers } = showSubsInfo
+  //     ? await this.subscriptionService.findAllById(user.user_id)
+  //     : {
+  //         subscriptions: [],
+  //         subscribers: [],
+  //       };
 
-    return data;
-  }
+  //   const data = {
+  //     user,
+  //     posts,
+  //     subscriptions,
+  //     subscribers,
+  //     isPrivate: user.isPrivate,
+  //     isSubscribed,
+  //     isPending,
+  //   };
+
+  //   return data;
+  // }
 
   @UseGuards(AuthGuard)
   @Get("/check-token")

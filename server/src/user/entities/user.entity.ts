@@ -6,6 +6,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Comment } from "src/comment/entities/comment.entity";
 import { Subscription } from "src/subscription/entities/subscription.entity";
 import { Like } from "src/like/entities/like.entity";
+import { SavedPost } from "src/saved-posts/entities/saved-post.entity";
 
 @Entity("users")
 export class User {
@@ -59,4 +60,7 @@ export class User {
 
   @Column({ default: false })
   isPrivate!: boolean;
+
+  @OneToMany(() => SavedPost, (savedPost) => savedPost.post)
+  savedPosts!: SavedPost[];
 }

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ProfilePost from "../../images/ProfilePost.png";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import {
@@ -25,6 +24,7 @@ import SubscriptionsModal from "@/app/components/modals/SubscriptionsModal";
 import SubscribersModal from "@/app/components/modals/SubscribersModal";
 import UploadPostModal from "@/app/components/modals/UploadPostModal";
 import PendingSubscribersModal from "@/app/components/modals/PendingSubsModal";
+import PostGrid from "@/app/components/PostGrid";
 
 export default function page() {
   const dispatch = useAppDispatch();
@@ -59,12 +59,23 @@ export default function page() {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get(`/auth/get-full/${username}`);
+      const response = await axiosInstance.get(`/user/get-full/${username}`);
 
       if (response.status === 200) {
-        setFullUserData(response.data);
+        const data = response.data;
 
-        console.log(response.data);
+        let subscriptionStatus = "none";
+
+        if (data.isSubscribed) {
+          subscriptionStatus = "accepted";
+        } else if (data.isPending) {
+          subscriptionStatus = "pending";
+        }
+
+        setFullUserData({
+          ...data,
+          subscriptionStatus,
+        });
 
         const isCurrent = currentUser?.username === response.data.user.username;
 
@@ -176,7 +187,7 @@ export default function page() {
   if (!fullUserData) {
     return (
       <div className="h-[calc(100vh-46px)] bg-[#060606]">
-        <p className="text-white">user not found</p>
+        <p className="text-white">Pending</p>
       </div>
     );
   }
@@ -199,18 +210,40 @@ export default function page() {
             <div className="text-gray-400">@{fullUserData.user?.username}</div>
             {!isUserCurrent && (
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
-                  className="rounded-[2px] bg-[#5020A1] hover:bg-[#6B3FCF] transition-colors cursor-pointer h-[30px] duration-200 text-white text-sm font-medium px-6 "
-                >
-                  {isSubscribed ? "Unsubscribe" : "Subscribe"}
-                </button>
-                <button
-                  onClick={handleChatClick}
-                  className="rounded-[2px] bg-transparent border border-[#5020A1] cursor-pointer hover:bg-[#1D1333] h-[30px] transition-colors duration-200 text-white text-sm font-medium px-6 "
-                >
-                  Chat
-                </button>
+                {fullUserData.subscriptionStatus === "none" && (
+                  <button
+                    onClick={handleSubscribe}
+                    className="rounded-[2px] bg-[#5020A1] hover:bg-[#6B3FCF] transition-colors cursor-pointer h-[30px] duration-200 text-white text-sm font-medium px-6"
+                  >
+                    Subscribe
+                  </button>
+                )}
+
+                {fullUserData.subscriptionStatus === "pending" && (
+                  <button
+                    disabled
+                    className="rounded-[2px] bg-gray-600 cursor-not-allowed h-[30px] text-white text-sm font-medium px-6 opacity-70"
+                  >
+                    Pending...
+                  </button>
+                )}
+
+                {fullUserData.subscriptionStatus === "accepted" && (
+                  <button
+                    onClick={handleUnsubscribe}
+                    className="rounded-[2px] bg-red-600 hover:bg-red-700 transition-colors cursor-pointer h-[30px] text-white text-sm font-medium px-6"
+                  >
+                    Unsubscribe
+                  </button>
+                )}
+                {fullUserData.subscriptionStatus === "accepted" && (
+                  <button
+                    onClick={handleChatClick}
+                    className="rounded-[2px] bg-transparent border border-[#5020A1] cursor-pointer hover:bg-[#1D1333] h-[30px] transition-colors duration-200 text-white text-sm font-medium px-6"
+                  >
+                    Chat
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -316,16 +349,7 @@ export default function page() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-[5px]">
-            {[...Array(3)].map((_, index) => (
-              <Image
-                key={index}
-                src={ProfilePost}
-                alt="Saved post"
-                className="w-full h-[233px] object-cover rounded-lg"
-              />
-            ))}
-          </div>
+          <PostGrid posts={fullUserData.savedPosts} />
         )}
       </div>
 
