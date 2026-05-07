@@ -4,11 +4,11 @@ import axiosInstance from "@/lib/axios";
 import { useEffect, useState } from "react";
 
 export default function PrivacySettingsPage() {
-  const [isPrivate, setIsPrivate] = useState<null | boolean>(null);
+  const [isPrivate, setIsPrivate] = useState<boolean | null>(null);
 
   const fetchUserPrivacy = async () => {
     try {
-      const response = await axiosInstance.get("user/privacy");
+      const response = await axiosInstance.get("/user/privacy");
 
       setIsPrivate(response.data);
     } catch (error) {
@@ -17,12 +17,17 @@ export default function PrivacySettingsPage() {
   };
 
   const handleTogglePrivacy = async () => {
-    setIsPrivate(!isPrivate);
+    const newValue = !isPrivate;
+
+    setIsPrivate(newValue);
 
     try {
-      await axiosInstance.patch("user/privacy");
+      await axiosInstance.patch("/user/privacy");
     } catch (error) {
       console.log(error);
+
+      // rollback якщо помилка
+      setIsPrivate(!newValue);
     }
   };
 
@@ -30,37 +35,45 @@ export default function PrivacySettingsPage() {
     fetchUserPrivacy();
   }, []);
 
-  if (isPrivate === null) return <div>Pending</div>;
+  if (isPrivate === null) {
+    return (
+      <div className="h-[calc(100vh-46px)] w-full max-w-[730px] pt-[10px] pl-[10px] text-white font-[Manrope]">
+        Завантаження...
+      </div>
+    );
+  }
 
   return (
-    <div className="h-[calc(100vh-46px)] bg-[#0b0b0b] flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#121212] border border-[#2a2a2a] rounded-2xl p-6 shadow-lg">
-        <h1 className="text-white text-2xl font-semibold mb-2">
-          Налаштування приватності
-        </h1>
+    <div className="h-[calc(100vh-46px)] w-full max-w-[730px] pt-[10px] pl-[10px]">
+      <div className="bg-[#292929] rounded-[2px] w-full px-[10px] py-[15px] font-[Manrope] text-white">
+        <p className="text-[16px] mb-4">Налаштування приватності</p>
 
-        <p className="text-gray-400 text-sm mb-6">
-          Коли акаунт приватний, тільки підписники можуть бачити ваші пости.
-        </p>
+        <div className="bg-[#1D1D1D] rounded-[2px] px-[12px] py-[14px] flex items-center justify-between">
+          <div>
+            <p className="text-[15px]">Приватний акаунт</p>
 
-        <div className="flex items-center justify-between bg-[#1a1a1a] p-4 rounded-xl mb-6">
-          <span className="text-white">Приватний акаунт</span>
+            <p className="text-[12px] text-gray-400 mt-[4px] max-w-[430px]">
+              Коли акаунт приватний, тільки підписники можуть бачити ваші пости
+              та інформацію профілю.
+            </p>
+          </div>
 
           <button
             onClick={handleTogglePrivacy}
-            className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-              isPrivate ? "bg-blue-500" : "bg-gray-600"
+            className={`w-[50px] h-[28px] rounded-full flex items-center px-[3px] transition-all duration-300 cursor-pointer ${
+              isPrivate ? "bg-[#5020A1]" : "bg-[#555]"
             }`}
           >
             <div
-              className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                isPrivate ? "translate-x-7" : "translate-x-0"
+              className={`w-[22px] h-[22px] bg-white rounded-full transition-all duration-300 ${
+                isPrivate ? "translate-x-[22px]" : ""
               }`}
             />
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-4 text-center">
-          Ви можете змінити це налаштування у будь-який час
+
+        <p className="text-[12px] text-gray-500 mt-4">
+          Ви можете змінити це налаштування у будь-який час.
         </p>
       </div>
     </div>
