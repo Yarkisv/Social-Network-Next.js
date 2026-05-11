@@ -16,7 +16,6 @@ export class LikeService {
   constructor(
     @InjectRepository(Like) private readonly likeRepository: Repository<Like>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-    private readonly fileService: FileService,
   ) {}
 
   async likePost(createLikeDto: CreateLikeDto, user_id: number) {
@@ -131,7 +130,7 @@ export class LikeService {
         post_id: like.post.post_id,
         images: like.post.images,
         post_title: like.post.post_title,
-        hashtag: like.post.hashtag,
+        // hashtag: like.post.hashtag,
         username: sanitizeUser(like.post.user).username,
         userAvatar: sanitizeUser(like.post.user).avatarPathTo,
         comments: like.post.comments,

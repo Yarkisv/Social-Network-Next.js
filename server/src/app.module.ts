@@ -15,6 +15,7 @@ import { PostImageModule } from "./post-image/post-image.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { SavedPostsModule } from './saved-posts/saved-posts.module';
+import { AiModule } from "./ai/ai.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SavedPostsModule } from './saved-posts/saved-posts.module';
     LikeModule,
     PostImageModule,
     SavedPostsModule,
+    AiModule,
   ],
 })
 export class AppModule {}

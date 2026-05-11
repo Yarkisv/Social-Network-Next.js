@@ -39,7 +39,7 @@ export class SavedPostsService {
           post_id: post.post_id,
           images: post.images,
           post_title: post.post_title,
-          hashtag: post.hashtag,
+          // hashtag: post.hashtag,
           comments: post.comments,
           likes,
           userAvatar: user.avatarPathTo,

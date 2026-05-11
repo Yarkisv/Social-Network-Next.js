@@ -57,9 +57,9 @@ export default function SubscriptionsModal({
                 <div className="font-medium text-sm">{sub.fullname}</div>
               </div>
               <div className="ml-auto">
-                <button className="rounded-[2px] bg-[#5020A1] hover:bg-[#3B1678] h-[30px] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight">
+                {/* <button className="rounded-[2px] bg-[#5020A1] hover:bg-[#3B1678] h-[30px] cursor-pointer text-white text-center px-[14px] font-[inter] font-extralight">
                   subscribe
-                </button>
+                </button> */}
               </div>
             </li>
           ))}

@@ -10,7 +10,6 @@ export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
-    private readonly fileService: FileService,
   ) {}
 
   async create(id: number, createCommentDto: CreateCommentDto) {
@@ -66,7 +65,7 @@ export class CommentService {
         post: {
           post_id: comment.post.post_id,
           post_title: comment.post.post_title,
-          hashtag: comment.post.hashtag,
+          // hashtag: comment.post.hashtag,
           images: comment.post.images,
         },
         avatarPathTo: comment.user.avatarPathTo,

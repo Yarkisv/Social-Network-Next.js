@@ -27,7 +27,6 @@ export default function UploadPostModal({
   const [isFiles, setIsFiles] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
   const [postTitle, setPostTitle] = useState("");
-  const [hashtag, setHashtag] = useState("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -45,7 +44,6 @@ export default function UploadPostModal({
       formData.append("user_id", String(currentUser?.user_id));
       formData.append("folder", currentUser?.username || "");
       formData.append("post_title", postTitle || "");
-      formData.append("hashtag", hashtag || "");
 
       files.forEach((file) => {
         formData.append("files", file);
@@ -156,14 +154,6 @@ export default function UploadPostModal({
               className="w-full h-[80px] bg-[#1e1e1e] text-white p-2 rounded resize-none text-sm outline-none "
               maxLength={200}
               placeholder="Write a caption..."
-            />
-            <textarea
-              onChange={(e) => {
-                setHashtag(e.target.value);
-              }}
-              className="w-full h-[80px] bg-[#1e1e1e] text-white p-2 rounded resize-none text-sm outline-none "
-              maxLength={200}
-              placeholder="Write a hashtag..."
             />
           </div>
         )}

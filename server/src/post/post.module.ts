@@ -7,6 +7,7 @@ import { FileService } from "src/services/file.service";
 import { UserModule } from "src/user/user.module";
 import { LikeModule } from "src/like/like.module";
 import { AuthModule } from "src/auth/auth.module";
+import { AiModule } from "src/ai/ai.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from "src/auth/auth.module";
     forwardRef(() => UserModule),
     forwardRef(() => LikeModule),
     forwardRef(() => AuthModule),
+    AiModule,
   ],
   controllers: [PostController],
   providers: [PostService, FileService],

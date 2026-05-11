@@ -4,16 +4,16 @@ import { Post } from "./entities/post.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserService } from "src/user/user.service";
-import { FileService } from "src/services/file.service";
 import { LikeService } from "src/like/like.service";
+import { AiService } from "../ai/ai.service";
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     private readonly userService: UserService,
-    private readonly fileService: FileService,
     private readonly likeService: LikeService,
+    private readonly aiService: AiService,
   ) {}
 
   async create(createPostDto: CreatePostDto) {
@@ -25,9 +25,15 @@ export class PostService {
       throw new NotFoundException("User not found");
     }
 
+    const aiInputText = `${post_title}`;
+
+    const aiTags = await this.aiService.generateTags(aiInputText);
+
+    console.log(aiTags);
+
     const post = await this.postRepository.save({
       post_title,
-      hashtag,
+      aiTags,
       user: { user_id: user.user_id },
       images: contentPathsTo.map((path) => ({
         path_to: path,

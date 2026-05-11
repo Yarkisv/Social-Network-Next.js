@@ -31,8 +31,6 @@ export class PostController {
     @Body("folder") folder: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log("Files: ", files, "\nUser username: ", folder);
-
     const paths = await Promise.all(
       files.map((file) => this.fileService.uploadFile(file, folder)),
     );

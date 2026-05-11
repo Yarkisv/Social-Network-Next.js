@@ -21,8 +21,8 @@ export class Post {
   @Column({ default: "" })
   post_title!: string;
 
-  @Column({ default: "" })
-  hashtag!: string;
+  @Column({ type: "json" })
+  aiTags!: string[];
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments!: Comment[];
