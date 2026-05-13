@@ -23,6 +23,7 @@ import { EPeriods } from "src/enums/statistics-period.enum";
 import { PostService } from "src/post/post.service";
 import { SubscriptionService } from "src/subscription/subscription.service";
 import { SavedPostsService } from "src/saved-posts/saved-posts.service";
+import { UpdateInterestsDto } from "./dto/update-interests.dto";
 
 @Controller("user")
 export class UserController {
@@ -150,5 +151,31 @@ export class UserController {
     const user_id = req.user.user_id;
 
     return await this.userService.getUserPrivacy(user_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch("interests")
+  async updateInterests(@Request() req, @Body() dto: UpdateInterestsDto) {
+    const user_id = req.user.user_id;
+
+    console.log(dto);
+
+    return this.userService.updateInterests(user_id, dto.interests);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("get-interests")
+  async getUserInterests(@Request() req) {
+    const user_id = req.user.user_id;
+
+    return this.userService.getInterests(user_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("recomendations")
+  async getRecomendationsList(@Request() req) {
+    const user_id = req.user.user_id;
+
+    return this.userService.getRecomendations(user_id);
   }
 }

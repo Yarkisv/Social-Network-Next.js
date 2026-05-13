@@ -63,4 +63,7 @@ export class User {
 
   @OneToMany(() => SavedPost, (savedPost) => savedPost.post)
   savedPosts!: SavedPost[];
+
+  @Column("simple-json", { nullable: true })
+  interests!: string[];
 }

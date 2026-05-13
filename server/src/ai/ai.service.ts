@@ -20,7 +20,7 @@ Return ONLY JSON array.
 
 Rules:
 - lowercase only
-- max 5 tags
+- 10 tags
 - no explanations
 
 Example:

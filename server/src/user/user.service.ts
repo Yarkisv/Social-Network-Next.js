@@ -12,11 +12,13 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { FileService } from "src/services/file.service";
 import { SubscriptionService } from "src/subscription/subscription.service";
 import { EPeriods } from "src/enums/statistics-period.enum";
+import { Post } from "src/post/entities/post.entity";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     private readonly fileServise: FileService,
     private readonly subscriptionService: SubscriptionService,
   ) {}
@@ -336,5 +338,86 @@ export class UserService {
     }
 
     return user.isPrivate;
+  }
+
+  async updateInterests(user_id: number, interests: string[]) {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    user.interests = [...new Set(interests)];
+
+    await this.userRepository.save(user);
+
+    return {
+      message: "Interests updated successfully",
+      interests: user.interests,
+    };
+  }
+
+  async getRecomendations(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    if (!user.interests || user.interests.length === 0) {
+      return [];
+    }
+
+    const interestsSet = new Set(user.interests || []);
+
+    const posts = await this.postRepository.find({
+      relations: ["user", "images"],
+      order: { post_id: "DESC" },
+      take: 100,
+    });
+
+    const scoredPosts = posts.map((post) => {
+      const tags = post.aiTags || [];
+
+      let score = 0;
+
+      for (const tag of tags) {
+        if (interestsSet.has(tag)) {
+          score += 3;
+        }
+      }
+
+      return {
+        post_id: post.post_id,
+        post_title: post.post_title,
+        images: post.images,
+        user: {
+          user_id: post.user.user_id,
+          username: post.user.username,
+          avatarPathTo: post.user.avatarPathTo,
+        },
+        score,
+      };
+    });
+
+    return scoredPosts.sort((a, b) => b.score - a.score).slice(0, 20);
+  }
+
+  async getInterests(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    const interestsSet = user.interests || [];
+
+    return interestsSet;
   }
 }
