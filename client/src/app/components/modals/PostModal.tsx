@@ -6,6 +6,8 @@ import postLike from "../../images/postLike.svg";
 import justLike from "../../images/justLike.svg";
 import redLike from "../../images/RedLike.svg";
 import save from "../../images/save.svg";
+import PreviosImg from "../../images/PreviosImg.svg";
+import NextImg from "../../images/NextImg.svg";
 
 import Image from "next/image";
 import axiosInstance from "@/lib/axios";
@@ -194,12 +196,31 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
           x
         </button>
 
-        <div className="h-full w-[365px] flex-shrink-0">
+        <div className="h-full w-[365px] flex-shrink-0 relative">
           {post?.images?.length > 1 && (
-            <div>
-              <button onClick={handlePreviosImage}>previos</button>{" "}
-              <button onClick={handleNextImage}>next</button>
-            </div>
+            <>
+              <button
+                onClick={handlePreviosImage}
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
+              >
+                <Image
+                  src={PreviosImg}
+                  alt="previous"
+                  className="w-6 h-6 cursor-pointer"
+                />
+              </button>
+
+              <button
+                onClick={handleNextImage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
+              >
+                <Image
+                  src={NextImg}
+                  alt="next"
+                  className="w-6 h-6 cursor-pointer"
+                />
+              </button>
+            </>
           )}
 
           <Image
@@ -209,6 +230,21 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
             height={365}
             className="w-full h-full object-cover rounded"
           />
+
+          {post?.images?.length > 1 && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+              {post.images.map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    i === indexOfPostImage
+                      ? "bg-white"
+                      : "bg-gray-500 opacity-60"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col flex-1 overflow-hidden p-2 ">
@@ -224,6 +260,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
               {currentPost?.username}
             </span>
           </div>
+
           <div className="mb-2">
             {currentPost?.post_title ? (
               <h2 className="text-lg font-semibold text-white">
@@ -236,7 +273,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
 
           <div className="flex-1 overflow-y-auto pr-2 space-y-[10px] max-h-[270px] hide-scrollbar">
             {comments.length > 0 ? (
-              <div>
+              <div className="space-y-[10px]">
                 {comments.map((comment) => (
                   <div
                     key={comment.comment_id}
@@ -250,10 +287,10 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                       className="object-cover rounded"
                     />
 
-                    <div className="flex flex-col text-[12px] text-white flex-1">
-                      <p className="text-white font-medium mb-1">
+                    <div className="flex flex-col text-[12px] text-white  flex-1">
+                      <p className="text-white font-medium mb-1 ">
                         {comment.senderUsername}
-                        <span className="font-normal text-gray-300">
+                        <span className="ml-1 font-normal text-gray-300">
                           {comment.content}
                         </span>
                       </p>
@@ -283,6 +320,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
               </div>
             )}
           </div>
+
           <div className="pt-2 border-t border-gray-700 mt-2 flex flex-col gap-2">
             <div className="flex items-center justify-between px-1">
               <div className="flex gap-4">
@@ -299,26 +337,18 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                   />
                   <p className="mt-[-2px]">{currentPost?.likes?.length}</p>
                 </div>
-                {/* <div className="flex flex-col items-center">
-                  <Image
-                    alt="like"
-                    src={repost}
-                    width={20}
-                    height={20}
-                    className="w-full h-full rounded"
-                  />
-                  <p className="mt-[-2px]">11</p>
-                </div> */}
               </div>
+
               <div className="flex flex-col items-center">
                 <Image
                   alt="like"
                   src={save}
-                  className="w-[13px] h-[19px] object-cover rounded"
+                  className="w-[13px] h-[19px] object-cover rounded cursor-pointer"
                   onClick={handleSavePost}
                 />
               </div>
             </div>
+
             <div className="flex items-center gap-2 px-1">
               <input
                 type="text"

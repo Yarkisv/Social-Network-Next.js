@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import PendingSub from "../../images/PendingSub.svg";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import {
   openUploadPostWindow,
@@ -207,7 +208,9 @@ export default function page() {
             <div className="text-xl font-semibold">
               {fullUserData.user?.fullname}
             </div>
+
             <div className="text-gray-400">@{fullUserData.user?.username}</div>
+
             {!isUserCurrent && (
               <div className="flex flex-col sm:flex-row gap-3">
                 {fullUserData.subscriptionStatus === "none" && (
@@ -236,6 +239,7 @@ export default function page() {
                     Unsubscribe
                   </button>
                 )}
+
                 {fullUserData.subscriptionStatus === "accepted" && (
                   <button
                     onClick={handleChatClick}
@@ -247,16 +251,18 @@ export default function page() {
               </div>
             )}
           </div>
-          <div className="flex gap-8 text-sm text-gray-300 font-light">
+
+          <div className="flex gap-8 text-sm text-gray-300 font-light items-center">
             <div>
               <span className="text-white font-medium">
                 {fullUserData.posts.length}
               </span>{" "}
               posts
             </div>
+
             <div
               onClick={handleSubscribersModalOpen}
-              className="flex  cursor-pointer gap-1"
+              className="flex cursor-pointer gap-1"
             >
               <span className="text-white font-medium">
                 {fullUserData.subscribers.length > 0 ? (
@@ -270,7 +276,7 @@ export default function page() {
 
             <div
               onClick={handleSubscriptionsModalOpen}
-              className="flex  cursor-pointer gap-1"
+              className="flex cursor-pointer gap-1"
             >
               <span className="text-white font-medium">
                 {fullUserData.subscriptions.length > 0 ? (
@@ -285,12 +291,17 @@ export default function page() {
             {isUserCurrent && (
               <button
                 onClick={handlePendingSubsOpen}
-                className="mt-3 text-sm text-[#a78bfa] hover:text-[#c4b5fd] transition-colors underline"
+                className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-[#2A2735] transition-colors duration-200"
               >
-                Pending subscriptions
+                <Image
+                  src={PendingSub}
+                  alt="Pending subscriptions"
+                  className="w-6 h-6 object-contain cursor-pointer"
+                />
               </button>
             )}
           </div>
+
           <div className="text-gray-300">{currentUser?.description ?? ""}</div>
         </div>
       </div>

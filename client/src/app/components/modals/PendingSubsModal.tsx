@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
-import axios from "axios";
 import { PendingSub } from "@/app/types/pending-sub.type";
+import Image from "next/image";
+import cancel_upload from "../../images/cancel_upload.svg";
 
 type PendingSubsModalProps = {
   isOpen: boolean;
@@ -57,37 +58,32 @@ export default function PendingSubscribersModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#121212] border border-[#2a2a2a] rounded-2xl shadow-xl flex flex-col max-h-[80vh]">
-        {/* header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2a2a2a]">
-          <h2 className="text-white text-lg font-semibold">Pending requests</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#111111]/60 px-4">
+      <div className="flex font-[Space_Grotesk] relative flex-col h-[440px] w-[400px] text-white bg-[#292929] rounded-[2px] pt-[15px] pb-[20px] px-[20px] overflow-hidden">
+        <Image
+          onClick={onClose}
+          src={cancel_upload}
+          alt="close"
+          className="absolute top-[10px] right-[10px] cursor-pointer"
+        />
 
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition"
-          >
-            ✕
-          </button>
-        </div>
+        <h2 className="text-[20px] text-center mb-6">Pending subscriptions</h2>
 
-        {/* list */}
-        <div className="overflow-y-auto px-5 py-3 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 overflow-y-auto pr-1">
           {pendingSubs?.length === 0 && (
-            <p className="text-gray-500 text-sm text-center py-6">
-              Немає запитів
+            <p className="text-[#BABABA] text-sm text-center mt-10 font-light">
+              No pending requests
             </p>
           )}
 
           {pendingSubs?.map((item) => (
             <div
               key={item.subscription_id}
-              className="flex items-center justify-between bg-[#1a1a1a] p-3 rounded-xl border border-[#2a2a2a]"
+              className="flex items-center justify-between bg-[#1E1E1E] border border-[#2F2B3A] rounded-[2px] px-3 py-3"
             >
-              {/* user info */}
               <div className="flex items-center gap-3">
                 <img
-                  src={`http://localhost:4000/static/${item.avatarPathTo}`}
+                  src={`${STATIC_API}/${item.avatarPathTo}`}
                   alt="avatar"
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -96,26 +92,26 @@ export default function PendingSubscribersModal({
                   <span className="text-white text-sm font-medium">
                     {item.fullname}
                   </span>
-                  <span className="text-gray-500 text-xs">
+
+                  <span className="text-[#BABABA] text-xs font-light">
                     @{item.username}
                   </span>
                 </div>
               </div>
 
-              {/* actions */}
               <div className="flex gap-2">
                 <button
                   onClick={() => onAccept(item.subscription_id)}
-                  className="px-3 py-1 text-xs rounded-lg bg-green-600 hover:bg-green-500 text-white transition"
+                  className="bg-[#5020A1] hover:bg-purple-700 transition text-white px-3 py-1 rounded-[2px] text-xs cursor-pointer"
                 >
-                  Прийняти
+                  Accept
                 </button>
 
                 <button
                   onClick={() => onReject(item.subscription_id)}
-                  className="px-3 py-1 text-xs rounded-lg bg-red-600 hover:bg-red-500 text-white transition"
+                  className="bg-[#3A3A3A] hover:bg-[#4A4A4A] transition text-white px-3 py-1 rounded-[2px] text-xs cursor-pointer"
                 >
-                  Відхилити
+                  Reject
                 </button>
               </div>
             </div>
