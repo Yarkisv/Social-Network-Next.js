@@ -13,6 +13,7 @@ import {
   Request,
   Query,
   NotFoundException,
+  Delete,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -177,5 +178,13 @@ export class UserController {
     const user_id = req.user.user_id;
 
     return this.userService.getRecomendations(user_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch("clear-interests")
+  async clearInterests(@Request() req) {
+    const user_id = req.user.user_id;
+
+    return this.userService.clearInterests(user_id)
   }
 }

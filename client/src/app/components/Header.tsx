@@ -45,6 +45,10 @@ export default function Header({ user }: { user: User }) {
     router.push(`/${user?.username}`);
   };
 
+  const handleNavigateToMainPage = () => {
+    router.push("/");
+  };
+
   useEffect(() => {
     handleOnChange();
   }, [inputText]);
@@ -66,7 +70,7 @@ export default function Header({ user }: { user: User }) {
             className="text-white ml-[10px] text-[18px] cursor-pointer"
             onClick={handleProfileClick}
           >
-            Profile
+            {user.username}
           </p>
           <div onClick={handleLogoutClick} className="cursor-pointer">
             <Image
@@ -79,7 +83,10 @@ export default function Header({ user }: { user: User }) {
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-[#C084FC] text-center flex-1">
+        <h1
+          className="text-2xl font-bold text-[#C084FC] text-center flex-1"
+          onClick={handleNavigateToMainPage}
+        >
           Open Circle
         </h1>
 

@@ -375,7 +375,7 @@ export class UserService {
     const interestsSet = new Set(user.interests || []);
 
     const posts = await this.postRepository.find({
-      relations: ["user", "images"],
+      relations: ["user", "images", "likes", "comments"],
       order: { post_id: "DESC" },
       take: 100,
     });
@@ -394,12 +394,18 @@ export class UserService {
       return {
         post_id: post.post_id,
         post_title: post.post_title,
-        images: post.images,
-        user: {
-          user_id: post.user.user_id,
-          username: post.user.username,
-          avatarPathTo: post.user.avatarPathTo,
-        },
+
+        images: post.images.map((img) => ({
+          id: img.id,
+          path_to: img.path_to,
+        })),
+
+        username: post.user.username,
+        userAvatar: post.user.avatarPathTo,
+
+        comments: post.comments || [],
+        likes: post.likes || [],
+
         score,
       };
     });
@@ -419,5 +425,19 @@ export class UserService {
     const interestsSet = user.interests || [];
 
     return interestsSet;
+  }
+
+  async clearInterests(user_id: number) {
+    const user = await this.userRepository.findOne({
+      where: { user_id },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    user.interests = [];
+
+    await this.userRepository.save(user);
   }
 }

@@ -26,10 +26,6 @@ export default function RecommendationSettingsPage() {
     );
   };
 
-  const resetInterests = () => {
-    setInterests([]);
-  };
-
   const fetchUserInterests = async () => {
     const response = await axiosInstance.get("user/get-interests");
 
@@ -37,11 +33,21 @@ export default function RecommendationSettingsPage() {
   };
 
   const sendNewInteres = async () => {
-    const response = await axiosInstance.patch("user/interests", {
+    await axiosInstance.patch("user/interests", {
       interests: [...interests, customInterest],
     });
 
     fetchUserInterests();
+  };
+
+  const clearInterests = async () => {
+    try {
+      await axiosInstance.patch("user/clear-interests");
+
+      fetchUserInterests();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -49,11 +55,11 @@ export default function RecommendationSettingsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white p-6">
+    <div className="h-[calc(100vh-46px)] bg-[#121212] text-white p-6">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">Recommendation Settings</h1>
+        <h1 className="text-2xl font-bold mb-2">Налаштування рекомендацій</h1>
         <p className="text-gray-400 mb-6">
-          Choose what content should appear in your feed
+          Оберіть який контент вам рекомендувати
         </p>
 
         <div className="bg-[#1f1f1f] p-4 rounded-xl mb-6">
@@ -96,41 +102,16 @@ export default function RecommendationSettingsPage() {
           </div>
         </div>
 
-        {/* <div className="bg-[#1f1f1f] p-4 rounded-xl mb-6">
-          <h2 className="font-semibold mb-3">Recommended topics</h2>
-
-          <div className="flex flex-wrap gap-2">
-            {ALL_INTERESTS.map((item) => {
-              const active = interests.includes(item);
-
-              return (
-                <button
-                  key={item}
-                  onClick={() => toggleInterest(item)}
-                  className={`px-3 py-1 rounded-full text-sm border transition ${
-                    active
-                      ? "bg-purple-600 border-purple-600"
-                      : "border-gray-600 text-gray-300"
-                  }`}
-                >
-                  {item}
-                </button>
-              );
-            })}
-          </div>
-        </div> */}
-
-        {/* Buttons */}
         <div className="flex justify-between">
           <button
-            onClick={resetInterests}
+            onClick={clearInterests}
             className="text-red-400 hover:text-red-300"
           >
-            Reset interests
+            Видалили інтереси
           </button>
 
           <button className="bg-purple-600 px-5 py-2 rounded-lg hover:bg-purple-500">
-            Save changes
+            Зберегти зміни
           </button>
         </div>
       </div>
