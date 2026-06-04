@@ -55,7 +55,7 @@ export default function Home() {
           />
         ))}
       </div>
-      
+
       <PostModal
         post={selectedPost}
         onClose={handlePostModalClose}

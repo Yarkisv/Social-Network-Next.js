@@ -12,7 +12,7 @@ export const FeedPostCard: React.FC<Props> = ({ post, onClick }) => {
 
   return (
     <div
-      className="bg-[#1f1f1f] text-white rounded-xl overflow-hidden shadow-md mb-6"
+      className="bg-[#1f1f1f] text-white w-[728px] ml-[-28px] overflow-hidden shadow-md mb-3"
       onClick={() => onClick(post)}
     >
       <div className="flex items-center gap-3 p-4 relative z-10">
