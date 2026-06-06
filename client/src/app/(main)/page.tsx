@@ -45,7 +45,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-46px)]">
+    <div className="">
       <div className="max-w-2xl mx-auto">
         {posts.map((post: any) => (
           <FeedPostCard

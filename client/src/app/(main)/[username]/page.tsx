@@ -205,7 +205,7 @@ export default function page() {
         />
         <div className="flex flex-col gap-4 flex-1 font-light">
           <div className="flex items-center gap-[15px]">
-            <div className="text-xl font-semibold">
+            <div className="text-xl font-semibold text-white">
               {fullUserData.user?.fullname}
             </div>
 

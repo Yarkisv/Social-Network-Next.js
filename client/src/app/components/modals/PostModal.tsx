@@ -316,7 +316,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
               </div>
             ) : (
               <div>
-                <p>No comments yet</p>
+                <p className="text-white">No comments yet</p>
               </div>
             )}
           </div>
@@ -335,7 +335,9 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                     height={20}
                     className="w-full h-full rounded cursor-pointer"
                   />
-                  <p className="mt-[-2px]">{currentPost?.likes?.length}</p>
+                  <p className="mt-[-2px] text-white">
+                    {currentPost?.likes?.length}
+                  </p>
                 </div>
               </div>
 

@@ -71,7 +71,7 @@ export default function page() {
           width={70}
           height={70}
         />
-        <p className="text-[20px] ml-[20px]">{user?.fullname}</p>
+        <p className="text-[20px] text-white ml-[20px]">{user?.fullname}</p>
 
         <input type="file" id="file" hidden onChange={handleFileChange} />
         <label

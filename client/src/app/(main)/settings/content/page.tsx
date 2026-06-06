@@ -55,25 +55,35 @@ export default function RecommendationSettingsPage() {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-46px)] bg-[#121212] text-white p-6">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">Налаштування рекомендацій</h1>
-        <p className="text-gray-400 mb-6">
+    <div className="h-[calc(100vh-46px)] w-full max-w-[730px] pt-[10px] pl-[10px]">
+      <div className="bg-[#292929] rounded-[2px] p-[20px] text-white font-[Manrope]">
+        <h1 className="text-[20px] mb-[4px]">Налаштування рекомендацій</h1>
+
+        <p className="text-[#A1A1A1] text-[14px] mb-[20px]">
           Оберіть який контент вам рекомендувати
         </p>
 
-        <div className="bg-[#1f1f1f] p-4 rounded-xl mb-6">
-          <h2 className="font-semibold mb-3">Ваші інтереси</h2>
+        <div className="bg-[#1D1D1D] p-[15px] rounded-[2px] mb-[15px]">
+          <h2 className="text-[16px] mb-[12px]">Ваші інтереси</h2>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-[8px]">
             {interests.length === 0 && (
-              <p className="text-gray-500 text-sm">No interests selected</p>
+              <p className="text-[#7A7A7A] text-[14px]">Інтереси не вибрано</p>
             )}
 
             {interests.map((item) => (
               <span
                 key={item}
-                className="bg-purple-600 px-3 py-1 rounded-full text-sm cursor-pointer"
+                className="
+                bg-[#5020A1]
+                px-[12px]
+                py-[5px]
+                rounded-[2px]
+                text-[14px]
+                cursor-pointer
+                hover:bg-purple-700
+                transition
+              "
                 onClick={() => toggleInterest(item)}
               >
                 {item} ✕
@@ -82,19 +92,33 @@ export default function RecommendationSettingsPage() {
           </div>
         </div>
 
-        <div className="bg-[#1f1f1f] p-4 rounded-xl mb-6">
-          <h2 className="font-semibold mb-3">Додати власний інтерес</h2>
+        <div className="bg-[#1D1D1D] p-[15px] rounded-[2px] mb-[15px]">
+          <h2 className="text-[16px] mb-[12px]">Додати новий інтерес</h2>
 
-          <div className="flex gap-2">
+          <div className="flex gap-[10px]">
             <input
               value={customInterest}
               onChange={(e) => setCustomInterest(e.target.value)}
-              placeholder="Ваші інтереси"
-              className="flex-1 px-3 py-2 rounded-lg bg-[#2a2a2a] text-white outline-none border border-gray-600 focus:border-purple-500"
+              placeholder="Ваш інтерес"
+              className="
+              flex-1
+              h-[35px]
+              bg-[#121212]
+              text-white
+              px-[10px]
+              rounded-[2px]
+              outline-none
+            "
             />
 
             <button
-              className="bg-purple-600 px-4 py-2 rounded-lg hover:bg-purple-500"
+              className="
+              bg-[#5020A1]
+              px-[20px]
+              rounded-md
+              hover:bg-purple-700
+              transition
+            "
               onClick={sendNewInteres}
             >
               Додати
@@ -102,15 +126,28 @@ export default function RecommendationSettingsPage() {
           </div>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <button
             onClick={clearInterests}
-            className="text-red-400 hover:text-red-300"
+            className="
+            text-red-400
+            hover:text-red-300
+            transition
+          "
           >
-            Видалили інтереси
+            Видалити інтереси
           </button>
 
-          <button className="bg-purple-600 px-5 py-2 rounded-lg hover:bg-purple-500">
+          <button
+            className="
+            bg-[#5020A1]
+            px-[26px]
+            py-[6px]
+            rounded-md
+            hover:bg-purple-700
+            transition
+          "
+          >
             Зберегти зміни
           </button>
         </div>
