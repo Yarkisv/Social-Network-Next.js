@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { extname, join } from "path";
-import { readFile } from "fs/promises";
 import { promises as fs } from "fs";
+import { randomUUID } from "crypto";
 
 @Injectable()
 export class FileService {
@@ -11,7 +11,8 @@ export class FileService {
     try {
       await fs.mkdir(uploadFolder, { recursive: true });
 
-      const uniqueName = Date.now() + extname(file.originalname);
+      // const uniqueName = Date.now() + extname(file.originalname);
+      const uniqueName = `${randomUUID()}${extname(file.originalname)}`;
       const filePath = join(uploadFolder, uniqueName);
 
       if (!file.buffer) {

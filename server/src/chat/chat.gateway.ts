@@ -15,6 +15,7 @@ import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { DeleteMessageDto } from "src/messages/dto/delete-message.dto";
 import { UpdateMessageDto } from "src/messages/dto/update-message.dto";
 import { MessagesService } from "src/messages/messages.service";
+import { ChatMembersService } from "src/chat-members/chat-members.service";
 
 @WebSocketGateway()
 export class ChatGateway
@@ -22,7 +23,10 @@ export class ChatGateway
 {
   private readonly logger = new Logger(ChatGateway.name);
 
-  constructor(private readonly messageService: MessagesService) {}
+  constructor(
+    private readonly messageService: MessagesService,
+    private readonly chatMembersService: ChatMembersService,
+  ) {}
 
   @WebSocketServer() io!: Server;
 
@@ -123,5 +127,20 @@ export class ChatGateway
       chat_id: message.chat_id,
       time: message.time,
     });
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage("chat:read")
+  async handleRead(
+    client: any,
+    payload: { chatId: number; lastMessageId: number },
+  ) {
+    const user = client.data.user;
+
+    await this.chatMembersService.markAsRead(
+      payload.chatId,
+      user.user_id,
+      payload.lastMessageId,
+    );
   }
 }

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import PendingSub from "../../images/PendingSub.svg";
+import PendingSubIcon from "../../images/PendingSub.svg";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import {
   openUploadPostWindow,
@@ -26,6 +26,7 @@ import SubscribersModal from "@/app/components/modals/SubscribersModal";
 import UploadPostModal from "@/app/components/modals/UploadPostModal";
 import PendingSubscribersModal from "@/app/components/modals/PendingSubsModal";
 import PostGrid from "@/app/components/PostGrid";
+import { PendingSub } from "@/app/types/pending-sub.type";
 
 export default function page() {
   const dispatch = useAppDispatch();
@@ -33,10 +34,11 @@ export default function page() {
 
   const currentUser = useAppSelector((state) => state.user.user);
   const [fullUserData, setFullUserData] = useState<FullUser>();
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isUserCurrent, setIsUserCurrent] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>();
   const [activeTab, setActiveTab] = useState<"posts" | "saved">("posts");
+  const [pendingSubs, setPendingSubs] = useState<PendingSub[]>([]);
+
   const API = process.env.NEXT_PUBLIC_API_URL;
   const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
 
@@ -57,6 +59,16 @@ export default function page() {
   const isPendingModalOpen = useAppSelector(
     (state) => state.modal.isPendingSubsModalOpen,
   );
+
+  const fetchPending = async () => {
+    try {
+      const response = await axiosInstance.get("/subscription/pending");
+
+      setPendingSubs(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -177,11 +189,13 @@ export default function page() {
 
   const handleClosePendingSubsOpen = () => {
     dispatch(closePendingSubsModal());
+    fetchPending();
   };
 
   useEffect(() => {
     if (username && currentUser) {
       fetchData();
+      fetchPending();
     }
   }, [username, currentUser]);
 
@@ -294,10 +308,11 @@ export default function page() {
                 className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-[#2A2735] transition-colors duration-200"
               >
                 <Image
-                  src={PendingSub}
+                  src={PendingSubIcon}
                   alt="Pending subscriptions"
                   className="w-6 h-6 object-contain cursor-pointer"
                 />
+                {pendingSubs.length > 0 && pendingSubs.length}
               </button>
             )}
           </div>

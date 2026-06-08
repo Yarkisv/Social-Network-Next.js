@@ -30,27 +30,17 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   const [isPostLikedByUser, setIsPostLikedByUser] = useState<boolean>(false);
   const [indexOfPostImage, setIndexOfPostImage] = useState<number>(0);
 
-  useEffect(() => {
-    if (!post) {
-      return;
+  const isLiked = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/like/check-is-already-liked/${post?.post_id}`,
+      );
+
+      setIsPostLikedByUser(response.data);
+    } catch (error) {
+      console.log(error);
     }
-
-    setCurrentPost(post);
-
-    const isLiked = async () => {
-      try {
-        const response = await axiosInstance.get(
-          `/like/check-is-already-liked/${post?.post_id}`,
-        );
-
-        setIsPostLikedByUser(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    isLiked();
-  }, [post?.post_id]);
+  };
 
   const handleLikePost = async () => {
     try {
@@ -177,9 +167,17 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
   };
 
   useEffect(() => {
+    if (!post) {
+      return;
+    }
+
     if (post) {
       fetchAllComments();
     }
+
+    setCurrentPost(post);
+
+    isLiked();
   }, [post?.post_id]);
 
   if (!isOpen || !post) {

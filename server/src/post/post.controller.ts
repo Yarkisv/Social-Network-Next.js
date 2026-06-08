@@ -31,9 +31,13 @@ export class PostController {
     @Body("folder") folder: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    console.log(files);
+
     const paths = await Promise.all(
       files.map((file) => this.fileService.uploadFile(file, folder)),
     );
+
+    console.log(paths);
 
     createPostDto.contentPathsTo = paths;
 

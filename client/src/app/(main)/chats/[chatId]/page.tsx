@@ -68,6 +68,7 @@ export default function page() {
       if (response.status === 200) {
         console.log(response.data);
         setMessages(response.data);
+        markAsRead(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -149,6 +150,17 @@ export default function page() {
       setEditText(message.content);
       setIsEditing(true);
     }
+  };
+
+  const markAsRead = (msgs: any) => {
+    const last = msgs[msgs.length - 1];
+
+    if (!last) return;
+
+    SocketApi.socket?.emit("chat:read", {
+      chatId: last.chat_id,
+      lastMessageId: last.message_id,
+    });
   };
 
   useEffect(() => {

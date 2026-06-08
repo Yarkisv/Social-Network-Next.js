@@ -1,6 +1,12 @@
 import { Chat } from "src/chat/entities/chat.entity";
 import { User } from "src/user/entities/user.entity";
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity("chat_members")
 export class ChatMember {
@@ -18,4 +24,7 @@ export class ChatMember {
   })
   @JoinColumn({ name: "user_id" })
   user!: User;
+
+  @Column({ nullable: true })
+  last_read_message_id!: number;
 }

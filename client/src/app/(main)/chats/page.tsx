@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function page() {
   const STATIC_API = process.env.NEXT_PUBLIC_STATIC_URL;
 
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<any[]>([]);
 
   const router = useRouter();
 
@@ -42,29 +42,41 @@ export default function page() {
           <div>
             {chats.map((chat) => (
               <div
-                className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200 border-1"
                 key={chat.chat_id}
+                className="flex p-[5px] cursor-pointer hover:bg-[#1E1B2E] rounded-md transition-colors duration-200"
                 onClick={() => navigateToChat(chat.chat_id)}
               >
                 <Image
-                  src={`${STATIC_API}/${chat.avatarPathTo}`}
-                  alt="Saved post"
+                  src={`${STATIC_API}${chat.avatarPathTo}`}
+                  alt="avatar"
                   width={46}
                   height={46}
-                  className=" h-[46px] w-[46px] object-cover rounded-full"
+                  className="h-[46px] w-[46px] object-cover rounded-full"
                 />
-                <div className="ml-[5px] font-[Space_Grotesk] font-[200] ">
-                  <p>{chat.chatName}</p>
-                  <p>message</p>
+
+                <div className="ml-[10px] flex flex-col justify-center flex-1">
+                  <div className="flex justify-between items-center">
+                    <p className="font-[Space_Grotesk] font-[400] text-white">
+                      {chat.chatName}
+                    </p>
+
+                    {chat.unreadCount > 0 && (
+                      <span className="bg-purple-600 text-white text-xs px-2 py-[2px] rounded-full">
+                        {chat.unreadCount}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-white/60 truncate max-w-[500px]">
+                    {chat.lastMessage?.content ?? "No messages yet"}
+                  </p>
+
+                  {chat.lastMessage?.sent_at && (
+                    <p className="text-[11px] text-white/40">
+                      {new Date(chat.lastMessage.sent_at).toLocaleString()}
+                    </p>
+                  )}
                 </div>
-                {/* <div className="ml-auto mr-[20px] flex flex-col gap-[4px]  items-center ">
-                    <p className="font-[Space_Grotesk] font-[200] text-[14px]">
-                      3:05
-                    </p>
-                    <p className="bg-[#C084FC] rounded-[10px] text-[13px] px-[5px]">
-                      322
-                    </p>
-                  </div> */}
               </div>
             ))}
           </div>
@@ -82,44 +94,6 @@ export default function page() {
           </div>
         )}
       </div>
-      {/* <div className="w-[170px] flex flex-col gap-[10px] border-l-2 border-[#120921] pl-[5px]">
-          <p className="font-[Space_Grotesk] font-[200] text-[14px] text-nowrap ">
-            Уou may be familiar with
-          </p>
-          <div className="flex gap-[6px] pl-[10px] font-[Space_Grotesk] font-[200]">
-            <Image
-              src={ProfilePost}
-              alt="Saved post"
-              className=" h-[33px] w-[33px] object-cover rounded-full"
-            />
-            <div>
-              <p className="text-[14px]">Pipdastr</p>
-              <p className="text-[10px] text-[#959595]">7700 followers</p>
-            </div>
-          </div>
-          <div className="flex gap-[6px] pl-[10px] font-[Space_Grotesk] font-[200]">
-            <Image
-              src={ProfilePost}
-              alt="Saved post"
-              className=" h-[33px] w-[33px] object-cover rounded-full"
-            />
-            <div>
-              <p className="text-[14px]">Pipdastr</p>
-              <p className="text-[10px] text-[#959595]">7700 followers</p>
-            </div>
-          </div>
-          <div className="flex gap-[6px] pl-[10px] font-[Space_Grotesk] font-[200]">
-            <Image
-              src={ProfilePost}
-              alt="Saved post"
-              className=" h-[33px] w-[33px] object-cover rounded-full"
-            />
-            <div>
-              <p className="text-[14px]">Pipdastr</p>
-              <p className="text-[10px] text-[#959595]">7700 followers</p>
-            </div>
-          </div>
-        </div> */}
     </div>
   );
 }

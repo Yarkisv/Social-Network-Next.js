@@ -41,7 +41,11 @@ export class ChatController {
   async getAllChatsByUserId(@Request() req) {
     const user_id: number = req.user.user_id;
 
-    return this.chatMembersService.findAllChatsByUserId(user_id);
+    const chats = await this.chatMembersService.findAllChatsByUserId(user_id);
+
+    console.log(chats);
+
+    return chats;
   }
 
   @UseGuards(AuthGuard)
