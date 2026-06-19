@@ -67,12 +67,12 @@ export default function PendingSubscribersModal({
           className="absolute top-[10px] right-[10px] cursor-pointer"
         />
 
-        <h2 className="text-[20px] text-center mb-6">Pending subscriptions</h2>
+        <h2 className="text-[20px] text-center mb-6">Очікуючі запити</h2>
 
         <div className="flex flex-col gap-3 overflow-y-auto pr-1">
           {pendingSubs?.length === 0 && (
             <p className="text-[#BABABA] text-sm text-center mt-10 font-light">
-              No pending requests
+              0 запитів
             </p>
           )}
 
@@ -104,14 +104,14 @@ export default function PendingSubscribersModal({
                   onClick={() => onAccept(item.subscription_id)}
                   className="bg-[#5020A1] hover:bg-purple-700 transition text-white px-3 py-1 rounded-[2px] text-xs cursor-pointer"
                 >
-                  Accept
+                  Підтвердити
                 </button>
 
                 <button
                   onClick={() => onReject(item.subscription_id)}
                   className="bg-[#3A3A3A] hover:bg-[#4A4A4A] transition text-white px-3 py-1 rounded-[2px] text-xs cursor-pointer"
                 >
-                  Reject
+                  Відхилити
                 </button>
               </div>
             </div>

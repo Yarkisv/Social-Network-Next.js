@@ -1,6 +1,7 @@
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -32,4 +33,7 @@ export class Post {
 
   @OneToMany(() => Like, (like) => like.post)
   likes!: Like[];
+
+  @CreateDateColumn()
+  created_at!: Date;
 }

@@ -89,14 +89,14 @@ export default function RegisterForm() {
     const isLengthValid = user.password.length < 8;
 
     if (isLengthValid) {
-      setPasswordError("Password must be more then 8 symbols");
+      setPasswordError("Пароль повинен містити більше ніж 8 символів");
     } else {
       const hasAnyChar = symbols.some((symbol) =>
-        user.password.includes(symbol)
+        user.password.includes(symbol),
       );
 
       if (!hasAnyChar) {
-        setPasswordError("Password must contains at least one letter");
+        setPasswordError("Пароль повинен містити хоча б одну літеру");
       } else {
         setPasswordError("");
       }
@@ -157,12 +157,12 @@ export default function RegisterForm() {
     ];
 
     const isUsernameNotValid = forbiddenSymbols.some((symbol) =>
-      user.username.includes(symbol)
+      user.username.includes(symbol),
     );
 
     if (isUsernameNotValid) {
       setUsernameError(
-        "Username must not contain unique characters like (!, ], %, ^, &...)"
+        "Username не повинен містити унікальні символи (!, ], %, ^, &...)",
       );
     } else {
       setUsernameError("");
@@ -170,7 +170,7 @@ export default function RegisterForm() {
   };
 
   const isPhoneValid = () => {
-    const phoneRegions = [ 
+    const phoneRegions = [
       "+1", // USA, Canada
       "+7", // Russia, Kazakhstan
       "+20", // Egypt
@@ -321,11 +321,11 @@ export default function RegisterForm() {
     ];
 
     const isNumberValid = phoneRegions.some((region) =>
-      user.phone.startsWith(region)
+      user.phone.startsWith(region),
     );
 
     if (!isNumberValid) {
-      setPhoneNumberError("Phone number region must be valid");
+      setPhoneNumberError("Номер телефона повинен містити код регіона");
     } else {
       setPhoneNumberError("");
     }
@@ -363,20 +363,20 @@ export default function RegisterForm() {
       <div className="z-10 backdrop-blur-[15px] font-light bg-[#15121F]/60 px-[36px] py-[24px] rounded-md w-full max-w-[420px]">
         <form onSubmit={handleSubmit} className="space-y-5">
           <h2 className="text-2xl font-light mb-[16px] text-center text-gray-200">
-            Create your account
+            Створіть власний обліковий запис
           </h2>
 
           <div>
             <input
               name="fullname"
-              placeholder="Full name"
+              placeholder="ПІБ"
               value={user.fullname}
               onChange={handleChange}
               required
               autoComplete="off"
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
-            <p className="text-sm text-gray-400 mt-1">Your legal full name</p>
+            <p className="text-sm text-gray-400 mt-1">Ваше дійсне ПІБ</p>
           </div>
 
           <div>
@@ -390,7 +390,7 @@ export default function RegisterForm() {
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
             <p className="text-sm text-gray-400 mt-1">
-              Unique username to log in
+              Унікальний ідентифікатор користувачів
             </p>
 
             {user.username && (
@@ -416,14 +416,14 @@ export default function RegisterForm() {
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
             <p className="text-sm text-gray-400 mt-1">
-              We’ll never share your email
+              Ваша електронна пошта, для подальшого входа в Open Circle
             </p>
           </div>
 
           <div>
             <input
               name="phone"
-              placeholder="Phone number"
+              placeholder="Номер телефона"
               value={user.phone}
               onChange={handleChange}
               required
@@ -431,7 +431,7 @@ export default function RegisterForm() {
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
             <p className="text-sm text-gray-400 mt-1">
-              Include country code, e.g. +380
+              Вкажіть код країни, наприклад +380
             </p>
             {user.phone && (
               <div>
@@ -450,7 +450,7 @@ export default function RegisterForm() {
               name="password"
               value={user.password}
               onChange={handleChange}
-              placeholder="Password"
+              placeholder="Пароль"
               autoComplete="true"
               required
               className="w-full px-4 py-3 rounded-md border-none bg-[#0D0D0D]/90 text-white focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -465,7 +465,7 @@ export default function RegisterForm() {
               {!isPasswordVisible ? <GrFormView /> : <GrHide />}
             </button>
             <p className="text-sm text-gray-400 mt-1">
-              Use at least 8 characters
+              Використовуйте щонайменше 8 символів
             </p>
 
             {user.password ? (
@@ -491,13 +491,13 @@ export default function RegisterForm() {
             type="submit"
             className="w-full cursor-pointer bg-[#3C1D70]/70 text-white py-2.5 rounded-md hover:bg-purple-900 transition duration-300"
           >
-            Register
+            Зареєструватися
           </button>
         </form>
 
         <div className="mt-5 text-center">
           <Link href="/login" className="text-gray-300 hover:underline">
-            Already have an account? Log in
+            Вже маєте обліковий запис? - Увійти
           </Link>
         </div>
       </div>

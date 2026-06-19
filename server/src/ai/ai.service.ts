@@ -19,12 +19,14 @@ You analyze social media posts.
 Return ONLY JSON array.
 
 Rules:
+- tags should be relevant only to the topic of the post and not overlap with other topics
+- select the most important topic tag and add 5 different variations of it
 - lowercase only
-- 10 tags
+- 20 tags
 - no explanations
 
 Example:
-["dota2", "gaming", "esports"]
+["dota 2", "gaming", "esports"]
 `,
         },
         {

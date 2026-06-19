@@ -47,14 +47,6 @@ export default function Home() {
   return (
     <div className="">
       <div className="max-w-2xl mx-auto">
-        {posts.map((post: any) => (
-          <FeedPostCard
-            key={post.post_id}
-            post={post}
-            onClick={handlePostModalOpen}
-          />
-        ))}
-
         {posts.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20 text-center text-white/70">
             <p className="text-lg font-semibold">No recommendations yet</p>
@@ -90,4 +82,3 @@ export default function Home() {
     </div>
   );
 }
-  

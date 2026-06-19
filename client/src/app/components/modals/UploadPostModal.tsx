@@ -84,7 +84,7 @@ export default function UploadPostModal({
           className="absolute top-[10px] right-[10px] cursor-pointer"
         />
 
-        <h2 className="text-[20px] mb-auto">Creating a publication</h2>
+        <h2 className="text-[20px] mb-auto">Створення публікації</h2>
 
         {!isFiles ? (
           <>
@@ -97,7 +97,7 @@ export default function UploadPostModal({
               style={{ width: "60px", height: "60px" }}
             />
             <p className="font-light text-[#BABABA] mb-[89px]">
-              add files to create a post
+              Додайте медіа
             </p>
 
             <input type="file" id="file" hidden onChange={handleFileChange} />
@@ -105,7 +105,7 @@ export default function UploadPostModal({
               htmlFor="file"
               className="bg-[#5020A1] text-white w-[132px] h-[34px] mb-[49px] flex items-center justify-center rounded-[2px] hover:bg-purple-700 transition cursor-pointer"
             >
-              Upload
+              Завантажити
             </label>
           </>
         ) : (
@@ -167,7 +167,7 @@ export default function UploadPostModal({
               htmlFor="file"
               className="absolute bottom-[160px] bg-[#5020A1] text-white px-3 py-2 rounded-[999px] text-xs hover:bg-purple-700 transition cursor-pointer shadow-md"
             >
-              + Add photo
+              + Додати фото
             </label>
 
             <div className="flex items-center justify-between w-full mb-3 mt-4">
@@ -188,7 +188,7 @@ export default function UploadPostModal({
                 onClick={uploadNewPost}
                 className="bg-[#5020A1] hover:bg-purple-700 transition text-white px-4 py-1.5 rounded text-sm cursor-pointer"
               >
-                Upload post
+                Створити пост
               </button>
             </div>
 
@@ -196,7 +196,7 @@ export default function UploadPostModal({
               onChange={(e) => setPostTitle(e.target.value)}
               className="w-full h-[80px] bg-[#1e1e1e] text-white p-2 rounded resize-none text-sm outline-none"
               maxLength={200}
-              placeholder="Write a caption..."
+              placeholder="Додайте опис..."
             />
           </div>
         )}

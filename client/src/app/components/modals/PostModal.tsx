@@ -106,6 +106,10 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
 
   const handleSendComment = async () => {
     try {
+      if (content.length === 0) {
+        alert("Введіть коментар");
+      }
+
       const response = await axiosInstance.post("comment/new", {
         content: content,
         post_id: post?.post_id,
@@ -314,7 +318,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
               </div>
             ) : (
               <div>
-                <p className="text-white">No comments yet</p>
+                <p className="text-white">Створіть перший коментар</p>
               </div>
             )}
           </div>
@@ -352,7 +356,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
             <div className="flex items-center gap-2 px-1">
               <input
                 type="text"
-                placeholder="Add a comment..."
+                placeholder="Додати коментар..."
                 className="flex-1 text-sm text-white placeholder-gray-400 outline-none h-[30px] bg-transparent border-none"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -367,7 +371,7 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
                 className="text-sm text-blue-400 cursor-pointer"
                 onClick={handleSendComment}
               >
-                Publish
+                Опубліковати
               </span>
             </div>
           </div>

@@ -3,48 +3,56 @@
 import axiosInstance from "@/lib/axios";
 import React, { useEffect, useState } from "react";
 
-const ALL_INTERESTS = [
-  "dota2",
-  "f1",
-  "cars",
-  "audi",
-  "gaming",
-  "esports",
-  "football",
-  "technology",
-  "music",
-  "movies",
-];
-
 export default function RecommendationSettingsPage() {
   const [interests, setInterests] = useState<string[]>([]);
   const [customInterest, setCustomInterest] = useState("");
 
-  const toggleInterest = (item: string) => {
-    setInterests((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
-    );
-  };
+  const removeInterest = async (item: string) => {
+    const updated = interests.filter((i) => i !== item);
 
-  const fetchUserInterests = async () => {
-    const response = await axiosInstance.get("user/get-interests");
+    setInterests(updated);
 
-    setInterests(response.data);
+    try {
+      await axiosInstance.patch("user/interests", {
+        interests: updated,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const sendNewInteres = async () => {
-    await axiosInstance.patch("user/interests", {
-      interests: [...interests, customInterest],
-    });
+    if (!customInterest.trim()) return;
 
-    fetchUserInterests();
+    const updated = [...new Set([...interests, customInterest.trim()])];
+
+    setInterests(updated);
+    setCustomInterest("");
+
+    try {
+      await axiosInstance.patch("user/interests", {
+        interests: updated,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const clearInterests = async () => {
     try {
-      await axiosInstance.patch("user/clear-interests");
+      setInterests([]);
 
-      fetchUserInterests();
+      await axiosInstance.patch("user/clear-interests");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 📥 загрузка с сервера
+  const fetchUserInterests = async () => {
+    try {
+      const response = await axiosInstance.get("user/get-interests");
+      setInterests(response.data || []);
     } catch (error) {
       console.log(error);
     }
@@ -75,16 +83,16 @@ export default function RecommendationSettingsPage() {
               <span
                 key={item}
                 className="
-                bg-[#5020A1]
-                px-[12px]
-                py-[5px]
-                rounded-[2px]
-                text-[14px]
-                cursor-pointer
-                hover:bg-purple-700
-                transition
-              "
-                onClick={() => toggleInterest(item)}
+                  bg-[#5020A1]
+                  px-[12px]
+                  py-[5px]
+                  rounded-[2px]
+                  text-[14px]
+                  cursor-pointer
+                  hover:bg-purple-700
+                  transition
+                "
+                onClick={() => removeInterest(item)}
               >
                 {item} ✕
               </span>
@@ -101,24 +109,24 @@ export default function RecommendationSettingsPage() {
               onChange={(e) => setCustomInterest(e.target.value)}
               placeholder="Ваш інтерес"
               className="
-              flex-1
-              h-[35px]
-              bg-[#121212]
-              text-white
-              px-[10px]
-              rounded-[2px]
-              outline-none
-            "
+                flex-1
+                h-[35px]
+                bg-[#121212]
+                text-white
+                px-[10px]
+                rounded-[2px]
+                outline-none
+              "
             />
 
             <button
               className="
-              bg-[#5020A1]
-              px-[20px]
-              rounded-md
-              hover:bg-purple-700
-              transition
-            "
+                bg-[#5020A1]
+                px-[20px]
+                rounded-md
+                hover:bg-purple-700
+                transition
+              "
               onClick={sendNewInteres}
             >
               Додати
@@ -130,25 +138,26 @@ export default function RecommendationSettingsPage() {
           <button
             onClick={clearInterests}
             className="
-            text-red-400
-            hover:text-red-300
-            transition
-          "
+              text-red-400
+              hover:text-red-300
+              transition
+            "
           >
             Видалити інтереси
           </button>
 
           <button
             className="
-            bg-[#5020A1]
-            px-[26px]
-            py-[6px]
-            rounded-md
-            hover:bg-purple-700
-            transition
-          "
+              bg-[#5020A1]
+              px-[26px]
+              py-[6px]
+              rounded-md
+              hover:bg-purple-700
+              transition
+            "
+            onClick={fetchUserInterests}
           >
-            Зберегти зміни
+            Оновити
           </button>
         </div>
       </div>

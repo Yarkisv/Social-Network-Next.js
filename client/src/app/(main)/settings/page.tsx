@@ -26,12 +26,12 @@ export default function SettingsPage() {
           Конфіденційність акаунта
         </div>
 
-        <div
+        {/* <div
           className="cursor-pointer text-gray-400 hover:text-white transition"
           onClick={() => router.push("/settings/blocked")}
         >
           Заблоковані користувачі
-        </div>
+        </div> */}
 
         <div
           className="cursor-pointer text-gray-400 hover:text-white transition"
@@ -40,12 +40,12 @@ export default function SettingsPage() {
           Ваша активність
         </div>
 
-        <div
+        {/* <div
           className="cursor-pointer text-gray-400 hover:text-white transition"
           onClick={() => router.push("/settings/stats")}
         >
           Ваша статистика
-        </div>
+        </div> */}
 
         <div
           className="cursor-pointer text-gray-400 hover:text-white transition"

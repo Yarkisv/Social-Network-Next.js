@@ -153,23 +153,6 @@ export class SubscriptionService {
     return { subscriptions, subscribers };
   }
 
-  // async checkIsAlreadySubscribed(
-  //   current_user_id: number,
-  //   viewed_user_id: number,
-  // ) {
-  //   let isSubscribed: boolean = false;
-
-  //   const { subscribers } = await this.findAllById(viewed_user_id);
-
-  //   for (let i = 0; i < subscribers.length; i++) {
-  //     if (Number(subscribers[i].user_id) === Number(current_user_id)) {
-  //       isSubscribed = true;
-  //     }
-  //   }
-
-  //   return isSubscribed;
-  // }
-
   async checkIsAlreadySubscribed(
     current_user_id: number,
     viewed_user_id: number,

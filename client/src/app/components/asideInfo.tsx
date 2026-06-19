@@ -33,7 +33,7 @@ export default function AsideInfo() {
             height={19}
             style={{ width: "19px", height: "19px" }}
           />
-          <p>Chats</p>
+          <p>Чати</p>
         </div>
         <div className="flex gap-[5px] cursor-pointer">
           <Image
@@ -43,9 +43,9 @@ export default function AsideInfo() {
             height={19}
             style={{ width: "19px", height: "19px" }}
           />
-          <p>Posts</p>
+          <p>Пости</p>
         </div>
-        <div className="flex gap-[5px] cursor-pointer">
+        {/* <div className="flex gap-[5px] cursor-pointer">
           <Image
             alt="profile"
             src={AsideFriends}
@@ -54,8 +54,8 @@ export default function AsideInfo() {
             style={{ width: "19px", height: "19px" }}
           />
           <p>Friends</p>
-        </div>
-        <div className="flex gap-[5px] cursor-pointer">
+        </div> */}
+        {/* <div className="flex gap-[5px] cursor-pointer">
           <Image
             alt="profile"
             src={AsideMusic}
@@ -64,8 +64,8 @@ export default function AsideInfo() {
             style={{ width: "19px", height: "19px" }}
           />
           <p>Music</p>
-        </div>
-        <div className="flex gap-[5px] cursor-pointer">
+        </div> */}
+        {/* <div className="flex gap-[5px] cursor-pointer">
           <Image
             alt="profile"
             src={AsideVideo}
@@ -74,7 +74,7 @@ export default function AsideInfo() {
             style={{ width: "19px", height: "19px" }}
           />
           <p>Video</p>
-        </div>
+        </div> */}
         <div
           className="flex gap-[5px] cursor-pointer"
           onClick={handleSettingsNavigate}
@@ -86,7 +86,7 @@ export default function AsideInfo() {
             height={19}
             style={{ width: "19px", height: "19px" }}
           />
-          <p>Settings</p>
+          <p>Налаштування</p>
         </div>
       </div>
     </div>

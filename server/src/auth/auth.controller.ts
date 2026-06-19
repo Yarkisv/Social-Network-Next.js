@@ -74,63 +74,6 @@ export class AuthController {
     return user;
   }
 
-  // @UseGuards(AuthGuard)
-  // @Get("get-full/:username")
-  // async getFullUserData(@Param("username") username: string, @Request() req) {
-  //   const currnet_user_id = req.user.user_id;
-
-  //   const user = await this.userService.findByUsername(username);
-
-  //   if (!user) {
-  //     throw new NotFoundException("User not found");
-  //   }
-
-  //   const isOwner = currnet_user_id === user.user_id;
-
-  //   let subscription;
-
-  //   if (currnet_user_id) {
-  //     subscription = await this.subscriptionService.findOneSubscription(
-  //       currnet_user_id,
-  //       user.user_id,
-  //     );
-  //   }
-
-  //   const isSubscribed = subscription?.status === "accepted";
-  //   const isPending = subscription?.status === "pending";
-
-  //   const canViewPosts = !user.isPrivate || isOwner || isSubscribed;
-
-  //   const posts = canViewPosts
-  //     ? await this.postService.findUserPostsById(user.user_id)
-  //     : [];
-
-  //   const savedPosts = isOwner
-  //     ? await this.savedPostsService.getAllSavedPostsByUser(currnet_user_id)
-  //     : [];
-
-  //   const showSubsInfo = !user.isPrivate || isOwner || isSubscribed;
-
-  //   const { subscriptions, subscribers } = showSubsInfo
-  //     ? await this.subscriptionService.findAllById(user.user_id)
-  //     : {
-  //         subscriptions: [],
-  //         subscribers: [],
-  //       };
-
-  //   const data = {
-  //     user,
-  //     posts,
-  //     subscriptions,
-  //     subscribers,
-  //     isPrivate: user.isPrivate,
-  //     isSubscribed,
-  //     isPending,
-  //   };
-
-  //   return data;
-  // }
-
   @UseGuards(AuthGuard)
   @Get("/check-token")
   async checkToken(@Request() req) {

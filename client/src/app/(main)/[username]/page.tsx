@@ -74,6 +74,8 @@ export default function page() {
     try {
       const response = await axiosInstance.get(`/user/get-full/${username}`);
 
+      console.log(response.data);
+
       if (response.status === 200) {
         const data = response.data;
 
@@ -330,7 +332,7 @@ export default function page() {
               : "text-gray-500"
           }`}
         >
-          POSTS
+          ПОСТИ
         </button>
 
         {isUserCurrent && (
@@ -342,7 +344,7 @@ export default function page() {
                 : "text-gray-500"
             }`}
           >
-            SAVED
+            ЗБЕРЕЖЕНІ
           </button>
         )}
       </div>
@@ -358,21 +360,26 @@ export default function page() {
                 <span className="text-white text-5xl font-light">+</span>
               </div>
             )}
-
-            {fullUserData.posts.map((post) => (
-              <div
-                key={post.post_id}
-                className="relative w-full aspect-square cursor-pointer"
-                onClick={() => handlePostModalOpen(post)}
-              >
-                <Image
-                  src={`${STATIC_API}/${post.images[0].path_to}`}
-                  alt="post"
-                  fill
-                  className="object-cover rounded-lg hover:opacity-90 transition-opacity duration-200"
-                />
-              </div>
-            ))}
+            {[...fullUserData.posts]
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime(),
+              )
+              .map((post) => (
+                <div
+                  key={post.post_id}
+                  className="relative w-full aspect-square cursor-pointer"
+                  onClick={() => handlePostModalOpen(post)}
+                >
+                  <Image
+                    src={`${STATIC_API}/${post.images[0].path_to}`}
+                    alt="post"
+                    fill
+                    className="object-cover rounded-lg hover:opacity-90 transition-opacity duration-200"
+                  />
+                </div>
+              ))}
           </div>
         ) : (
           <PostGrid posts={fullUserData.savedPosts} />

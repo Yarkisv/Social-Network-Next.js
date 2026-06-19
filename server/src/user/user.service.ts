@@ -13,6 +13,7 @@ import { FileService } from "src/services/file.service";
 import { SubscriptionService } from "src/subscription/subscription.service";
 import { EPeriods } from "src/enums/statistics-period.enum";
 import { Post } from "src/post/entities/post.entity";
+import { Not } from "typeorm";
 
 @Injectable()
 export class UserService {
@@ -360,57 +361,184 @@ export class UserService {
   }
 
   async getRecomendations(user_id: number) {
+    console.log("НАЧАЛО ПОЛУЧЕНИЯ РЕКОМЕНДАЦИЙ ДЛЯ ПОЛЬЗОВАТЕЛЯ", user_id);
+
     const user = await this.userRepository.findOne({
       where: { user_id },
     });
 
     if (!user) {
+      console.log("ОШИБКА ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН", user_id);
       throw new NotFoundException("User not found");
     }
 
-    if (!user.interests || user.interests.length === 0) {
+    console.log("ПОЛЬЗОВАТЕЛЬ НАЙДЕН", user_id, "ИМЯ", user.username);
+
+    const interests: string[] = Array.isArray(user.interests)
+      ? user.interests.map((i) => i.toLowerCase().trim())
+      : [];
+
+    console.log("ИНТЕРЕСЫ ПОЛЬЗОВАТЕЛЯ", interests);
+    console.log("КОЛИЧЕСТВО ИНТЕРЕСОВ", interests.length);
+
+    const interestsSet = new Set(interests);
+    console.log("СЕТ ИНТЕРЕСОВ СОЗДАН", Array.from(interestsSet));
+
+    console.log("ПОЛУЧЕНИЕ ПОДПИСОК ПОЛЬЗОВАТЕЛЯ", user_id);
+    const { subscriptions } =
+      await this.subscriptionService.findAllById(user_id);
+
+    console.log("КОЛИЧЕСТВО ПОДПИСОК", subscriptions.length);
+    console.log(
+      "СПИСОК ID ПОДПИСОК",
+      subscriptions.map((u) => u.user_id),
+    );
+
+    const followingIds = new Set(subscriptions.map((u) => u.user_id));
+    console.log("СЕТ ID ПОДПИСОК СОЗДАН", Array.from(followingIds));
+
+    console.log("ЗАПРОС ПОСТОВ ИЗ БАЗЫ ДАННЫХ");
+    const posts = await this.postRepository.find({
+      relations: ["user", "images", "likes", "comments"],
+      where: {
+        user: { user_id: Not(user_id) },
+      },
+      order: { created_at: "DESC" },
+      take: 150,
+    });
+
+    console.log("ПОЛУЧЕНО ПОСТОВ", posts.length);
+    console.log(
+      "ID ВСЕХ ПОЛУЧЕННЫХ ПОСТОВ",
+      posts.map((p) => p.post_id),
+    );
+
+    const hasInterests = interests.length > 0;
+    const hasFollowings = followingIds.size > 0;
+    const onlyFollowingMode = !hasInterests && hasFollowings;
+
+    console.log("ЕСТЬ ИНТЕРЕСЫ", hasInterests);
+    console.log("ЕСТЬ ПОДПИСКИ", hasFollowings);
+    console.log("РЕЖИМ ТОЛЬКО ПОДПИСКИ", onlyFollowingMode);
+
+    if (!hasInterests && !hasFollowings) {
+      console.log("НЕТ НИ ИНТЕРЕСОВ НИ ПОДПИСОК ВОЗВРАЩАЕМ ПУСТОЙ МАССИВ");
       return [];
     }
 
-    const interestsSet = new Set(user.interests || []);
+    console.log("НАЧАЛО ФИЛЬТРАЦИИ ПОСТОВ");
+    const filteredPosts = posts.filter((post) => {
+      console.log("ПРОВЕРКА ПОСТА", post.post_id, "НАЗВАНИЕ", post.post_title);
 
-    const posts = await this.postRepository.find({
-      relations: ["user", "images", "likes", "comments"],
-      order: { post_id: "DESC" },
-      take: 100,
+      const isFromFollowing = followingIds.has(post.user.user_id);
+      console.log(
+        "ПОСТ ОТ ПОДПИСКИ",
+        isFromFollowing,
+        "АВТОР",
+        post.user.user_id,
+      );
+
+      if (onlyFollowingMode) {
+        console.log("РЕЖИМ ТОЛЬКО ПОДПИСКИ РЕЗУЛЬТАТ", isFromFollowing);
+        return isFromFollowing;
+      }
+
+      if (hasInterests) {
+        console.log("ПРОВЕРКА ИНТЕРЕСОВ ДЛЯ ПОСТА", post.post_id);
+
+        const tags = Array.isArray(post.aiTags)
+          ? post.aiTags.map((tag) => tag.toLowerCase().trim())
+          : [];
+
+        console.log("ТЕГИ ПОСТА", tags);
+        console.log("КОЛИЧЕСТВО ТЕГОВ", tags.length);
+
+        const hasMatchingInterest = tags.some((tag) => {
+          const isMatch = interestsSet.has(tag);
+          if (isMatch) {
+            console.log("НАЙДЕНО СОВПАДЕНИЕ ТЕГ", tag, "С ИНТЕРЕСОМ");
+          }
+          return isMatch;
+        });
+
+        console.log("ЕСТЬ СОВПАДЕНИЕ С ИНТЕРЕСАМИ", hasMatchingInterest);
+        console.log("РЕЗУЛЬТАТ ФИЛЬТРАЦИИ ПОСТА", hasMatchingInterest);
+        return hasMatchingInterest;
+      }
+
+      console.log("ПОСТ НЕ ПРОШЕЛ ФИЛЬТРАЦИЮ");
+      return false;
     });
 
-    const scoredPosts = posts.map((post) => {
-      const tags = post.aiTags || [];
+    console.log("ОТФИЛЬТРОВАНО ПОСТОВ", filteredPosts.length);
+    console.log(
+      "ID ОТФИЛЬТРОВАННЫХ ПОСТОВ",
+      filteredPosts.map((p) => p.post_id),
+    );
 
-      let score = 0;
+    console.log("СОРТИРОВКА ПОСТОВ СНАЧАЛА ПОДПИСКИ");
+    const sortedPosts = filteredPosts.sort((a, b) => {
+      const aIsFollowing = followingIds.has(a.user.user_id);
+      const bIsFollowing = followingIds.has(b.user.user_id);
 
-      for (const tag of tags) {
-        if (interestsSet.has(tag)) {
-          score += 3;
-        }
+      console.log(
+        "СРАВНЕНИЕ ПОСТОВ",
+        a.post_id,
+        "ПОДПИСКА",
+        aIsFollowing,
+        b.post_id,
+        "ПОДПИСКА",
+        bIsFollowing,
+      );
+
+      if (aIsFollowing && !bIsFollowing) {
+        console.log("ПОСТ", a.post_id, "ИДЕТ ПЕРВЫМ КАК ПОДПИСКА");
+        return -1;
       }
+      if (!aIsFollowing && bIsFollowing) {
+        console.log("ПОСТ", b.post_id, "ИДЕТ ПЕРВЫМ КАК ПОДПИСКА");
+        return 1;
+      }
+      return 0;
+    });
+
+    console.log("ПОСЛЕ СОРТИРОВКИ ПОСТОВ", sortedPosts.length);
+    console.log(
+      "ПОРЯДОК ПОСТОВ ПОСЛЕ СОРТИРОВКИ",
+      sortedPosts.map((p) => p.post_id),
+    );
+
+    const result = sortedPosts.map((post) => {
+      const matchedTags =
+        post.aiTags?.filter((tag) =>
+          interestsSet.has(tag.toLowerCase().trim()),
+        ) || [];
+
+      console.log(
+        "ДЛЯ ПОСТА",
+        post.post_id,
+        "НАЙДЕНО СОВПАДАЮЩИХ ТЕГОВ",
+        matchedTags.length,
+        matchedTags,
+      );
 
       return {
         post_id: post.post_id,
         post_title: post.post_title,
-
-        images: post.images.map((img) => ({
-          id: img.id,
-          path_to: img.path_to,
-        })),
-
+        images: post.images,
         username: post.user.username,
         userAvatar: post.user.avatarPathTo,
-
         comments: post.comments || [],
         likes: post.likes || [],
-
-        score,
+        isFromFollowing: followingIds.has(post.user.user_id),
+        matchedInterests: matchedTags,
       };
     });
 
-    return scoredPosts.sort((a, b) => b.score - a.score).slice(0, 20);
+    console.log("ИТОГОВО РЕКОМЕНДАЦИЙ ПОЛУЧЕНО", result.length);
+    console.log("ЗАВЕРШЕНИЕ ПОЛУЧЕНИЯ РЕКОМЕНДАЦИЙ");
+
+    return result;
   }
 
   async getInterests(user_id: number) {

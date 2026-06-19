@@ -8,4 +8,5 @@ export type Post = {
   userAvatar?: string;
   comments: [];
   likes?: Like[];
+  created_at: Date;
 };
