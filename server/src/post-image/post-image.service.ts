@@ -1,26 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePostImageDto } from './dto/create-post-image.dto';
-import { UpdatePostImageDto } from './dto/update-post-image.dto';
+import { Injectable } from "@nestjs/common";
+import { CreatePostImageDto } from "./dto/create-post-image.dto";
+import { UpdatePostImageDto } from "./dto/update-post-image.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { PostImage } from "./entities/post-image.entity";
 
 @Injectable()
 export class PostImageService {
-  create(createPostImageDto: CreatePostImageDto) {
-    return 'This action adds a new postImage';
-  }
+  constructor(
+    @InjectRepository(PostImage)
+    private readonly postImageRepository: Repository<PostImage>,
+  ) {}
 
-  findAll() {
-    return `This action returns all postImage`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} postImage`;
-  }
-
-  update(id: number, updatePostImageDto: UpdatePostImageDto) {
-    return `This action updates a #${id} postImage`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} postImage`;
+  async removePostImagesByPostId(post_id: number) {
+    await this.postImageRepository.delete({ post: { post_id: post_id } });
   }
 }

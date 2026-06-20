@@ -1,11 +1,17 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateChatMemberDto } from "./dto/create-chat-member.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ChatMember } from "./entities/chat-member.entity";
 import { In, Repository } from "typeorm";
 import { UserService } from "src/user/user.service";
 import { MessagesService } from "src/messages/messages.service";
-import { json } from "stream/consumers";
+import { ChatService } from "../chat/chat.service";
 
 @Injectable()
 export class ChatMembersService {
@@ -14,6 +20,8 @@ export class ChatMembersService {
     private readonly chatMembersRepository: Repository<ChatMember>,
     private readonly userService: UserService,
     private readonly messageService: MessagesService,
+    @Inject(forwardRef(() => ChatService))
+    private readonly chatService: ChatService,
   ) {}
 
   async create(createChatMemberDto: CreateChatMemberDto) {
@@ -26,51 +34,6 @@ export class ChatMembersService {
 
     await this.chatMembersRepository.save(chatMembers);
   }
-
-  // async findAllChatsByUserId(user_id: number) {
-  //   const chatMemberships = await this.chatMembersRepository.find({
-  //     where: {
-  //       user: { user_id: user_id },
-  //     },
-  //     relations: ["chat"],
-  //   });
-
-  //   const chats = chatMemberships.map((membership) => membership.chat);
-  //   const chatIds = chats.map((chat) => chat.chat_id);
-
-  //   const chatMembers = await this.chatMembersRepository.find({
-  //     where: { chat: { chat_id: In(chatIds) } },
-  //     relations: ["user", "chat"],
-  //   });
-
-  //   const modifiedChats = await Promise.all(
-  //     chats.map(async (chat) => {
-  //       const member = chatMembers.find(
-  //         (chatMember) =>
-  //           chatMember.chat.chat_id === chat.chat_id &&
-  //           chatMember.user.user_id !== user_id,
-  //       );
-
-  //       if (!member) return null;
-
-  //       const user = await this.userService.findFullDataById(
-  //         member?.user.user_id,
-  //       );
-
-  //       return {
-  //         ...chat,
-  //         user_id: user.user_id,
-  //         username: user.username,
-  //         chatName: user.fullname,
-  //         avatarPathTo: user.avatarPathTo,
-  //       };
-  //     }),
-  //   );
-
-  //   console.log(modifiedChats);
-
-  //   return modifiedChats;
-  // }
 
   async findAllChatsByUserId(user_id: number) {
     const chatMemberships = await this.chatMembersRepository.find({
@@ -248,5 +211,37 @@ export class ChatMembersService {
     const messages = await this.messageService.findAllByChatId(chat_id);
 
     return messages.filter((m) => m.message_id > lastReadId);
+  }
+
+  async deleteChat(user_id: number, chat_id: number) {
+    const chat = await this.chatService.findOneChat(chat_id);
+
+    if (!chat) {
+      throw new NotFoundException("Чат не найден");
+    }
+
+    const chatMember = await this.chatMembersRepository.findOne({
+      where: {
+        chat: { chat_id: chat_id },
+        user: { user_id: user_id },
+      },
+    });
+
+    if (!chatMember) {
+      throw new ForbiddenException("Вы не являетесь участником этого чата");
+    }
+
+    await this.chatMembersRepository.delete({
+      chat: { chat_id: chat_id },
+    });
+
+    await this.messageService.deleteAllChatMessages(chat_id);
+
+    await this.chatService.deleteChat(chat_id);
+
+    return {
+      success: true,
+      message: "Чат успешно удален для обоих участников",
+    };
   }
 }

@@ -8,6 +8,8 @@ import { UserModule } from "src/user/user.module";
 import { LikeModule } from "src/like/like.module";
 import { AuthModule } from "src/auth/auth.module";
 import { AiModule } from "src/ai/ai.module";
+import { PostImageModule } from "src/post-image/post-image.module";
+import { CommentModule } from "src/comment/comment.module";
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { AiModule } from "src/ai/ai.module";
     forwardRef(() => LikeModule),
     forwardRef(() => AuthModule),
     AiModule,
+    PostImageModule,
+    CommentModule,
   ],
   controllers: [PostController],
   providers: [PostService, FileService],

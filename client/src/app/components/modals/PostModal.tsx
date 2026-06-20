@@ -18,9 +18,15 @@ type PostModalProps = {
   post: Post | undefined | null;
   isOpen: boolean;
   onClose: () => void;
+  isUserCurrent: boolean;
 };
 
-export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
+export default function PostModal({
+  isOpen,
+  onClose,
+  post,
+  isUserCurrent,
+}: PostModalProps) {
   const API = process.env.NEXT_PUBLIC_API_URL;
   const API_STATIC = process.env.NEXT_PUBLIC_STATIC_URL;
 
@@ -170,6 +176,18 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
     }
   };
 
+  const handleDeletePost = async (post_id: number | undefined) => {
+    try {
+      const response = await axiosInstance.delete(`post/delete/${post_id}`);
+
+      if (response.status === 200) {
+        onClose();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (!post) {
       return;
@@ -197,6 +215,15 @@ export default function PostModal({ isOpen, onClose, post }: PostModalProps) {
         >
           x
         </button>
+
+        {isUserCurrent === true && (
+          <button
+            onClick={() => handleDeletePost(post.post_id)}
+            className="absolute top-2 right-10 text-gray-300 hover:text-red-500 text-[14px] cursor-pointer transition-colors"
+          >
+            Видалити
+          </button>
+        )}
 
         <div className="h-full w-[365px] flex-shrink-0 relative">
           {post?.images?.length > 1 && (

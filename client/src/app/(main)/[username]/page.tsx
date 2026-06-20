@@ -116,6 +116,7 @@ export default function page() {
   const handlePostModalClose = () => {
     dispatch(closePostModalWindow());
     setSelectedPost(null);
+    fetchData();
   };
 
   const handleSubscribersModalOpen = () => {
@@ -390,6 +391,7 @@ export default function page() {
         post={selectedPost}
         onClose={handlePostModalClose}
         isOpen={isPostModalOpen}
+        isUserCurrent={isUserCurrent}
       />
 
       <SubscribersModal

@@ -6,6 +6,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserService } from "src/user/user.service";
 import { LikeService } from "src/like/like.service";
 import { AiService } from "../ai/ai.service";
+import { PostImageService } from "../post-image/post-image.service";
+import { CommentService } from "src/comment/comment.service";
 
 @Injectable()
 export class PostService {
@@ -14,6 +16,8 @@ export class PostService {
     private readonly userService: UserService,
     private readonly likeService: LikeService,
     private readonly aiService: AiService,
+    private readonly PostImageService: PostImageService,
+    private readonly commentService: CommentService,
   ) {}
 
   async create(createPostDto: CreatePostDto) {
@@ -64,5 +68,37 @@ export class PostService {
     );
 
     return modifiedPosts;
+  }
+
+  async deletePost(user_id: number, post_id: number) {
+    console.log(user_id, post_id);
+
+    const post = await this.postRepository.findOne({
+      where: {
+        post_id: post_id,
+        user: { user_id: user_id },
+      },
+      relations: ["images", "comments", "likes"],
+    });
+
+    if (!post) {
+      throw new Error("Post not found or unauthorized");
+    }
+
+    if (post.images && post.images.length > 0) {
+      await this.PostImageService.removePostImagesByPostId(post_id);
+    }
+
+    if (post.comments && post.comments.length > 0) {
+      await this.commentService.deleteAllCommentsFromPostByPostId(post_id);
+    }
+
+    if (post.likes && post.likes.length > 0) {
+      await this.likeService.deleteAllLikesFromPostByPostId(post_id);
+    }
+
+    await this.postRepository.remove(post);
+
+    return { success: true };
   }
 }

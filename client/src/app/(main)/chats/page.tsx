@@ -27,6 +27,18 @@ export default function page() {
     }
   };
 
+  const handleDeleteChat = async (chat_id: number) => {
+    try {
+      const response = await axiosInstance.delete(`chat/delete/${chat_id}`);
+
+      if (response.status === 200) {
+        fetchAllUserChats();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const navigateToChat = (chat_id: number | undefined) => {
     router.push(`/chats/${chat_id}`);
   };
@@ -65,6 +77,16 @@ export default function page() {
                         {chat.unreadCount}
                       </span>
                     )}
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteChat(chat.chat_id);
+                      }}
+                      className="group-hover:opacity-100 transition-opacity duration-200 text-gray-400 hover:text-red-500 cursor-pointer"
+                    >
+                      Delete chat
+                    </button>
                   </div>
 
                   <p className="text-sm text-white/60 truncate max-w-[500px]">

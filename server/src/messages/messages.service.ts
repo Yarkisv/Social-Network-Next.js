@@ -132,5 +132,9 @@ export class MessagesService {
     return { message_id, new_content };
   }
 
-  
+  async deleteAllChatMessages(chat_id: number) {
+    await this.messageRepository.delete({
+      chat: { chat_id: chat_id },
+    });
+  }
 }

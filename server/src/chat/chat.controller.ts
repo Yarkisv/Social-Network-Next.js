@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -55,5 +56,13 @@ export class ChatController {
     const chat_id: number = id;
 
     return this.chatMembersService.findChatByUserId(user_id, chat_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete("delete/:chat_id")
+  async deleteChat(@Request() req, @Param("chat_id") chat_id: number) {
+    const user_id: number = req.user.user_id;
+
+    return this.chatMembersService.deleteChat(user_id, chat_id);
   }
 }

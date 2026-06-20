@@ -15,6 +15,7 @@ import { FileService } from "src/services/file.service";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { AuthGuard } from "src/auth/guards/auth.guard";
+import { Delete } from "@nestjs/common";
 
 @Controller("post")
 export class PostController {
@@ -59,5 +60,15 @@ export class PostController {
     const posts = await this.postService.findUserPostsById(id);
 
     return posts;
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete("delete/:post_id")
+  async deletePost(@Request() req, @Param("post_id") post_id: number) {
+    const user_id = req.user.user_id;
+
+    console.log(user_id, post_id);
+
+    return await this.postService.deletePost(user_id, post_id);
   }
 }

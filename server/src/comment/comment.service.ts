@@ -74,4 +74,8 @@ export class CommentService {
 
     return modifiedComments;
   }
+
+  async deleteAllCommentsFromPostByPostId(post_id: number) {
+    await this.commentRepository.delete({ post: { post_id: post_id } });
+  }
 }

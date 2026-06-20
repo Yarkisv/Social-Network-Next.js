@@ -30,4 +30,18 @@ export class ChatService {
 
     return { chat };
   }
+
+  async findOneChat(chat_id) {
+    const chat = await this.chatRepository.findOne({
+      where: { chat_id: chat_id },
+    });
+
+    return chat;
+  }
+
+  async deleteChat(chat_id: number) {
+    await this.chatRepository.delete({
+      chat_id: chat_id,
+    });
+  }
 }

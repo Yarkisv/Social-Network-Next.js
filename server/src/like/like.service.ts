@@ -140,6 +140,10 @@ export class LikeService {
 
     return modifiedLikes;
   }
+
+  async deleteAllLikesFromPostByPostId(post_id: number) {
+    await this.likeRepository.delete({ post: { post_id: post_id } });
+  }
 }
 
 function sanitizeUser(user: User) {
