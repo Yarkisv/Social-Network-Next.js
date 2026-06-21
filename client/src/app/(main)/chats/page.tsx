@@ -20,6 +20,7 @@ export default function page() {
       const response = await axiosInstance.get("/chat/get/all");
 
       if (response.status === 200) {
+        console.log(response.data);
         setChats(response.data);
       }
     } catch (error) {
@@ -59,7 +60,7 @@ export default function page() {
                 onClick={() => navigateToChat(chat.chat_id)}
               >
                 <Image
-                  src={`${STATIC_API}${chat.avatarPathTo}`}
+                  src={`${STATIC_API}/${chat.avatarPathTo}`}
                   alt="avatar"
                   width={46}
                   height={46}
